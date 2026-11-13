@@ -41,3 +41,31 @@ describe("Manifiesto", () => {
     expect(html).toContain(`content="${token("brand")}"`);
   });
 });
+
+import { workbox } from "./pwa.config";
+
+describe("Service worker", () => {
+  it("responde navegaciones con la interfaz, salvo las de /api", () => {
+    expect(workbox.navigateFallback).toBe("/index.html");
+    const bloqueada = (ruta: string) => workbox.navigateFallbackDenylist.some((r) => r.test(ruta));
+    expect(bloqueada("/api/citas")).toBe(true);
+    expect(bloqueada("/api")).toBe(true);
+    expect(bloqueada("/openapi.json")).toBe(true);
+    expect(bloqueada("/mi-cita/abc")).toBe(false);
+    expect(bloqueada("/apiario")).toBe(false);
+  });
+
+  it("no define reglas de caché en tiempo de ejecución, así que ningún dato se guarda", () => {
+    expect(workbox.runtimeCaching).toEqual([]);
+  });
+
+  it("no cambia de versión a mitad de un agendamiento", () => {
+    expect(workbox.skipWaiting).toBe(false);
+  });
+
+  it("guarda las fuentes, los íconos y el código de la interfaz", () => {
+    expect(workbox.globPatterns.join()).toMatch(/woff2/);
+    expect(workbox.globPatterns.join()).toMatch(/png/);
+    expect(workbox.globPatterns.join()).toMatch(/js/);
+  });
+});

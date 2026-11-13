@@ -77,7 +77,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 
 ## Fase 9 — PWA, sin conexión y accesibilidad
 - [x] 9.1 Manifiesto e íconos
-- [ ] 9.2 Service worker que solo guarda la interfaz (nunca `/api`)
+- [x] 9.2 Service worker que solo guarda la interfaz (nunca `/api`)
 - [ ] 9.3 Sin conexión de extremo a extremo
 - [ ] 9.4 Pantalla `/instalar` (iPhone y Android)
 - [ ] 9.5 «Reducir movimiento» y `axe` en todas las rutas

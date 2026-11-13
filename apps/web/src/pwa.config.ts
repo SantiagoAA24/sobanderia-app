@@ -28,3 +28,20 @@ export const manifiesto = {
     { src: "/iconos/icono-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
   ],
 } as const;
+
+/**
+ * Service worker: guarda solo el cascarón de la interfaz (HTML, JS, CSS, fuentes e íconos).
+ * Nunca toca `/api`: ni lo guarda, ni responde navegaciones con el HTML de la app (un enlace a
+ * `/api/...` debe llegar al servidor). Los datos de citas jamás quedan en el celular.
+ */
+export const workbox = {
+  globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
+  navigateFallback: "/index.html",
+  navigateFallbackDenylist: [/^\/api(\/|$)/, /^\/openapi\.json$/],
+  // Sin `runtimeCaching`: lo que no está en el precache siempre va a la red.
+  runtimeCaching: [],
+  cleanupOutdatedCaches: true,
+  // La versión nueva se activa en la siguiente apertura; nunca recarga a mitad de un agendamiento.
+  skipWaiting: false,
+  clientsClaim: false,
+} as const;

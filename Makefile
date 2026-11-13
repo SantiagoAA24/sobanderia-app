@@ -42,4 +42,4 @@ cliente-al-dia:
 check:
 	cd apps/api && ruff check . && ruff format --check . && mypy app && pytest
 	$(MAKE) cliente-al-dia
-	cd apps/web && npm run check && npm test -- --run
+	cd apps/web && npm run check && npm test -- --run && npm run build

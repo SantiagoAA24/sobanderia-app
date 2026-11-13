@@ -3,12 +3,12 @@ import { loadEnv } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
 
-import { manifiesto } from "./src/pwa.config";
+import { manifiesto, workbox } from "./src/pwa.config";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
   return {
-    plugins: [react(), VitePWA({ manifest: { ...manifiesto, icons: [...manifiesto.icons] }, includeAssets: ["iconos/apple-touch-icon.png", "iconos/icono.svg"] })],
+    plugins: [react(), VitePWA({ manifest: { ...manifiesto, icons: [...manifiesto.icons] }, registerType: "prompt", injectRegister: false, workbox: { ...workbox, navigateFallbackDenylist: [...workbox.navigateFallbackDenylist], globPatterns: [...workbox.globPatterns], runtimeCaching: [] }, includeAssets: ["iconos/apple-touch-icon.png", "iconos/icono.svg"] })],
     define: {
       // `/ui` (catálogo de componentes) solo se incluye fuera de producción, o con VITE_MOSTRAR_UI=1.
       __MOSTRAR_UI__: JSON.stringify(mode !== "production" || env.VITE_MOSTRAR_UI === "1"),
