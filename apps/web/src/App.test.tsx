@@ -4,8 +4,8 @@ import { describe, expect, it } from "vitest";
 import App from "./App";
 
 describe("App", () => {
-  it("muestra el nombre de la app", () => {
+  it("abre en el inicio del cliente, sin pedir sesión", async () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: "Sobandería" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Inicio" })).toBeInTheDocument();
   });
 });

@@ -1,13 +1,108 @@
-/* Tokens mínimos de la Fase 0. El sistema completo llega en la Fase 4. */
-:root {
-  --color-fondo: #faf6ef;
-  --color-texto: #2b2118;
-  --fuente-texto: "Nunito Sans", system-ui, sans-serif;
+/*
+ * Tokens del sistema de diseño (design/sistema/tokens.json) y los tamaños
+ * que usan los componentes. Es el ÚNICO archivo donde se permiten colores
+ * y medidas en px; el resto del código usa estas variables.
+ */
+:root,
+[data-theme="claro"] {
+  --surface-100: #fbf4ea;
+  --surface-raised: #ffffff;
+  --surface-sand: #f3e6d3;
+  --surface-clay-tint: #fbeae2;
+  --surface-avatar: #e9d5bd;
+  --border: #eadfcf;
+  --ink: #2b1f17;
+  --ink-muted: #6b5a4c;
+  --brand: #b4492a;
+  --brand-deep: #8f3519;
+  --brand-ink: #7a3418;
+  --on-brand: #ffffff;
+  --success: #3f6b4f;
+  --focus-ring: #2b1f17;
 }
 
-body {
-  margin: 0;
-  background: var(--color-fondo);
-  color: var(--color-texto);
-  font-family: var(--fuente-texto);
+:root {
+  /* Espaciado */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-48: 48px;
+
+  /* Formas */
+  --radius-sm: 14px;
+  --radius-md: 16px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+  --radius-round: 50%;
+
+  /* Bordes y foco */
+  --borde-fino: 1px;
+  --borde-medio: 2px;
+  --foco-ancho: 3px;
+  --foco-separacion: 2px;
+
+  /* Tamaños táctiles: nada interactivo baja de 48 px */
+  --tactil-min: 48px;
+  --boton-md: 52px;
+  --boton-lg: 56px;
+  --campo-alto: 56px;
+  --fila-min: 60px;
+  --fila-guia-min: 76px;
+  --chip-min: 64px;
+  --interruptor-fila: 64px;
+  --nav-item-min: 56px;
+  --avatar: 48px;
+  --avatar-guia: 52px;
+  --hora-ancho: 64px;
+  --cierre-circulo: 72px;
+  --radio-control: 30px;
+  --casilla: 28px;
+  --interruptor-ancho: 56px;
+  --interruptor-alto: 32px;
+  --interruptor-perilla: 24px;
+  --barra-progreso: 6px;
+  --clave-reserva: 104px;
+  --ancho-pantalla: 480px;
+
+  /* Iconos */
+  --icono-md: 22px;
+  --icono-lg: 24px;
+  --icono-xl: 36px;
+
+  /* Tipografía */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Nunito Sans", system-ui, sans-serif;
+  --fs-display-xl: 48px;
+  --fs-display-lg: 30px;
+  --fs-display-md: 24px;
+  --fs-display-sm: 22px;
+  --fs-title-lg: 22px;
+  --fs-section-title: 18px;
+  --fs-body-lg: 17px;
+  --fs-body: 16px;
+  --fs-label: 15px;
+  --fs-caption: 14px;
+  --fs-micro: 13px;
+  --fs-meridiem: 20px;
 }
+
+.display-xl { font-family: var(--font-display); font-size: var(--fs-display-xl); line-height: 1.05; font-weight: 700; }
+.display-lg { font-family: var(--font-display); font-size: var(--fs-display-lg); line-height: 1.15; font-weight: 700; }
+.display-md { font-family: var(--font-display); font-size: var(--fs-display-md); line-height: 1.1; font-weight: 700; }
+.display-sm { font-family: var(--font-display); font-size: var(--fs-display-sm); line-height: 1.1; font-weight: 700; }
+.title-lg { font-family: var(--font-sans); font-size: var(--fs-title-lg); line-height: 1.2; font-weight: 700; }
+.section-title { font-family: var(--font-sans); font-size: var(--fs-section-title); line-height: 1.3; font-weight: 700; }
+.body-lg { font-family: var(--font-sans); font-size: var(--fs-body-lg); line-height: 1.3; font-weight: 700; }
+.body { font-family: var(--font-sans); font-size: var(--fs-body); line-height: 1.4; font-weight: 600; }
+.label { font-family: var(--font-sans); font-size: var(--fs-label); line-height: 1.3; font-weight: 600; }
+.caption { font-family: var(--font-sans); font-size: var(--fs-caption); line-height: 1.4; font-weight: 400; }
+.caption-strong { font-family: var(--font-sans); font-size: var(--fs-caption); line-height: 1.2; font-weight: 700; }
+.micro { font-family: var(--font-sans); font-size: var(--fs-micro); line-height: 1.2; font-weight: 600; }

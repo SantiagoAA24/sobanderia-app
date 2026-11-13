@@ -1,0 +1,10 @@
+.sb-empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-20);
+  background: var(--surface-sand);
+  border-radius: var(--radius-xl);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}

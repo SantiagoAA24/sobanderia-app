@@ -25,9 +25,9 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] Prueba de concurrencia (20 solicitudes, una cita)
 
 ## Fase 4 — Cimientos del frontend
-- [ ] Tokens, 21 componentes y página `/ui`
-- [ ] Router, guardias y cliente de API
-- [ ] Pantallas transversales
+- [x] Tokens, 21 componentes y página `/ui`
+- [x] Router, guardias y cliente de API (`make cliente`)
+- [x] Pantallas transversales (Enlace vencido, Sesión vencida, No encontrada; además Sin conexión y Cargando genéricas)
 
 ## Fase 5 — Flujo del cliente
 - [ ] Agendar, gestionar, cancelar y encontrar cita

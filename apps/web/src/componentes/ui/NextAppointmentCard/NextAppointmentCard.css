@@ -1,0 +1,19 @@
+.sb-next {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-14);
+  padding: var(--space-20);
+  background: var(--brand);
+  color: var(--on-brand);
+  border-radius: var(--radius-xl);
+  font-family: var(--font-sans);
+}
+.sb-next__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); }
+.sb-next__label { font-weight: 700; letter-spacing: 0.02em; }
+.sb-next__pill { padding: var(--space-6) var(--space-12); background: var(--brand-deep); border-radius: var(--radius-pill); }
+.sb-next__body { display: flex; flex-direction: column; gap: var(--space-2); }
+.sb-next__meridiem { font-size: var(--fs-meridiem); font-weight: 600; }
+.sb-next__name { margin-top: var(--space-6); }
+.sb-next__actions { display: flex; gap: var(--space-10); }
+.sb-next__actions .sb-button { flex: 1; }
+.sb-next :focus-visible { outline-color: var(--on-brand); }

@@ -1,0 +1,1401 @@
+{
+  "components": {
+    "schemas": {
+      "CambiarClaveIn": {
+        "properties": {
+          "clave_actual": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Clave Actual",
+            "type": "string"
+          },
+          "clave_nueva": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Clave Nueva",
+            "type": "string"
+          }
+        },
+        "required": [
+          "clave_actual",
+          "clave_nueva"
+        ],
+        "title": "CambiarClaveIn",
+        "type": "object"
+      },
+      "CambioCitaIn": {
+        "description": "Una de dos: `estado` (atendida, no_asistio o cancelada) o `inicio` (cambiar la hora).",
+        "properties": {
+          "avisar": {
+            "default": true,
+            "title": "Avisar",
+            "type": "boolean"
+          },
+          "estado": {
+            "anyOf": [
+              {
+                "enum": [
+                  "atendida",
+                  "no_asistio",
+                  "cancelada"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estado"
+          },
+          "inicio": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inicio"
+          }
+        },
+        "title": "CambioCitaIn",
+        "type": "object"
+      },
+      "CitaClienteOut": {
+        "description": "Lo que ve el cliente de su cita.",
+        "properties": {
+          "cliente_nombre": {
+            "title": "Cliente Nombre",
+            "type": "string"
+          },
+          "duracion_min": {
+            "title": "Duracion Min",
+            "type": "integer"
+          },
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "fin": {
+            "format": "date-time",
+            "title": "Fin",
+            "type": "string"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "puede_modificar": {
+            "title": "Puede Modificar",
+            "type": "boolean"
+          },
+          "sobandero": {
+            "$ref": "#/components/schemas/SobanderoOut"
+          }
+        },
+        "required": [
+          "estado",
+          "inicio",
+          "fin",
+          "duracion_min",
+          "sobandero",
+          "cliente_nombre",
+          "puede_modificar"
+        ],
+        "title": "CitaClienteOut",
+        "type": "object"
+      },
+      "CitaCreadaOut": {
+        "properties": {
+          "cita": {
+            "$ref": "#/components/schemas/CitaClienteOut"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "cita"
+        ],
+        "title": "CitaCreadaOut",
+        "type": "object"
+      },
+      "CitaSobanderoOut": {
+        "properties": {
+          "cliente": {
+            "$ref": "#/components/schemas/ClienteOut"
+          },
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "fin": {
+            "format": "date-time",
+            "title": "Fin",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "origen": {
+            "title": "Origen",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "estado",
+          "origen",
+          "inicio",
+          "fin",
+          "cliente"
+        ],
+        "title": "CitaSobanderoOut",
+        "type": "object"
+      },
+      "ClienteOut": {
+        "properties": {
+          "celular": {
+            "title": "Celular",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "celular"
+        ],
+        "title": "ClienteOut",
+        "type": "object"
+      },
+      "CrearCitaIn": {
+        "properties": {
+          "celular": {
+            "maxLength": 30,
+            "minLength": 7,
+            "title": "Celular",
+            "type": "string"
+          },
+          "consentimiento": {
+            "title": "Consentimiento",
+            "type": "boolean"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "nombre": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Nombre",
+            "type": "string"
+          },
+          "sobandero_id": {
+            "title": "Sobandero Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "sobandero_id",
+          "inicio",
+          "nombre",
+          "celular",
+          "consentimiento"
+        ],
+        "title": "CrearCitaIn",
+        "type": "object"
+      },
+      "DiasOut": {
+        "properties": {
+          "dias": {
+            "items": {
+              "format": "date",
+              "type": "string"
+            },
+            "title": "Dias",
+            "type": "array"
+          }
+        },
+        "required": [
+          "dias"
+        ],
+        "title": "DiasOut",
+        "type": "object"
+      },
+      "ErrorOut": {
+        "properties": {
+          "codigo": {
+            "title": "Codigo",
+            "type": "string"
+          },
+          "mensaje": {
+            "title": "Mensaje",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo",
+          "mensaje"
+        ],
+        "title": "ErrorOut",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HoraOcupadaOut": {
+        "properties": {
+          "alternativas": {
+            "items": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "title": "Alternativas",
+            "type": "array"
+          },
+          "codigo": {
+            "title": "Codigo",
+            "type": "string"
+          },
+          "mensaje": {
+            "title": "Mensaje",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo",
+          "mensaje",
+          "alternativas"
+        ],
+        "title": "HoraOcupadaOut",
+        "type": "object"
+      },
+      "HorasOut": {
+        "properties": {
+          "dia": {
+            "format": "date",
+            "title": "Dia",
+            "type": "string"
+          },
+          "duracion_min": {
+            "title": "Duracion Min",
+            "type": "integer"
+          },
+          "horas": {
+            "items": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "title": "Horas",
+            "type": "array"
+          }
+        },
+        "required": [
+          "dia",
+          "duracion_min",
+          "horas"
+        ],
+        "title": "HorasOut",
+        "type": "object"
+      },
+      "IngresoIn": {
+        "properties": {
+          "clave": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Clave",
+            "type": "string"
+          },
+          "correo": {
+            "maxLength": 254,
+            "minLength": 3,
+            "title": "Correo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "correo",
+          "clave"
+        ],
+        "title": "IngresoIn",
+        "type": "object"
+      },
+      "MensajeOut": {
+        "properties": {
+          "mensaje": {
+            "title": "Mensaje",
+            "type": "string"
+          }
+        },
+        "required": [
+          "mensaje"
+        ],
+        "title": "MensajeOut",
+        "type": "object"
+      },
+      "NuevaCitaIn": {
+        "properties": {
+          "celular": {
+            "maxLength": 30,
+            "minLength": 7,
+            "title": "Celular",
+            "type": "string"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "nombre": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "celular",
+          "inicio"
+        ],
+        "title": "NuevaCitaIn",
+        "type": "object"
+      },
+      "RecuperarIn": {
+        "properties": {
+          "correo": {
+            "maxLength": 254,
+            "minLength": 3,
+            "title": "Correo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "correo"
+        ],
+        "title": "RecuperarIn",
+        "type": "object"
+      },
+      "ReprogramarIn": {
+        "properties": {
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          }
+        },
+        "required": [
+          "inicio"
+        ],
+        "title": "ReprogramarIn",
+        "type": "object"
+      },
+      "RestablecerIn": {
+        "properties": {
+          "clave_nueva": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Clave Nueva",
+            "type": "string"
+          },
+          "token": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "clave_nueva"
+        ],
+        "title": "RestablecerIn",
+        "type": "object"
+      },
+      "SobanderoOut": {
+        "properties": {
+          "duracion_min": {
+            "title": "Duracion Min",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "duracion_min"
+        ],
+        "title": "SobanderoOut",
+        "type": "object"
+      },
+      "UsuarioOut": {
+        "properties": {
+          "debe_cambiar_clave": {
+            "title": "Debe Cambiar Clave",
+            "type": "boolean"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "rol": {
+            "enum": [
+              "sobandero",
+              "admin"
+            ],
+            "title": "Rol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "rol",
+          "debe_cambiar_clave"
+        ],
+        "title": "UsuarioOut",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Sobandería API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/auth/cambiar-clave": {
+      "post": {
+        "operationId": "cambiar_clave_auth_cambiar_clave_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CambiarClaveIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cambiar Clave",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/ingreso": {
+      "post": {
+        "operationId": "ingreso_auth_ingreso_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngresoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ingreso",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/recuperar": {
+      "post": {
+        "operationId": "recuperar_auth_recuperar_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecuperarIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MensajeOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Recuperar",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/restablecer": {
+      "post": {
+        "operationId": "restablecer_auth_restablecer_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestablecerIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Restablecer",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/salida": {
+      "post": {
+        "operationId": "salida_auth_salida_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Salida",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/yo": {
+      "get": {
+        "operationId": "yo_auth_yo_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Yo",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/mi-cita/{token}": {
+      "get": {
+        "operationId": "ver_mi_cita__token__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaClienteOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`enlace_vencido`"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ver",
+        "tags": [
+          "mi-cita"
+        ]
+      }
+    },
+    "/mi-cita/{token}/cancelar": {
+      "post": {
+        "operationId": "cancelar_mi_cita__token__cancelar_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaClienteOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`cita_no_modificable`"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`enlace_vencido`"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancelar",
+        "tags": [
+          "mi-cita"
+        ]
+      }
+    },
+    "/mi-cita/{token}/reprogramar": {
+      "post": {
+        "operationId": "reprogramar_mi_cita__token__reprogramar_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReprogramarIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaClienteOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoraOcupadaOut"
+                }
+              }
+            },
+            "description": "`hora_ocupada` con hasta 3 alternativas"
+          },
+          "410": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`enlace_vencido`"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Reprogramar",
+        "tags": [
+          "mi-cita"
+        ]
+      }
+    },
+    "/publico/citas": {
+      "post": {
+        "operationId": "crear_cita_publico_citas_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearCitaIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaCreadaOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoraOcupadaOut"
+                }
+              }
+            },
+            "description": "`hora_ocupada` con hasta 3 alternativas"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Crear Cita",
+        "tags": [
+          "publico"
+        ]
+      }
+    },
+    "/publico/sobanderos": {
+      "get": {
+        "operationId": "listar_sobanderos_publico_sobanderos_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SobanderoOut"
+                  },
+                  "title": "Response Listar Sobanderos Publico Sobanderos Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Listar Sobanderos",
+        "tags": [
+          "publico"
+        ]
+      }
+    },
+    "/publico/sobanderos/{sobandero_id}/dias": {
+      "get": {
+        "operationId": "dias_publico_sobanderos__sobandero_id__dias_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sobandero_id",
+            "required": true,
+            "schema": {
+              "title": "Sobandero Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiasOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Dias",
+        "tags": [
+          "publico"
+        ]
+      }
+    },
+    "/publico/sobanderos/{sobandero_id}/horas": {
+      "get": {
+        "operationId": "horas_publico_sobanderos__sobandero_id__horas_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sobandero_id",
+            "required": true,
+            "schema": {
+              "title": "Sobandero Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "dia",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Dia",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HorasOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Horas",
+        "tags": [
+          "publico"
+        ]
+      }
+    },
+    "/salud": {
+      "get": {
+        "operationId": "salud_salud_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Salud Salud Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Salud"
+      }
+    },
+    "/yo/citas": {
+      "get": {
+        "description": "Hoy (`dia=`) o Semana (`semana=` con cualquier fecha de esa semana, de lunes a domingo).",
+        "operationId": "listar_yo_citas_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "dia",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dia"
+            }
+          },
+          {
+            "in": "query",
+            "name": "semana",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semana"
+            }
+          },
+          {
+            "in": "query",
+            "name": "incluir_canceladas",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Incluir Canceladas",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CitaSobanderoOut"
+                  },
+                  "title": "Response Listar Yo Citas Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Listar",
+        "tags": [
+          "sobandero"
+        ]
+      },
+      "post": {
+        "operationId": "crear_yo_citas_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevaCitaIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaSobanderoOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoraOcupadaOut"
+                }
+              }
+            },
+            "description": "`hora_ocupada` con hasta 3 alternativas"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Crear",
+        "tags": [
+          "sobandero"
+        ]
+      }
+    },
+    "/yo/citas/{cita_id}": {
+      "patch": {
+        "description": "Marca atendida o no asistió, cancela o cambia la hora (devuelve la cita resultante).",
+        "operationId": "cambiar_yo_citas__cita_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cita_id",
+            "required": true,
+            "schema": {
+              "title": "Cita Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CambioCitaIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaSobanderoOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HoraOcupadaOut"
+                }
+              }
+            },
+            "description": "`hora_ocupada` con hasta 3 alternativas"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Cambiar",
+        "tags": [
+          "sobandero"
+        ]
+      }
+    }
+  }
+}

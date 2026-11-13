@@ -1,0 +1,3 @@
+.sb-icon { flex: none; width: var(--icono-md); height: var(--icono-md); }
+.sb-icon--lg { width: var(--icono-lg); height: var(--icono-lg); }
+.sb-icon--xl { width: var(--icono-xl); height: var(--icono-xl); }

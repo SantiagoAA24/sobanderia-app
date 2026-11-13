@@ -1,0 +1,13 @@
+.sb-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-14);
+  padding: var(--space-20);
+  background: var(--brand);
+  color: var(--on-brand);
+  border-radius: var(--radius-xl);
+  font-family: var(--font-sans);
+}
+.sb-confirm__label { font-weight: 700; letter-spacing: 0.02em; }
+.sb-confirm__meridiem { font-size: var(--fs-meridiem); font-weight: 600; }
+.sb-confirm__text { display: flex; flex-direction: column; gap: var(--space-2); }

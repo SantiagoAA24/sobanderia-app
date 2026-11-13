@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Request, Response
 from pydantic import BaseModel, Field
@@ -29,7 +29,7 @@ class IngresoIn(BaseModel):
 
 class UsuarioOut(BaseModel):
     nombre: str
-    rol: str
+    rol: Literal["sobandero", "admin"]
     debe_cambiar_clave: bool
 
 

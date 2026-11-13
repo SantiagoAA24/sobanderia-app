@@ -1,0 +1,5 @@
+.sb-check { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-12); min-height: var(--tactil-min); color: var(--ink); font-family: var(--font-sans); }
+.sb-check__box { width: var(--casilla); height: var(--casilla); flex: none; margin: 0; accent-color: var(--brand-deep); }
+.sb-check__label { flex: 1; min-width: 0; color: var(--ink); }
+.sb-check__link { color: var(--brand-deep); text-decoration: underline; font-weight: 700; }
+.sb-check__error { flex-basis: 100%; }
