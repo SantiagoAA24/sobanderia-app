@@ -8,6 +8,7 @@ from app.rutas import (
     auth,
     mi_cita,
     publico,
+    webhook_whatsapp,
     yo_agenda,
     yo_citas,
     yo_clientes,
@@ -33,6 +34,7 @@ app.include_router(yo_agenda.router)
 app.include_router(yo_clientes.router)
 app.include_router(yo_perfil.router)
 app.include_router(admin.router)
+app.include_router(webhook_whatsapp.router)
 
 
 @app.get("/salud")

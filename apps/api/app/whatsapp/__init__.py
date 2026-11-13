@@ -1,5 +1,7 @@
 """Envío de mensajes por WhatsApp: interfaz, proveedor falso y Cloud API de Meta."""
 
+from functools import lru_cache
+
 from app.config import Ajustes, ajustes
 from app.whatsapp.cloud_api import CloudApi
 from app.whatsapp.falso import Falso
@@ -20,6 +22,7 @@ __all__ = [
     "Mensaje",
     "ProveedorWhatsApp",
     "crear_proveedor",
+    "obtener_proveedor",
 ]
 
 
@@ -37,3 +40,9 @@ def crear_proveedor(config: Ajustes = ajustes) -> ProveedorWhatsApp:
             idioma=config.whatsapp_idioma,
         )
     raise ValueError(f"PROVEEDOR_WHATSAPP desconocido: {config.proveedor_whatsapp}")
+
+
+@lru_cache
+def obtener_proveedor() -> ProveedorWhatsApp:
+    """Dependencia de FastAPI: un solo proveedor por proceso."""
+    return crear_proveedor()
