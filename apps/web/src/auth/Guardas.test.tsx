@@ -127,8 +127,10 @@ describe("guardas de ruta", () => {
   it("las rutas del cliente no piden sesión", async () => {
     const fetchFalso = simularServidor("sin-sesion");
     abrir("/");
-    expect(await titulo("Inicio")).toBeInTheDocument();
-    expect(fetchFalso).not.toHaveBeenCalled();
+    expect(await titulo("Agende su cita en un minuto")).toBeInTheDocument();
+    // Inicio pide los datos del local (público), pero nunca la sesión.
+    const urls = (fetchFalso.mock.calls as unknown as Array<[Request]>).map(([peticion]) => new URL(peticion.url).pathname);
+    expect(urls).not.toContain("/api/auth/yo");
   });
 });
 

@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate, type RouteObject } from "react-router-dom";
 
 import { GuardaAdmin, GuardaPanel, GuardaPrimeraClave } from "./auth/Guardas";
+import { rutasCliente } from "./cliente/rutas";
 import { Marcador } from "./Marcador";
 import { Cargando } from "./transversales/Cargando";
 import { EnlaceVencido } from "./transversales/EnlaceVencido";
@@ -15,10 +16,7 @@ const m = (nombre: string) => <Marcador nombre={nombre} />;
 
 export const rutasApp: RouteObject[] = [
   // Cliente: sin cuenta
-  { path: "/", element: m("Inicio") },
-  { path: "/agendar/*", element: m("Agendar") },
-  { path: "/mi-cita/:token/*", element: m("Gestionar") },
-  { path: "/encontrar-cita", element: m("Encontrar-cita") },
+  ...rutasCliente,
 
   // Ingreso con correo y clave
   { path: "/ingreso", element: m("Ingreso") },

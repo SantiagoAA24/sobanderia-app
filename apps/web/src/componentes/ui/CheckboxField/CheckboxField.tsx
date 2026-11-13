@@ -8,11 +8,13 @@ export interface CheckboxFieldProps extends Omit<InputHTMLAttributes<HTMLInputEl
   label: string;
   /** Texto subrayado al final, por ejemplo "Ver política". */
   linkText?: string;
+  /** Si se indica, `linkText` es un enlace que se abre en otra pestaña (el formulario no se pierde). */
+  linkHref?: string;
   error?: string;
   className?: string;
 }
 
-export function CheckboxField({ label, linkText, error, id, className, ...resto }: CheckboxFieldProps) {
+export function CheckboxField({ label, linkText, linkHref, error, id, className, ...resto }: CheckboxFieldProps) {
   const generado = useId();
   const idCampo = id ?? generado;
   const idError = `${idCampo}-error`;
@@ -28,7 +30,18 @@ export function CheckboxField({ label, linkText, error, id, className, ...resto 
       />
       <label htmlFor={idCampo} className="caption sb-check__label">
         {label}
-        {linkText ? <> <span className="sb-check__link">{linkText}</span></> : null}
+        {linkText ? (
+          <>
+            {" "}
+            {linkHref ? (
+              <a className="sb-check__link" href={linkHref} target="_blank" rel="noopener noreferrer">
+                {linkText}
+              </a>
+            ) : (
+              <span className="sb-check__link">{linkText}</span>
+            )}
+          </>
+        ) : null}
       </label>
       {error ? (
         <span id={idError} className="caption sb-field__error sb-check__error" role="alert">

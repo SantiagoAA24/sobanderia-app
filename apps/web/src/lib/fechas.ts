@@ -76,6 +76,32 @@ export function horaParaMostrar(momento: Momento): { hora: string; meridiem: "a.
   return { hora: `${h12}:${dos(minuto)}`, meridiem: hora < 12 ? "a. m." : "p. m." };
 }
 
+/** 15:30Z -> «10:30» (24 horas): es el formato de la hora en la URL del flujo de agendar. */
+export function horaBogota24(momento: Momento): string {
+  const { hora, minuto } = partes(momento);
+  return `${dos(hora)}:${dos(minuto)}`;
+}
+
+/** Suma días a un «AAAA-MM-DD». */
+export function sumarDias(dia: string, n: number): string {
+  const [a, m, d] = dia.split("-").map(Number) as [number, number, number];
+  const f = new Date(Date.UTC(a, m - 1, d + n));
+  return `${f.getUTCFullYear()}-${dos(f.getUTCMonth() + 1)}-${dos(f.getUTCDate())}`;
+}
+
+/** Es un «AAAA-MM-DD» que existe en el calendario. */
+export function esDiaValido(dia: string | null | undefined): dia is string {
+  if (!dia || !/^\d{4}-\d{2}-\d{2}$/.test(dia)) return false;
+  return sumarDias(dia, 0) === dia;
+}
+
+/** «hoy», «mañana» o el día de la semana en minúscula, respecto a `hoy` («AAAA-MM-DD»). */
+export function diaRelativo(dia: string, hoy: string): string {
+  if (dia === hoy) return "hoy";
+  if (dia === sumarDias(hoy, 1)) return "mañana";
+  return fechaLarga(dia).toLowerCase();
+}
+
 /** «Viernes 13 de noviembre». Acepta un momento UTC o un día «AAAA-MM-DD». */
 export function fechaLarga(entrada: Momento): string {
   const dia = typeof entrada === "string" && /^\d{4}-\d{2}-\d{2}$/.test(entrada) ? entrada : diaBogota(entrada);

@@ -3,13 +3,17 @@ import { describe, expect, it } from "vitest";
 import {
   cuentaRegresiva,
   diaBogota,
+  diaRelativo,
   duracionCorta,
+  esDiaValido,
   etiquetaDia,
   fechaLarga,
+  horaBogota24,
   horaParaMostrar,
   iniciaEnBogota,
   rangoDiaUTC,
   saludo,
+  sumarDias,
 } from "./fechas";
 
 describe("horaParaMostrar (UTC -> Bogotá, 12 horas)", () => {
@@ -87,5 +91,30 @@ describe("duracionCorta, saludo y cuentaRegresiva", () => {
     ["2026-11-13T15:30:00Z", "2026-11-13T15:40:00Z", "Ahora"],
   ])("cuentaRegresiva(%s, %s) -> %s", (inicio, ahora, esperado) => {
     expect(cuentaRegresiva(inicio, ahora)).toBe(esperado);
+  });
+});
+
+describe("horaBogota24, sumarDias, esDiaValido y diaRelativo", () => {
+  it("da la hora de Bogotá en 24 horas", () => {
+    expect(horaBogota24("2026-11-13T15:30:00Z")).toBe("10:30");
+    expect(horaBogota24("2026-11-13T21:05:00Z")).toBe("16:05");
+  });
+
+  it("suma días cruzando fin de mes y de año", () => {
+    expect(sumarDias("2026-11-30", 1)).toBe("2026-12-01");
+    expect(sumarDias("2026-12-31", 1)).toBe("2027-01-01");
+  });
+
+  it("solo acepta días que existen", () => {
+    expect(esDiaValido("2026-11-13")).toBe(true);
+    expect(esDiaValido("2026-02-30")).toBe(false);
+    expect(esDiaValido("13-11-2026")).toBe(false);
+    expect(esDiaValido(null)).toBe(false);
+  });
+
+  it("dice hoy, mañana o el día", () => {
+    expect(diaRelativo("2026-11-13", "2026-11-13")).toBe("hoy");
+    expect(diaRelativo("2026-11-14", "2026-11-13")).toBe("mañana");
+    expect(diaRelativo("2026-11-16", "2026-11-13")).toBe("lunes 16 de noviembre");
   });
 });

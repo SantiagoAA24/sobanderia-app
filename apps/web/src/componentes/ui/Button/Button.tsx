@@ -18,6 +18,8 @@ export interface ButtonProps {
   type?: "button" | "submit";
   /** Si se indica, es un enlace (con aspecto de botón) a esa ruta. */
   to?: string;
+  /** Enlace externo o `tel:` (con aspecto de botón); para rutas de la app use `to`. */
+  href?: string;
   className?: string;
   /** Texto del botón: una palabra o frase corta. */
   children: ReactNode;
@@ -32,6 +34,7 @@ export function Button({
   block,
   type = "button",
   to,
+  href,
   className,
   children,
 }: ButtonProps) {
@@ -49,6 +52,13 @@ export function Button({
       {children}
     </>
   );
+  if (href && !disabled) {
+    return (
+      <a href={href} className={clases}>
+        {contenido}
+      </a>
+    );
+  }
   if (to && !disabled) {
     return (
       <Link to={to} className={clases} onClick={onClick}>

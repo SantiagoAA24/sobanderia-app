@@ -32,11 +32,11 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 ## Fase 5 — Flujo del cliente
 - [x] API pública: `GET /publico/negocio`, `proximo_cupo` en `/publico/sobanderos` y `POST /publico/mi-cita/enlace`
   - Nota: «Encontrar mi cita» rota el enlace de la cita y encola `cita_confirmada` con el token nuevo (no hay sexta plantilla). El horario del local no está en la tabla `negocio`; Inicio muestra dirección y teléfono.
-- [ ] Inicio e Instalar la app
-- [ ] Agendar: Paso 1 a 3 y Sin horas
-- [ ] Agendar: Paso 4, errores, Hora ocupada, Confirmada y Política
-- [ ] Gestionar, cambiar, cancelar y Cancelada
-- [ ] Encontrar mi cita y Enlace enviado
+- [x] Inicio e Instalar la app
+- [x] Agendar: Paso 1 a 3 y Sin horas
+- [x] Agendar: Paso 4, errores, Hora ocupada, Confirmada y Política
+- [x] Gestionar, cambiar, cancelar y Cancelada
+- [x] Encontrar mi cita y Enlace enviado
 - [ ] Recorrido completo en el navegador
 
 ## Fase 6 — Panel del sobandero
