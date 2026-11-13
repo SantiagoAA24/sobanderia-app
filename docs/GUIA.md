@@ -173,7 +173,7 @@ Siguen hechos a mano el círculo con icono de las pantallas de cierre (cita conf
 
 ## Mensajes de WhatsApp
 
-Son cinco plantillas de categoría utilidad (transaccionales, sin promociones) con el mismo tono de la app: «usted», una idea por mensaje y sin emojis. Las plantillas se envían por la API de WhatsApp Business y Meta debe aprobarlas antes de usarlas.
+Son seis plantillas de categoría utilidad (transaccionales, sin promociones) con el mismo tono de la app: «usted», una idea por mensaje y sin emojis. Las plantillas se envían por la API de WhatsApp Business y Meta debe aprobarlas antes de usarlas. La numeración exacta de variables que se registra en Meta, los botones y los ejemplos están en `docs/WHATSAPP.md`.
 
 Variables comunes: `{{1}}` nombre del cliente · `{{2}}` sobandero · `{{3}}` día («viernes 13 de noviembre») · `{{4}}` hora («10:30 a. m.»). El enlace de cada botón lleva un código único de la cita, para que el cliente la gestione sin iniciar sesión.
 
@@ -184,6 +184,7 @@ Variables comunes: `{{1}}` nombre del cliente · `{{2}}` sobandero · `{{3}}` d�
 | `cita_cambiada` | Cuando el cliente o el sobandero cambian la hora | Enlace: «Gestionar mi cita» |
 | `cita_cancelada` | Cuando el cliente cancela (confirma que se anuló) | Enlace: «Agendar otra cita» |
 | `cita_cancelada_sobandero` | Cuando el sobandero cancela una cita | Enlace: «Elegir otra hora» |
+| `enlace_cita` | Cuando el cliente pide su enlace en «Encontrar mi cita» | Enlace: «Gestionar mi cita» |
 
 ### cita\_confirmada
 
@@ -230,6 +231,12 @@ Cuando quiera, puede agendar otra.
 Hola, {{1}}. {{2}} no podrá atenderle el {{3}} a las {{4}}. Lamentamos el inconveniente.
 
 Puede elegir otra hora cuando quiera.
+```
+
+### enlace\_cita
+
+```markdown
+Hola, {{1}}. Aquí está el enlace para gestionar su cita del {{3}} a las {{4}}.
 ```
 
 ### Respuestas dentro de la ventana de 24 horas
@@ -284,7 +291,7 @@ Se piden solo nombre y celular, con una casilla de consentimiento que enlaza a l
 
 ### WhatsApp
 
-Hace falta una cuenta de WhatsApp Business Platform (directa con Meta o por un proveedor), verificar el negocio y enviar las cinco plantillas a revisión antes del lanzamiento. El recordatorio del día anterior se programa en el servidor, no en el celular del cliente. El aviso de nueva cita al sobandero puede ser una notificación de la PWA.
+Hace falta una cuenta de WhatsApp Business Platform (directa con Meta o por un proveedor), verificar el negocio y enviar las seis plantillas a revisión antes del lanzamiento. El recordatorio del día anterior se programa en el servidor, no en el celular del cliente. El aviso de nueva cita al sobandero puede ser una notificación de la PWA.
 
 ## Pendientes de diseño
 
@@ -292,4 +299,4 @@ Hace falta una cuenta de WhatsApp Business Platform (directa con Meta o por un p
 - [x] Aviso de «clave cambiada» tras guardar en el perfil
 - [ ] Carga animada que respete «reducir movimiento» (hoy es estática)
 - [ ] Texto de la política de datos y del consentimiento, revisado por un abogado
-- [ ] Enviar las cinco plantillas de WhatsApp a revisión de Meta
+- [ ] Enviar las seis plantillas de WhatsApp a revisión de Meta

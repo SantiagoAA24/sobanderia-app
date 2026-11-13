@@ -150,7 +150,7 @@ Decisiones de código:
 - Cada cambio de una cita inserta una fila en `notificaciones` dentro de la misma transacción; el recordatorio queda programado para el día anterior a la cita.
 - El `worker` consulta la tabla cada pocos segundos con `SELECT ... FOR UPDATE SKIP LOCKED`, envía por la WhatsApp Cloud API y marca `enviada` o reintenta con espera creciente hasta cuatro veces; después queda `fallida` y se ve en el resumen del administrador.
 - Si la cita se cancela o cambia antes del recordatorio, la notificación pendiente se cancela.
-- Las cinco plantillas ya están definidas en la guía de pantallas (`cita_confirmada`, `recordatorio_cita`, `cita_cambiada`, `cita_cancelada`, `cita_cancelada_sobandero`). **Hay que enviarlas a Meta ya**: la aprobación tarda y bloquea las pruebas reales. Mientras tanto el código usa un `ProveedorWhatsApp` falso que escribe los mensajes en el registro.
+- Las seis plantillas están definidas en la guía de pantallas y en `docs/WHATSAPP.md` (`cita_confirmada`, `recordatorio_cita`, `cita_cambiada`, `cita_cancelada`, `cita_cancelada_sobandero`, `enlace_cita`). **Hay que enviarlas a Meta ya**: la aprobación tarda y bloquea las pruebas reales. Mientras tanto el código usa un `ProveedorWhatsApp` falso que escribe los mensajes en el registro.
 - El webhook valida la firma de Meta, guarda los estados de entrega y procesa las respuestas rápidas: «Sí, asistiré» confirma, «Necesito cambiarla» responde con el enlace de la cita.
 
 ### Seguridad
@@ -248,7 +248,7 @@ Son doce fases que van del servidor hacia las pantallas: primero la base y la re
 | 10 | Seguridad, datos personales y pruebas de extremo a extremo | 5 a 8 |
 | 11 | Despliegue, piloto con la familia y lanzamiento | todas |
 
-Las fases 1–3 (servidor) y la 4 (frontend) pueden avanzar en paralelo si trabajas en dos sesiones de Claude Code; en una sola sesión, sigue el orden numérico. **En paralelo desde ya, fuera del código:** enviar las cinco plantillas a Meta, conseguir la revisión legal de la política de datos y definir dirección, teléfono y horario reales.
+Las fases 1–3 (servidor) y la 4 (frontend) pueden avanzar en paralelo si trabajas en dos sesiones de Claude Code; en una sola sesión, sigue el orden numérico. **En paralelo desde ya, fuera del código:** enviar las seis plantillas a Meta, conseguir la revisión legal de la política de datos y definir dirección, teléfono y horario reales.
 
 ### Fase 0 — Preparación
 

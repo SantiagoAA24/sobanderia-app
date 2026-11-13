@@ -69,7 +69,10 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
   - El cierre automático de la cuenta tras la última cita «dejada» está probado en pytest (`test_admin_baja.py`), no en el navegador.
 
 ## Fase 8 — WhatsApp y recordatorios
-- [ ] Proveedor falso y Cloud API, worker, disparadores y webhook
+- [x] Proveedor falso y Cloud API, worker, disparadores y webhook
+  - Hecho: `app/whatsapp/` (proveedores y catálogo de seis plantillas), `servicios/bandeja.py` y `app/worker.py`, webhook con firma, API de Admin-Mensajes y `mensajes_fallidos` en el Resumen, `docs/WHATSAPP.md`.
+  - Pendiente de diseño: la pantalla `Admin-Mensajes` y el aviso de fallidos en la pantalla Resumen (no existen en `design/lienzo/`). La API ya está lista.
+  - Pendiente de negocio: quitar o parametrizar «30 minutos» en `cita_confirmada`; enviar las seis plantillas a Meta y probar con un número real.
   - Nota de la Fase 3: `notificaciones.variables.token` guarda el token en claro (solo en `cita_confirmada` y `cita_cambiada`); el worker debe borrarlo al enviar.
 
 ## Fase 9 — PWA, sin conexión y accesibilidad
