@@ -51,7 +51,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
   - Notificaciones comprobadas en la base: cita_cambiada, cita_cancelada_sobandero y cita_confirmada una vez cada una, y dos recordatorios; atender y no asistió no crean ninguna.
   - Pendiente de decisión de diseño: ver otras semanas en Semana (hoy solo la actual, o cualquier día por `?dia=`).
 
-## Fase 7 — Panel del administrador
+## Fase 7 — Panel del administrador (completa)
 - [x] 7.1 API del administrador: `/admin/resumen`, `/agenda`, `/sobanderos` (crear con clave temporal, editar, horario, enlace de clave, baja), `/negocio` y `/actividad`, solo rol admin
   - Decisión: «Dejarlas como están» pone `recibe_citas = false` y `baja_en`; la cuenta sigue activa y se desactiva sola al cerrar la última cita agendada (migración 0003). «Cancelar y avisar» desactiva y cierra sesiones al instante; las citas quedan `cancelada_por = 'admin'` con la plantilla `cita_cancelada_sobandero`.
   - Decisión: el registro de actividad usa la tabla `auditoria`; la pantalla `Admin-Actividad` es nueva (no estaba en el lienzo) y se enlaza desde el Resumen.
@@ -64,7 +64,9 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] 7.4 Dar de baja (pantalla `Admin-Baja`: dejar o cancelar con aviso, con el número de clientes que recibirán WhatsApp)
 - [x] 7.5 Datos del negocio y Registro de actividad (pantalla nueva `Admin-Actividad`, con «Ver más»; ambas se abren desde el Resumen)
 - [x] 7.6 Resumen semanal (`GET /admin/reporte` y pantalla `Admin-Reporte`; solo la semana actual, como el lienzo)
-- [ ] 7.7 Recorrido en el navegador: crear sobandero, primer ingreso, baja con cada opción
+- [x] 7.7 Recorrido en el navegador (390 px, API y base locales aparte, 39 comprobaciones): el administrador crea un sobandero con clave temporal; este entra, la cambia y no puede abrir `/admin`; baja con «cancelar y avisar» (2 citas canceladas, 2 avisos, sesiones cerradas, ya no ingresa) y baja con «dejarlas» (citas intactas, sin avisos, en baja); negocio, resumen semanal y actividad sin claves ni celulares.
+  - Pendientes de decisión de diseño: el administrador no tiene perfil ni cerrar sesión; la Agenda solo muestra hoy; elegir la duración al crear un sobandero.
+  - El cierre automático de la cuenta tras la última cita «dejada» está probado en pytest (`test_admin_baja.py`), no en el navegador.
 
 ## Fase 8 — WhatsApp y recordatorios
 - [ ] Proveedor falso y Cloud API, worker, disparadores y webhook

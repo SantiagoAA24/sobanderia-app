@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Cargable } from "../cliente/Disposicion";
-import { BackHeader, Button, EmptyState, OptionRow, StatusNote } from "../componentes/ui";
+import { BackHeader, Button, EmptyState, OptionRow } from "../componentes/ui";
 import { textoDeError } from "../panel/errores";
 import { citasTexto } from "../panel/formato";
 import { useDarDeBaja, useSobandero, type QueHacerConLasCitas, type SobanderoAdmin } from "./consultas";
@@ -74,7 +74,9 @@ function Baja({ sobandero: s }: { sobandero: SobanderoAdmin }) {
             onClick={() => setCitas("cancelar")}
           />
           {citas === "cancelar" ? (
-            <StatusNote icon="x">{n === 1 ? "Se cancelará 1 cita y su cliente recibirá un WhatsApp." : `Se cancelarán ${n} citas y sus clientes recibirán un WhatsApp.`}</StatusNote>
+            <p className="body-lg" role="status">
+              {n === 1 ? "Se cancelará 1 cita y su cliente recibirá un WhatsApp." : `Se cancelarán ${n} citas y sus clientes recibirán un WhatsApp.`}
+            </p>
           ) : null}
         </>
       )}
