@@ -93,6 +93,12 @@ class Notificacion(Base):
             "enviar_en",
             postgresql_where=text("estado = 'pendiente'"),
         ),
+        Index("ix_notificaciones_id_externo", "id_externo"),
+        Index(
+            "ix_notificaciones_fallidas",
+            "creado_en",
+            postgresql_where=text("estado = 'fallida'"),
+        ),
     )
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
@@ -104,4 +110,8 @@ class Notificacion(Base):
     estado: Mapped[str] = mapped_column(estado_notificacion, server_default="pendiente")
     intentos: Mapped[int] = mapped_column(SmallInteger, server_default="0")
     ultimo_error: Mapped[str | None] = mapped_column(String(500))
+    id_externo: Mapped[str | None] = mapped_column(String(120))  # id del mensaje en Meta
+    enviada_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    entregada_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    leida_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     creado_en: Mapped[CreadoEn]
