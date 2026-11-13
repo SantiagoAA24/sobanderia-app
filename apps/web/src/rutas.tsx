@@ -7,6 +7,7 @@ import { PrimeraClave } from "./auth/PrimeraClave";
 import { ClaveEnviada, OlvideClave, RestablecerClave } from "./auth/RecuperarClave";
 import { rutasCliente } from "./cliente/rutas";
 import { Marcador } from "./Marcador";
+import { rutasPanel } from "./panel/rutas";
 import { Cargando } from "./transversales/Cargando";
 import { EnlaceVencido } from "./transversales/EnlaceVencido";
 import { NoEncontrada } from "./transversales/NoEncontrada";
@@ -34,8 +35,7 @@ export const rutasApp: RouteObject[] = [
     element: <GuardaPanel />,
     children: [
       { index: true, element: <Navigate to="hoy" replace /> },
-      { path: "hoy", element: m("Hoy") },
-      { path: "semana", element: m("Semana") },
+      ...rutasPanel,
       { path: "horario", element: m("Horario") },
       { path: "clientes", element: m("Clientes") },
       { path: "perfil", element: m("Perfil") },

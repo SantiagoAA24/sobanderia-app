@@ -23,3 +23,13 @@
   background: transparent;
 }
 .sb-pn__enlace { display: inline-flex; align-items: center; min-height: var(--tactil-min); }
+
+/* La fila abre la cita con un enlace que cubre todo menos el botón de llamar. */
+.sb-pn__fila-cita { position: relative; }
+.sb-pn__fila-enlace {
+  position: absolute;
+  inset: 0;
+  right: calc(var(--tactil-min) + var(--space-24));
+  border-radius: var(--radius-lg);
+}
+.sb-pn__semana { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--space-6); }

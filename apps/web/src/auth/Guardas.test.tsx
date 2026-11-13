@@ -11,11 +11,13 @@ import { rutasApp } from "../rutas";
 type Respuesta = Usuario | "sin-sesion" | "red";
 
 function simularServidor(sesion: Respuesta) {
-  const fetchFalso = vi.fn(async () => {
+  const fetchFalso = vi.fn(async (peticion: Request) => {
     if (sesion === "red") throw new TypeError("Failed to fetch");
     if (sesion === "sin-sesion") {
       return new Response(JSON.stringify({ codigo: "no_autorizado", mensaje: "Debe ingresar para continuar." }), { status: 401 });
     }
+    // Las pantallas del panel piden sus citas: sin citas, para que solo se pruebe la guarda.
+    if (new URL(peticion.url).pathname.includes("/yo/citas")) return new Response("[]", { status: 200 });
     return new Response(JSON.stringify(sesion), { status: 200 });
   });
   vi.stubGlobal("fetch", fetchFalso);
@@ -38,7 +40,8 @@ const sobandero: Usuario = { nombre: "Carlos", rol: "sobandero", debe_cambiar_cl
 const admin: Usuario = { nombre: "Marta", rol: "admin", debe_cambiar_clave: false };
 const claveTemporal: Usuario = { nombre: "Carlos", rol: "sobandero", debe_cambiar_clave: true };
 
-const titulo = (nombre: string) => screen.findByRole("heading", { level: 1, name: nombre });
+const titulo = (nombre: string | RegExp) => screen.findByRole("heading", { level: 1, name: nombre });
+const HOY = /^(Buenos días|Buenas tardes|Buenas noches), Carlos$/;
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -60,19 +63,19 @@ describe("guardas de ruta", () => {
     simularServidor(sobandero);
     abrir("/panel/hoy");
     expect(screen.getByRole("status")).toHaveTextContent("Cargando…");
-    expect(await titulo("Hoy")).toBeInTheDocument();
+    expect(await titulo(HOY)).toBeInTheDocument();
   });
 
   it("un sobandero entra al panel", async () => {
     simularServidor(sobandero);
     abrir("/panel/semana");
-    expect(await titulo("Semana")).toBeInTheDocument();
+    expect(await titulo("Su semana")).toBeInTheDocument();
   });
 
   it("/panel lleva a Hoy", async () => {
     simularServidor(sobandero);
     const router = abrir("/panel");
-    expect(await titulo("Hoy")).toBeInTheDocument();
+    expect(await titulo(HOY)).toBeInTheDocument();
     expect(router.state.location.pathname).toBe("/panel/hoy");
   });
 
@@ -119,9 +122,11 @@ describe("guardas de ruta", () => {
     const fetchFalso = simularServidor("red");
     abrir("/panel/hoy");
     expect(await titulo("Sin conexión")).toBeInTheDocument();
-    fetchFalso.mockImplementation(async () => new Response(JSON.stringify(sobandero), { status: 200 }));
+    fetchFalso.mockImplementation(async (peticion: Request) =>
+      new Response(new URL(peticion.url).pathname.includes("/yo/citas") ? "[]" : JSON.stringify(sobandero), { status: 200 }),
+    );
     await userEvent.click(screen.getByRole("button", { name: "Intentar de nuevo" }));
-    expect(await titulo("Hoy")).toBeInTheDocument();
+    expect(await titulo(HOY)).toBeInTheDocument();
   });
 
   it("las rutas del cliente no piden sesión", async () => {
