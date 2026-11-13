@@ -8,6 +8,10 @@ import type { components } from "../api/esquema";
 type Esquemas = components["schemas"];
 export type CitaPanel = Esquemas["CitaSobanderoOut"];
 /** `avisar` es opcional: la API lo toma como verdadero si no llega. */
+export type Horario = Esquemas["HorarioOut"];
+export type DiaHorario = Esquemas["DiaHorarioIO"];
+export type Bloqueo = Esquemas["BloqueoOut"];
+
 export type CambioCita = Omit<Esquemas["CambioCitaIn"], "avisar"> & { avisar?: boolean };
 
 /** Todo lo del panel cuelga de esta clave: un cambio la invalida y las pantallas se ponen al día. */
@@ -61,5 +65,58 @@ export const useCambiarCita = (id: number) => {
       cliente.setQueryData([PANEL, "cita", resultado.id], resultado);
       void cliente.invalidateQueries({ queryKey: [PANEL] });
     },
+  });
+};
+
+/** Cita manual de quien llamó por teléfono. */
+export const useCrearCitaManual = () => {
+  const cliente = useQueryClient();
+  return useMutation({
+    mutationFn: async (cuerpo: { nombre: string; celular: string; inicio: string }) =>
+      datos(await api.POST("/yo/citas", { body: cuerpo })),
+    onSuccess: () => void cliente.invalidateQueries({ queryKey: [PANEL] }),
+  });
+};
+
+export const useHorario = () =>
+  useQuery({
+    queryKey: [PANEL, "horario"],
+    queryFn: async () => datos(await api.GET("/yo/horario")),
+  });
+
+/** Guarda las franjas de los días enviados; cambia las horas libres, así que se pone al día todo el panel. */
+export const useGuardarHorario = () => {
+  const cliente = useQueryClient();
+  return useMutation({
+    mutationFn: async (dias: DiaHorario[]) => datos(await api.PUT("/yo/horario", { body: { dias } })),
+    onSuccess: (horario) => {
+      cliente.setQueryData([PANEL, "horario"], horario);
+      void cliente.invalidateQueries({ queryKey: [PANEL] });
+    },
+  });
+};
+
+export const useBloqueos = () =>
+  useQuery({
+    queryKey: [PANEL, "bloqueos"],
+    queryFn: async () => datos(await api.GET("/yo/bloqueos")),
+  });
+
+export const useCrearBloqueo = () => {
+  const cliente = useQueryClient();
+  return useMutation({
+    mutationFn: async (cuerpo: { inicio: string; fin: string; motivo?: string | null }) =>
+      datos(await api.POST("/yo/bloqueos", { body: cuerpo })),
+    onSuccess: () => void cliente.invalidateQueries({ queryKey: [PANEL] }),
+  });
+};
+
+export const useQuitarBloqueo = () => {
+  const cliente = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await api.DELETE("/yo/bloqueos/{bloqueo_id}", { params: { path: { bloqueo_id: id } } });
+    },
+    onSuccess: () => void cliente.invalidateQueries({ queryKey: [PANEL] }),
   });
 };

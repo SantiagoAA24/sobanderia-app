@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useSesion } from "../api/sesion";
 import { Button, EmptyState, NextAppointmentCard, StatusNote } from "../componentes/ui";
@@ -19,6 +19,8 @@ export function Hoy() {
   const sesion = useSesion();
   const consulta = useCitasDia(hoy);
   const nombre = sesion.data?.nombre ?? "";
+  // Lo deja la pantalla que acaba de guardar algo (por ejemplo, Bloquear horas).
+  const aviso = (useLocation().state as { aviso?: string } | null)?.aviso;
 
   return (
     <PantallaPanel
@@ -35,6 +37,7 @@ export function Hoy() {
         </>
       }
     >
+      {aviso ? <StatusNote icon="check">{aviso}</StatusNote> : null}
       <Cargable consulta={consulta} texto="Buscando sus citas…">
         {(citas) => <CitasDeHoy citas={citas} ahora={ahora} />}
       </Cargable>

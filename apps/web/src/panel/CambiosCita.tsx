@@ -181,6 +181,7 @@ function ConfirmarCancelar({ cita }: { cita: CitaPanel }) {
 /** Pantalla `Cita-cancelada` del lienzo: la hora quedó libre y se ofrece darle otra. */
 export function CitaCancelada() {
   const id = Number(useParams().id);
+  const navigate = useNavigate();
   const avisado = (useLocation().state as { avisado?: boolean } | null)?.avisado ?? true;
   const consulta = useCitaPanel(id);
   return (
@@ -197,7 +198,12 @@ export function CitaCancelada() {
             <Button to="/panel/hoy" block>
               Volver a Hoy
             </Button>
-            <Button variant="outline" icon="plus" to="/panel/nueva-cita" block>
+            <Button
+              variant="outline"
+              icon="plus"
+              onClick={() => navigate("/panel/nueva-cita", { state: { nombre: cita.cliente.nombre, celular: cita.cliente.celular } })}
+              block
+            >
               Darle otra hora
             </Button>
           </PantallaCierre>

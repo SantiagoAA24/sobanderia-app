@@ -133,7 +133,11 @@ describe("Cancelar la cita", () => {
     expect(screen.getByText(`Le avisamos a Luz Dary Pineda por WhatsApp. La hora de las ${textoHora(LUZ.inicio)} quedó libre.`)).toBeInTheDocument();
     expect(await axe(container)).toHaveNoViolations();
     expect(screen.getByRole("link", { name: "Volver a Hoy" })).toHaveAttribute("href", "/panel/hoy");
-    expect(screen.getByRole("link", { name: "Darle otra hora" })).toHaveAttribute("href", "/panel/nueva-cita");
+    // «Darle otra hora» lleva a Nueva cita con el nombre y el celular ya escritos.
+    await userEvent.click(screen.getByRole("button", { name: "Darle otra hora" }));
+    expect(ruta(router)).toBe("/panel/nueva-cita");
+    expect(await screen.findByLabelText("Nombre completo")).toHaveValue("Luz Dary Pineda");
+    expect(screen.getByLabelText("Número de celular")).toHaveValue("+573001234567");
   });
 
   it("sin la casilla de avisar, no avisa y lo dice", async () => {

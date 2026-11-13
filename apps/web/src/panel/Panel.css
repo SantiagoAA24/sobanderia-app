@@ -33,3 +33,26 @@
   border-radius: var(--radius-lg);
 }
 .sb-pn__semana { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--space-6); }
+
+.sb-pn__bloqueo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-10) var(--space-12) var(--space-10) var(--space-16);
+  background: var(--surface-raised);
+  border: var(--borde-fino) solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.sb-pn__bloqueo-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.sb-pn__franja {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
+  background: var(--surface-raised);
+  border: var(--borde-fino) solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.sb-pn__franja-campos { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-12); }
+.sb-pn__select { appearance: auto; }
+.sb-pn__franja-cab { display: flex; align-items: center; justify-content: space-between; }

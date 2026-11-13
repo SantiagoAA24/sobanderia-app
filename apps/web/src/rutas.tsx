@@ -36,7 +36,6 @@ export const rutasApp: RouteObject[] = [
     children: [
       { index: true, element: <Navigate to="hoy" replace /> },
       ...rutasPanel,
-      { path: "horario", element: m("Horario") },
       { path: "clientes", element: m("Clientes") },
       { path: "perfil", element: m("Perfil") },
       { path: "*", element: <NoEncontrada /> },
