@@ -20,9 +20,9 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [ ] Cambio de correo desde el perfil (pendiente: va con `PATCH /yo/perfil` en la Fase 6)
 
 ## Fase 3 — Horas libres y agendamiento
-- [ ] `horas_libres` y rutas públicas
-- [ ] Crear, reprogramar y cancelar citas; rutas del sobandero
-- [ ] Prueba de concurrencia (20 solicitudes, una cita)
+- [x] `horas_libres` y rutas públicas
+- [x] Crear, reprogramar y cancelar citas; rutas del sobandero
+- [x] Prueba de concurrencia (20 solicitudes, una cita)
 
 ## Fase 4 — Cimientos del frontend
 - [ ] Tokens, 21 componentes y página `/ui`
@@ -40,6 +40,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 
 ## Fase 8 — WhatsApp y recordatorios
 - [ ] Proveedor falso y Cloud API, worker, disparadores y webhook
+  - Nota de la Fase 3: `notificaciones.variables.token` guarda el token en claro (solo en `cita_confirmada` y `cita_cambiada`); el worker debe borrarlo al enviar.
 
 ## Fase 9 — PWA, sin conexión y accesibilidad
 - [ ] Manifiesto, service worker, Sin conexión, `axe` y Lighthouse

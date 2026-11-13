@@ -2,7 +2,7 @@
 
 import os
 from collections.abc import Iterator
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime, time, timedelta
 from pathlib import Path
 
 import pytest
@@ -16,7 +16,7 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.orm import Session
 
 from app.config import ajustes
-from app.modelos import Cita, Cliente, Sobandero, Usuario
+from app.modelos import Cita, Cliente, Horario, Sobandero, Usuario
 
 RAIZ_API = Path(__file__).resolve().parent.parent
 
@@ -43,6 +43,7 @@ def _crear_base_si_falta(url: str) -> None:
 
 URL_PRUEBAS = _url_pruebas()
 INICIO = datetime(2030, 1, 7, 15, 0, tzinfo=UTC)  # lunes 10:00 en Bogotá
+AHORA_PRUEBA = datetime(2030, 1, 1, 15, 0, tzinfo=UTC)  # martes 10:00 en Bogotá
 
 
 def config_alembic(url: str = URL_PRUEBAS) -> Config:
@@ -154,9 +155,11 @@ def api(sesion: Session, correo: CorreoEspia) -> Iterator[TestClient]:
     from app.correo import obtener_enviador
     from app.db import obtener_sesion
     from app.main import app
+    from app.reloj import reloj
 
     app.dependency_overrides[obtener_sesion] = lambda: sesion
     app.dependency_overrides[obtener_enviador] = lambda: correo
+    app.dependency_overrides[reloj] = lambda: AHORA_PRUEBA
     try:
         yield TestClient(app)
     finally:
@@ -188,3 +191,34 @@ def crear_usuario(
 
 def ingresar(api: TestClient, correo: str = "ana@sobanderia.test", clave: str = CLAVE) -> Response:
     return api.post("/auth/ingreso", json={"correo": correo, "clave": clave}, headers=CSRF)
+
+
+# --- Agenda ---------------------------------------------------------------------------------
+
+
+def dar_horario(
+    sesion: Session, sobandero: Sobandero, dia_semana: int, desde: time, hasta: time
+) -> None:
+    sesion.add(Horario(sobandero_id=sobandero.id, dia_semana=dia_semana, desde=desde, hasta=hasta))
+    sesion.flush()
+
+
+def sobandero_con_horario(sesion: Session, numero: int = 1, duracion: int = 30) -> Sobandero:
+    """Lunes a viernes de 8:00 a 12:00 y de 14:00 a 18:00 (hora de Bogotá)."""
+    sobandero = crear_sobandero(sesion, numero)
+    sobandero.duracion_min = duracion
+    for dia in range(5):
+        dar_horario(sesion, sobandero, dia, time(8), time(12))
+        dar_horario(sesion, sobandero, dia, time(14), time(18))
+    return sobandero
+
+
+def sobandero_con_login(sesion: Session, numero: int = 1, duracion: int = 30) -> Sobandero:
+    """Sobandero con horario y clave `CLAVE`, listo para `ingresar(api, correo)`."""
+    from app.seguridad.claves import hashear_clave
+
+    sobandero = sobandero_con_horario(sesion, numero, duracion)
+    sobandero.usuario.clave_hash = hashear_clave(CLAVE)
+    sobandero.usuario.debe_cambiar_clave = False
+    sesion.flush()
+    return sobandero

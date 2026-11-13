@@ -13,6 +13,11 @@ class Ajustes(BaseSettings):
     intentos_max_ip: int = 20
     ventana_intentos_min: int = 15
 
+    # Agendamiento
+    antelacion_min: int = 60  # minutos mínimos entre «ahora» y la hora que se puede agendar
+    dias_agenda: int = 30  # cuántos días hacia adelante se ofrecen
+    politica_version: str = "borrador-1"  # versión del texto de datos que acepta el cliente
+
     # Sesión: vence por inactividad y por antigüedad total
     sesion_inactividad_horas: int = 12
     sesion_maxima_dias: int = 7

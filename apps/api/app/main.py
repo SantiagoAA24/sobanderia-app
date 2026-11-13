@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import ajustes
 from app.errores import registrar_manejadores
-from app.rutas import auth
+from app.rutas import auth, mi_cita, publico, yo_citas
 
 app = FastAPI(title="Sobandería API")
 registrar_manejadores(app)
@@ -17,6 +17,9 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(publico.router)
+app.include_router(mi_cita.router)
+app.include_router(yo_citas.router)
 
 
 @app.get("/salud")

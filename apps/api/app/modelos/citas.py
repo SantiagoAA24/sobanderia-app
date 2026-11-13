@@ -62,6 +62,16 @@ class Cita(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
+    @property
+    def inicio(self) -> datetime:
+        assert self.rango.lower is not None
+        return self.rango.lower
+
+    @property
+    def fin(self) -> datetime:
+        assert self.rango.upper is not None
+        return self.rango.upper
+
 
 class EnlaceCita(Base):
     __tablename__ = "enlaces_cita"

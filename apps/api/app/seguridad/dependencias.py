@@ -3,12 +3,13 @@
 from typing import Annotated
 
 from fastapi import Depends, Request
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.config import ajustes
 from app.db import obtener_sesion
 from app.errores import ErrorApi, no_autorizado, sin_permiso
-from app.modelos import Usuario
+from app.modelos import Sobandero, Usuario
 from app.servicios.auth import usuario_de_sesion
 
 CABECERA_CSRF = "X-Sobanderia"
@@ -55,3 +56,14 @@ def requiere_admin(usuario: Annotated[Usuario, Depends(usuario_actual)]) -> Usua
     if usuario.rol != "admin":
         raise sin_permiso()
     return usuario
+
+
+def sobandero_actual(
+    usuario: Annotated[Usuario, Depends(requiere_sobandero)],
+    db: Annotated[Session, Depends(obtener_sesion)],
+) -> Sobandero:
+    """Perfil de atención de quien ingresó. Un administrador sin perfil no atiende citas."""
+    perfil = db.scalar(select(Sobandero).where(Sobandero.usuario_id == usuario.id))
+    if perfil is None:
+        raise sin_permiso()
+    return perfil
