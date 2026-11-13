@@ -42,7 +42,11 @@ export function PantallaAdmin({ cabecera, encabezado, pie, nav, children }: Pant
         </div>
       ) : null}
       <main className="sb-pn__main">{children}</main>
-      {pie ? <div className="sb-pn__pie">{pie}</div> : null}
+      {pie ? (
+        <section className="sb-pn__pie" aria-label="Acciones">
+          {pie}
+        </section>
+      ) : null}
       {nav ? (
         <BottomNav
           items={NAV_ADMIN}

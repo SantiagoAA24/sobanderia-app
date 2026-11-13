@@ -25,7 +25,9 @@ export function PantallaCierre({ icon, title, text, children }: PantallaCierrePr
         </div>
         <p className="body-lg sb-muted">{text}</p>
       </main>
-      <div className="sb-cierre__acciones">{children}</div>
+      <section className="sb-cierre__acciones" aria-label="Acciones">
+        {children}
+      </section>
     </div>
   );
 }

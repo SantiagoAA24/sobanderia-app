@@ -174,6 +174,19 @@ describe("OptionRow", () => {
   });
 });
 
+describe("DayChip: el nombre accesible contiene lo que se ve (WCAG 2.5.3)", () => {
+  it.each([
+    ["J", 12, "Jueves 12", "J 12, Jueves"],
+    ["M", 10, "Martes 10", "M 10, Martes"],
+    ["D", 1, "Domingo 1", "D 1, Domingo"],
+  ])("%s %i con etiqueta «%s»", (day, date, label, esperado) => {
+    pintar(<DayChip day={day} date={date} label={label} />);
+    const boton = screen.getByRole("button", { name: esperado });
+    const visible = (boton.textContent ?? "").replace(/\s+/g, " ").trim().toLowerCase();
+    expect(boton.getAttribute("aria-label")?.toLowerCase()).toContain(visible);
+  });
+});
+
 describe("TimeSlot y DayChip", () => {
   it("reflejan si están elegidos", () => {
     pintar(
@@ -183,7 +196,7 @@ describe("TimeSlot y DayChip", () => {
       </>,
     );
     expect(screen.getByRole("button", { name: /10:30/ })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("button", { name: "Jueves 12" })).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "J 12, Jueves" })).toHaveAttribute("aria-pressed", "false");
   });
 });
 

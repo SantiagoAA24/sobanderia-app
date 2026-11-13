@@ -29,19 +29,21 @@ export function CheckboxField({ label, linkText, linkHref, error, id, className,
         aria-describedby={error ? idError : undefined}
       />
       <label htmlFor={idCampo} className="caption sb-check__label">
-        {label}
-        {linkText ? (
-          <>
-            {" "}
-            {linkHref ? (
-              <a className="sb-check__link" href={linkHref} target="_blank" rel="noopener noreferrer">
-                {linkText}
-              </a>
-            ) : (
-              <span className="sb-check__link">{linkText}</span>
-            )}
-          </>
-        ) : null}
+        <span>
+          {label}
+          {linkText ? (
+            <>
+              {" "}
+              {linkHref ? (
+                <a className="sb-check__link" href={linkHref} target="_blank" rel="noopener noreferrer">
+                  {linkText}
+                </a>
+              ) : (
+                <span className="sb-check__link">{linkText}</span>
+              )}
+            </>
+          ) : null}
+        </span>
       </label>
       {error ? (
         <span id={idError} className="caption sb-field__error sb-check__error" role="alert">

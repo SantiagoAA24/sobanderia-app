@@ -56,11 +56,11 @@ export function EncontrarCita() {
           </p>
         ) : null}
       </main>
-      <div className="sb-cl__pie">
+      <section className="sb-cl__pie" aria-label="Acciones">
         <Button type="submit" icon="chat" disabled={pedir.isPending} block>
           Enviar enlace
         </Button>
-      </div>
+      </section>
     </form>
   );
 }

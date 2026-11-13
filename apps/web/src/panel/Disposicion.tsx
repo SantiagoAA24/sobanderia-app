@@ -40,7 +40,11 @@ export function PantallaPanel({ cabecera, encabezado, pie, nav, children }: Pant
         </div>
       ) : null}
       <main className="sb-pn__main">{children}</main>
-      {pie ? <div className="sb-pn__pie">{pie}</div> : null}
+      {pie ? (
+        <section className="sb-pn__pie" aria-label="Acciones">
+          {pie}
+        </section>
+      ) : null}
       {nav ? <BottomNav active={nav} onSelect={(id) => navigate(RUTAS_NAV[id] ?? "/panel/hoy")} className="sb-pn__nav" /> : null}
     </div>
   );

@@ -23,6 +23,12 @@ afterEach(() => {
 const titulo = (nombre: string | RegExp) => screen.findByRole("heading", { level: 1, name: nombre });
 const sesion = { "GET /auth/yo": SOBANDERO };
 
+/** Nombre accesible del chip de un día: empieza por lo visible («J 12») y sigue con el día («Jueves»). */
+const nombreDelChip = (dia: string) => {
+  const etiqueta = etiquetaDia(dia);
+  return `${etiqueta[0]} ${etiqueta.match(/\d+$/)![0]}, ${etiqueta.replace(/\s*\d+$/, "")}`;
+};
+
 describe("Hoy", () => {
   const citas = [
     cita({ id: 1, nombre: "Luz Dary Pineda", min: 10 }),
@@ -141,7 +147,7 @@ describe("Semana", () => {
     expect(screen.getByText("Semana del 9 al 15 de noviembre")).toBeInTheDocument();
     const dias = within(screen.getByRole("navigation", { name: "Días de la semana" })).getAllByRole("button");
     expect(dias).toHaveLength(7);
-    expect(screen.getByRole("button", { name: etiquetaDia(JUEVES) })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: nombreDelChip(JUEVES) })).toHaveAttribute("aria-pressed", "true");
     expect(await screen.findByRole("heading", { level: 2, name: "Jueves 12 · 2 citas" })).toBeInTheDocument();
     expect(screen.getByText("Hernán Castaño")).toBeInTheDocument();
     expect(screen.queryByText("Marta Gómez")).not.toBeInTheDocument();
@@ -156,7 +162,7 @@ describe("Semana", () => {
     const falso = servidor({ ...sesion, "GET /yo/citas": semana });
     const { router } = pintarApp(`/panel/semana?dia=${JUEVES}`);
     await screen.findByText("Hernán Castaño");
-    await userEvent.click(screen.getByRole("button", { name: etiquetaDia(VIERNES) }));
+    await userEvent.click(screen.getByRole("button", { name: nombreDelChip(VIERNES) }));
     expect(ruta(router)).toBe(`/panel/semana?dia=${VIERNES}`);
     expect(await screen.findByRole("heading", { level: 2, name: "Viernes 13 · 3 citas" })).toBeInTheDocument();
     expect(falso.mock.calls.filter(([p]) => (p as Request).url.includes("/yo/citas"))).toHaveLength(1);
@@ -178,7 +184,7 @@ describe("Semana", () => {
     servidor({ ...sesion, "GET /yo/citas": [] });
     pintarApp("/panel/semana?dia=basura");
     const hoy = diaBogota(new Date());
-    expect(await screen.findByRole("button", { name: etiquetaDia(hoy) })).toHaveAttribute("aria-pressed", "true");
+    expect(await screen.findByRole("button", { name: nombreDelChip(hoy) })).toHaveAttribute("aria-pressed", "true");
   });
 });
 

@@ -11,7 +11,7 @@
   color: var(--ink);
   font-family: var(--font-sans);
 }
-.sb-switch__label { flex: 1; min-width: 0; }
+.sb-switch__label { flex: 1; min-width: 0; align-self: stretch; display: flex; align-items: center; } /* toda la fila se toca */
 .sb-switch__input {
   appearance: none;
   -webkit-appearance: none;

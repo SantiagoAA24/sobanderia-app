@@ -25,7 +25,11 @@ export function PantallaCliente({ cabecera, pie, children }: PantallaClienteProp
     <div className="sb-pantalla">
       {cabecera ? <div className="sb-cl__cab">{cabecera}</div> : null}
       <main className="sb-cl__main">{children}</main>
-      {pie ? <div className="sb-cl__pie">{pie}</div> : null}
+      {pie ? (
+        <section className="sb-cl__pie" aria-label="Acciones">
+          {pie}
+        </section>
+      ) : null}
     </div>
   );
 }

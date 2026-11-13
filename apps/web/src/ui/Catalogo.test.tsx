@@ -51,7 +51,7 @@ describe("/ui", () => {
     expect(screen.getAllByRole("alert").length).toBeGreaterThanOrEqual(3);
     expect(screen.getAllByRole("button", { name: "Continuar" })[0]).toBeDisabled();
     expect(screen.getByRole("button", { name: /Carlos/, pressed: true })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Jueves 12", pressed: true })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "J 12, Jueves", pressed: true })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^10:30 a\. m\./, pressed: true })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Sábado 14 de noviembre/ })).toBeDisabled();
   });

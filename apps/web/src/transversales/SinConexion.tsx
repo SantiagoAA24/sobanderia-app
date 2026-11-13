@@ -14,11 +14,11 @@ export function SinConexion({ onRetry }: SinConexionProps) {
         <h1 className="display-lg">Sin conexión</h1>
         <EmptyState title="No podemos conectarnos" text="Revise su internet e inténtelo de nuevo. Si es urgente, llame a la sobandería." />
       </main>
-      <div className="sb-estado__acciones">
+      <section className="sb-estado__acciones" aria-label="Acciones">
         <Button onClick={onRetry} block>
           Intentar de nuevo
         </Button>
-      </div>
+      </section>
     </div>
   );
 }

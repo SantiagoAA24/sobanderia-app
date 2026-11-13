@@ -161,11 +161,11 @@ function Formulario({ id, dia, hora, sobandero }: { id: number; dia: string; hor
           </p>
         ) : null}
       </main>
-      <div className="sb-cl__pie">
+      <section className="sb-cl__pie" aria-label="Acciones">
         <Button type="submit" icon="check" disabled={crear.isPending} block>
           Confirmar cita
         </Button>
-      </div>
+      </section>
     </form>
   );
 }
