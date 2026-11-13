@@ -87,7 +87,7 @@ def test_enlace_encola_un_mensaje_con_token_nuevo(api: TestClient, sesion: Sessi
     assert respuesta.status_code == 202
     nuevas = sesion.scalars(select(Notificacion).order_by(Notificacion.id)).all()[antes:]
     assert len(nuevas) == 1
-    assert nuevas[0].plantilla == "cita_confirmada"
+    assert nuevas[0].plantilla == "enlace_cita"
     token_nuevo = nuevas[0].variables["token"]
     # El enlace nuevo funciona y reemplaza al anterior (un solo enlace por cita).
     assert api.get(f"/mi-cita/{token_nuevo}").status_code == 200

@@ -50,7 +50,7 @@ def enviar_enlace(db: Session, celular: str, ip: str, ahora: datetime) -> None:
     token = enlaces.mover_enlace(enlace, elegida, rotar=True)
     assert token is not None
     notificaciones.encolar(
-        db, elegida, cliente, sobandero, "confirmacion", "cita_confirmada", ahora, token
+        db, elegida, cliente, sobandero, "confirmacion", "enlace_cita", ahora, token
     )
     db.commit()
     registro.info("enlace pedido cita=%s celular=%s", elegida.id, enmascarar(numero))

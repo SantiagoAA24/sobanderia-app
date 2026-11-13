@@ -63,9 +63,12 @@ def encolar_recordatorio(
 
 
 def cancelar_pendientes(db: Session, cita_id: int) -> None:
-    """Lo que no salió todavía deja de tener sentido cuando la cita cambia o termina."""
+    """Lo que no salió todavía deja de tener sentido cuando la cita cambia o termina.
+
+    El token del enlace se borra: un mensaje que no sale no necesita guardarlo.
+    """
     db.execute(
         update(Notificacion)
         .where(Notificacion.cita_id == cita_id, Notificacion.estado == "pendiente")
-        .values(estado="cancelada")
+        .values(estado="cancelada", variables=Notificacion.variables.op("-")("token"))
     )
