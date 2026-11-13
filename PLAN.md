@@ -76,7 +76,12 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
   - Nota de la Fase 3: `notificaciones.variables.token` guarda el token en claro (solo en `cita_confirmada` y `cita_cambiada`); el worker debe borrarlo al enviar.
 
 ## Fase 9 — PWA, sin conexión y accesibilidad
-- [ ] Manifiesto, service worker, Sin conexión, `axe` y Lighthouse
+- [x] 9.1 Manifiesto e íconos
+- [ ] 9.2 Service worker que solo guarda la interfaz (nunca `/api`)
+- [ ] 9.3 Sin conexión de extremo a extremo
+- [ ] 9.4 Pantalla `/instalar` (iPhone y Android)
+- [ ] 9.5 «Reducir movimiento» y `axe` en todas las rutas
+- [ ] 9.6 Lighthouse y `docs/RENDIMIENTO.md`
 
 ## Fase 10 — Seguridad, datos y extremo a extremo
 - [ ] Playwright, revisión de seguridad, política de datos y copias

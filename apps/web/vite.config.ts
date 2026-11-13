@@ -1,11 +1,14 @@
 import react from "@vitejs/plugin-react";
 import { loadEnv } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
+
+import { manifiesto } from "./src/pwa.config";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
   return {
-    plugins: [react()],
+    plugins: [react(), VitePWA({ manifest: { ...manifiesto, icons: [...manifiesto.icons] }, includeAssets: ["iconos/apple-touch-icon.png", "iconos/icono.svg"] })],
     define: {
       // `/ui` (catálogo de componentes) solo se incluye fuera de producción, o con VITE_MOSTRAR_UI=1.
       __MOSTRAR_UI__: JSON.stringify(mode !== "production" || env.VITE_MOSTRAR_UI === "1"),
