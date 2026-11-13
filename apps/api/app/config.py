@@ -5,7 +5,19 @@ class Ajustes(BaseSettings):
     database_url: str = "postgresql+psycopg://sobanderia:sobanderia@localhost:5432/sobanderia"
     entorno: str = "desarrollo"
     origen_web: str = "http://localhost:5173"
-    proveedor_whatsapp: str = "falso"
+    proveedor_whatsapp: str = "falso"  # "falso" | "cloudapi"
+    whatsapp_token: str = ""
+    whatsapp_phone_number_id: str = ""
+    whatsapp_app_secret: str = ""  # firma del webhook (X-Hub-Signature-256)
+    whatsapp_verify_token: str = ""  # el que se escribe en Meta al registrar el webhook
+    whatsapp_version_api: str = "v21.0"
+    whatsapp_idioma: str = "es"
+
+    # Worker: lote por vuelta, pausa entre vueltas y esperas entre intentos (minutos)
+    worker_lote: int = 20
+    worker_pausa_seg: int = 5
+    worker_intentos_max: int = 4
+    worker_esperas_min: tuple[int, ...] = (1, 5, 30)
     tz_negocio: str = "America/Bogota"
 
     # Ingreso y límite de intentos fallidos
