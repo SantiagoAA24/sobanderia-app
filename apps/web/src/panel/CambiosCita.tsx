@@ -15,17 +15,28 @@ import { diaYHora, minutosEntre, textoHora } from "./formato";
 
 const rutaCita = (id: number) => `/panel/citas/${id}`;
 
-/** Carga la cita de la ruta y deja pasar a la pantalla solo si todavía se puede cambiar. */
+/**
+ * Carga la cita de la ruta y deja pasar a la pantalla solo si todavía se puede cambiar. La comprobación
+ * se hace una vez, al abrir: al guardar, la cita cambia de estado y no debe sacar de la pantalla antes
+ * de que ella misma lleve a la siguiente.
+ */
 function ConCita({ puedeCambiar = true, children }: { puedeCambiar?: boolean; children: (cita: CitaPanel) => React.ReactNode }) {
   const id = Number(useParams().id);
   const consulta = useCitaPanel(id);
   return (
     <Cargable consulta={consulta} texto="Buscando la cita…">
-      {(cita) =>
-        (puedeCambiar ? cita.puede_modificar : cita.estado === "agendada") ? children(cita) : <Navigate to={rutaCita(cita.id)} replace />
-      }
+      {(cita) => (
+        <SoloSiPuede cita={cita} puedeCambiar={puedeCambiar}>
+          {children}
+        </SoloSiPuede>
+      )}
     </Cargable>
   );
+}
+
+function SoloSiPuede({ cita, puedeCambiar, children }: { cita: CitaPanel; puedeCambiar: boolean; children: (cita: CitaPanel) => React.ReactNode }) {
+  const [permitida] = useState(() => (puedeCambiar ? cita.puede_modificar : cita.estado === "agendada"));
+  return permitida ? children(cita) : <Navigate to={rutaCita(cita.id)} replace />;
 }
 
 function resumen(cita: CitaPanel) {

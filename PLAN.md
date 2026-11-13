@@ -47,7 +47,9 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] 6.3 Hoy, Semana, Día vacío, Cita, Cambiar la hora, No asistió y Cancelar con aviso
 - [x] 6.4 Nueva cita, Bloquear horas (con «Horas bloqueadas» para quitarlas), Horario y Horario del día
 - [x] 6.5 Clientes, Ficha, Mi perfil, Cambiar correo, Cambiar clave y Clave cambiada
-- [ ] 6.6 Recorrido de un día completo en el navegador
+- [x] 6.6 Recorrido de un día completo en el navegador (390 px, API y base locales con el seed): ingreso con clave temporal, primera clave, atender, no asistió, cambiar hora con aviso, cancelar con aviso, nueva cita, bloquear (2 citas siguen agendadas), quitar el bloqueo, editar horario, clientes y ficha, perfil y cerrar sesión
+  - Notificaciones comprobadas en la base: cita_cambiada, cita_cancelada_sobandero y cita_confirmada una vez cada una, y dos recordatorios; atender y no asistió no crean ninguna.
+  - Pendiente de decisión de diseño: ver otras semanas en Semana (hoy solo la actual, o cualquier día por `?dia=`).
 
 ## Fase 7 — Panel del administrador
 - [ ] Resumen, Agenda, Sobanderos, baja y Datos del negocio
