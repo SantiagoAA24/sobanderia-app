@@ -1,0 +1,5 @@
+<!-- @dsCard group="Navegación" height=260 subtitle="Día elegido y días libres" -->
+<!doctype html><html lang="es"><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet"><style>body{margin:0;padding:24px;background:var(--surface-100);color:var(--ink)}</style></head><body><div id="root"></div><script>
+(function(){var S=window.Sobanderia,h=React.createElement;
+var days=[['L',9],['M',10],['M',11],['J',12],['V',13],['S',14],['D',15]];var view=h('nav',{'aria-label':'Días de la semana',style:{display:'grid',gridTemplateColumns:'repeat(7, minmax(0, 1fr))',gap:2,maxWidth:350}},days.map(function(d){return h(S.DayChip,{key:d[1],day:d[0],date:d[1],selected:d[1]===12,label:'Día '+d[1]});}));
+ReactDOM.createRoot(document.getElementById("root")).render(view);})();</script></body></html>

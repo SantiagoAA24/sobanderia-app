@@ -1,0 +1,34 @@
+{
+  "v": 3,
+  "layout": "files",
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-11-12T13:05:00Z"
+  },
+  "title": "Sobandería — Sistema de diseño",
+  "namespace": "Sobanderia",
+  "libraries": [
+    {
+      "name": "react",
+      "version": "18"
+    },
+    {
+      "name": "react-dom",
+      "version": "18"
+    }
+  ],
+  "sections": {},
+  "groups": [],
+  "assetGroups": {},
+  "blobs": {},
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "lastChange": {
+    "by": "Santiago",
+    "at": "2026-11-12T19:10:00Z",
+    "via": "Claude",
+    "note": "Se añaden BackHeader, DayChip, EmptyState, Switch, PasswordField y Skeleton"
+  }
+}

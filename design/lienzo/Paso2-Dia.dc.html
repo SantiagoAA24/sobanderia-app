@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Paso 2 · Elegir día</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/sobanderia/tokens.css">
+<link rel="stylesheet" href="ds/sobanderia/components/bundle.css">
+<script src="ds/sobanderia/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button{font-family:inherit;cursor:pointer}
+button:disabled{cursor:not-allowed}
+.cta .sb-button{width:100%}
+.proto-link{display:block;text-decoration:none;color:inherit;border-radius:var(--radius-lg)}
+.proto-link button{pointer-events:none}
+.proto-back{position:absolute;left:var(--space-20);top:var(--space-24);width:110px;height:48px;border-radius:var(--radius-lg)}
+.proto-link:focus-visible,.proto-back:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--surface-100); color: var(--ink); font-family: var(--font-sans); overflow: hidden">
+
+<div style="position: relative; padding: var(--space-24) var(--space-20) 0">
+<x-import component-from-global-scope="Sobanderia.StepHeader" step="2"></x-import>
+<a class="proto-back" href="Main.dc.html" aria-label="Atrás"></a>
+</div>
+
+<main style="flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-16) var(--space-20) 0; display: flex; flex-direction: column; gap: var(--space-16)">
+<h1 class="display-lg" style="margin: 0">Elija el día</h1>
+
+<div style="display: flex; align-items: center; gap: var(--space-12); padding: var(--space-10) var(--space-12); background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius-lg)">
+<span class="body-lg" aria-hidden="true" style="width: 40px; height: 40px; flex: none; border-radius: var(--radius-round); background: var(--surface-avatar); color: var(--brand-ink); display: flex; align-items: center; justify-content: center; font-family: var(--font-display)">C</span>
+<span class="body-lg" style="flex: 1; min-width: 0">Con Carlos</span>
+<button class="label" style="min-height: 48px; padding: 0 var(--space-8); border: 0; background: transparent; color: var(--brand-deep); text-decoration: underline">Cambiar</button>
+</div>
+
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-10)">
+
+<li><x-import component-from-global-scope="Sobanderia.OptionRow" title="Jueves 12 de noviembre" caption="Hoy · 2 cupos libres" trailing="radio" selected="{{ no }}"></x-import></li>
+
+<li><x-import component-from-global-scope="Sobanderia.OptionRow" title="Viernes 13 de noviembre" caption="Mañana · 6 cupos libres" trailing="radio" selected="{{ yes }}"></x-import></li>
+
+<li><x-import component-from-global-scope="Sobanderia.OptionRow" title="Sábado 14 de noviembre" caption="4 cupos libres" trailing="radio" selected="{{ no }}"></x-import></li>
+
+<li><x-import component-from-global-scope="Sobanderia.OptionRow" title="Domingo 15 de noviembre" caption="Sin cupos" trailing="radio" disabled="{{ yes }}"></x-import></li>
+
+<li><x-import component-from-global-scope="Sobanderia.OptionRow" title="Lunes 16 de noviembre" caption="5 cupos libres" trailing="radio" selected="{{ no }}"></x-import></li>
+
+<li><x-import component-from-global-scope="Sobanderia.OptionRow" title="Martes 17 de noviembre" caption="7 cupos libres" trailing="radio" selected="{{ no }}"></x-import></li>
+
+<li><x-import component-from-global-scope="Sobanderia.OptionRow" title="Miércoles 18 de noviembre" caption="7 cupos libres" trailing="radio" selected="{{ no }}"></x-import></li>
+
+</ul>
+</main>
+
+<div style="padding: var(--space-16) var(--space-20) var(--space-24)">
+<a class="proto-link" href="Paso3-Hora.dc.html"><div class="cta"><x-import component-from-global-scope="Sobanderia.Button" variant="solid">Continuar</x-import></div></a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return { yes: true, no: false };
+}
+}
+</script>
+</body>
+</html>

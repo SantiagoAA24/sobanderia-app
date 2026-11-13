@@ -1,0 +1,28 @@
+<!-- @dsCard group="Agendar" height=520 subtitle="Chevron, radio, resaltada y sin cupos" -->
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>body{margin:0;padding:24px;background:var(--surface-100);color:var(--ink)}</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  var S = window.Sobanderia, h = React.createElement;
+  var list = { display: 'flex', flexDirection: 'column', gap: 'var(--space-10)', maxWidth: 350 };
+  var view = h('div', { style: { display: 'flex', flexDirection: 'column', gap: 'var(--space-20)' } },
+    h('div', { style: list },
+      h(S.OptionRow, { title: 'Primer turno disponible', caption: 'Hoy, 10:30 a. m., con Carlos', icon: 'clock', highlight: true }),
+      h(S.OptionRow, { title: 'Carlos', caption: 'Próximo cupo: hoy, 10:30 a. m.', initial: 'C' }),
+      h(S.OptionRow, { title: 'Marcela', caption: 'Próximo cupo: hoy, 2:00 p. m.', initial: 'M' })),
+    h('div', { style: list },
+      h(S.OptionRow, { title: 'Jueves 12 de noviembre', caption: 'Hoy · 2 cupos libres', trailing: 'radio', selected: false }),
+      h(S.OptionRow, { title: 'Viernes 13 de noviembre', caption: 'Mañana · 6 cupos libres', trailing: 'radio', selected: true }),
+      h(S.OptionRow, { title: 'Domingo 15 de noviembre', caption: 'Sin cupos', trailing: 'radio', disabled: true })));
+  ReactDOM.createRoot(document.getElementById('root')).render(view);
+})();
+</script>
+</body>
+</html>

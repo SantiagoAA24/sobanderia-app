@@ -1,0 +1,25 @@
+<!-- @dsCard group="Base" height=190 subtitle="Trazo de 2px, 24×24" -->
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>body{margin:0;padding:24px;background:var(--surface-100);color:var(--ink)}</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  var S = window.Sobanderia, h = React.createElement;
+  var names = ['phone', 'chat', 'plus', 'check', 'x', 'calendar-check', 'calendar-week', 'users', 'clock'];
+  var grid = h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(104px, 1fr))', gap: 'var(--space-16)' } },
+    names.map(function (n) {
+      return h('div', { key: n, style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-8)', color: 'var(--brand-deep)' } },
+        h(S.Icon, { name: n, size: 28 }),
+        h('span', { className: 'caption', style: { color: 'var(--ink-muted)' } }, n));
+    }));
+  ReactDOM.createRoot(document.getElementById('root')).render(grid);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Cita confirmada</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/sobanderia/tokens.css">
+<link rel="stylesheet" href="ds/sobanderia/components/bundle.css">
+<script src="ds/sobanderia/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button{font-family:inherit;cursor:pointer}
+.cta .sb-button{width:100%}
+.proto-link{display:block;text-decoration:none;color:inherit;border-radius:var(--radius-lg)}
+.proto-link button{pointer-events:none}
+.proto-link:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--surface-100); color: var(--ink); font-family: var(--font-sans); overflow: hidden">
+
+<main style="flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-24) var(--space-20) 0; display: flex; flex-direction: column; gap: var(--space-20)">
+
+<div style="display: flex; flex-direction: column; gap: var(--space-16); padding-top: var(--space-24)">
+<span aria-hidden="true" style="width: 72px; height: 72px; border-radius: var(--radius-round); background: var(--success); color: var(--on-brand); display: flex; align-items: center; justify-content: center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+<h1 class="display-lg" style="margin: 0">Su cita quedó agendada</h1>
+</div>
+
+<x-import component-from-global-scope="Sobanderia.ConfirmationCard" time="10:30" meridiem="a. m." title="Viernes 13 de noviembre" detail="Con Carlos · Sesión de 30 minutos"></x-import>
+
+<div style="display: flex; flex-direction: column; gap: var(--space-8)">
+<x-import component-from-global-scope="Sobanderia.StatusNote">Confirmación enviada por WhatsApp</x-import>
+<span class="caption" style="padding: 0 var(--space-4); color: var(--ink-muted)">Le recordaremos su cita un día antes.</span>
+</div>
+</main>
+
+<div style="display: flex; flex-direction: column; gap: var(--space-10); padding: var(--space-16) var(--space-20) var(--space-24)">
+<div class="cta"><x-import component-from-global-scope="Sobanderia.Button" variant="solid" icon="calendar-check">Agregar al calendario</x-import></div>
+<a class="proto-link cta" href="Gestionar.dc.html"><x-import component-from-global-scope="Sobanderia.Button" variant="outline">Cambiar o cancelar la cita</x-import></a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

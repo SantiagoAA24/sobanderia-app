@@ -1,0 +1,25 @@
+<!-- @dsCard group="Agendar" height=250 subtitle="Cuadrícula de tres columnas" -->
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>body{margin:0;padding:24px;background:var(--surface-100);color:var(--ink)}</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  var S = window.Sobanderia, h = React.createElement;
+  var grid = { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 'var(--space-10)' };
+  function slot(t, m, sel) { return h(S.TimeSlot, { key: t + m, time: t, meridiem: m, selected: !!sel }); }
+  var view = h('div', { style: { maxWidth: 350, display: 'flex', flexDirection: 'column', gap: 'var(--space-10)' } },
+    h('h2', { className: 'section-title', style: { margin: 0 } }, 'Mañana'),
+    h('div', { style: grid }, slot('8:00', 'a. m.'), slot('9:30', 'a. m.'), slot('10:30', 'a. m.', true)),
+    h('h2', { className: 'section-title', style: { margin: 'var(--space-8) 0 0' } }, 'Tarde'),
+    h('div', { style: grid }, slot('2:00', 'p. m.'), slot('3:30', 'p. m.'), slot('4:30', 'p. m.')));
+  ReactDOM.createRoot(document.getElementById('root')).render(view);
+})();
+</script>
+</body>
+</html>

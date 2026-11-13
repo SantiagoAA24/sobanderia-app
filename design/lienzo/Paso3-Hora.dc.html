@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Paso 3 · Elegir hora</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/sobanderia/tokens.css">
+<link rel="stylesheet" href="ds/sobanderia/components/bundle.css">
+<script src="ds/sobanderia/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button{font-family:inherit;cursor:pointer}
+.cta .sb-button{width:100%}
+.proto-link{display:block;text-decoration:none;color:inherit;border-radius:var(--radius-lg)}
+.proto-link button{pointer-events:none}
+.proto-back{position:absolute;left:var(--space-20);top:var(--space-24);width:110px;height:48px;border-radius:var(--radius-lg)}
+.proto-link:focus-visible,.proto-back:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--surface-100); color: var(--ink); font-family: var(--font-sans); overflow: hidden">
+
+<div style="position: relative; padding: var(--space-24) var(--space-20) 0">
+<x-import component-from-global-scope="Sobanderia.StepHeader" step="3"></x-import>
+<a class="proto-back" href="Paso2-Dia.dc.html" aria-label="Atrás"></a>
+</div>
+
+<main style="flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-16) var(--space-20) 0; display: flex; flex-direction: column; gap: var(--space-16)">
+<h1 class="display-lg" style="margin: 0">Elija la hora</h1>
+
+<div style="display: flex; align-items: center; gap: var(--space-12); padding: var(--space-10) var(--space-12); background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius-lg)">
+<span class="body-lg" aria-hidden="true" style="width: 40px; height: 40px; flex: none; border-radius: var(--radius-round); background: var(--surface-avatar); color: var(--brand-ink); display: flex; align-items: center; justify-content: center; font-family: var(--font-display)">C</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span class="body-lg">Con Carlos</span><span class="caption" style="color: var(--ink-muted)">Viernes 13 de noviembre</span></span>
+<button class="label" style="min-height: 48px; padding: 0 var(--space-8); border: 0; background: transparent; color: var(--brand-deep); text-decoration: underline">Cambiar</button>
+</div>
+
+<section aria-label="Mañana" style="display: flex; flex-direction: column; gap: var(--space-10)">
+<h2 class="section-title" style="margin: 0">Mañana</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-10)">
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="8:00" meridiem="a. m."></x-import>
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="8:30" meridiem="a. m."></x-import>
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="9:30" meridiem="a. m."></x-import>
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="10:30" meridiem="a. m." selected="{{ yes }}"></x-import>
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="11:00" meridiem="a. m."></x-import>
+</div>
+</section>
+
+<section aria-label="Tarde" style="display: flex; flex-direction: column; gap: var(--space-10)">
+<h2 class="section-title" style="margin: 0">Tarde</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-10)">
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="2:00" meridiem="p. m."></x-import>
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="2:30" meridiem="p. m."></x-import>
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="3:30" meridiem="p. m."></x-import>
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="4:00" meridiem="p. m."></x-import>
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="4:30" meridiem="p. m."></x-import>
+<x-import component-from-global-scope="Sobanderia.TimeSlot" time="5:00" meridiem="p. m."></x-import>
+</div>
+</section>
+
+<p class="caption" style="margin: 0; color: var(--ink-muted)">Cada cita dura 30 minutos.</p>
+</main>
+
+<div style="padding: var(--space-16) var(--space-20) var(--space-24)">
+<a class="proto-link" href="Paso4-Datos.dc.html"><div class="cta"><x-import component-from-global-scope="Sobanderia.Button" variant="solid">Continuar</x-import></div></a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return { yes: true };
+}
+}
+</script>
+</body>
+</html>

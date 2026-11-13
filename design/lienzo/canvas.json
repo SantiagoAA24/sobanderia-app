@@ -1,0 +1,581 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-11-12T13:30:00Z"
+  },
+  "title": "Sobandería — Flujo del cliente",
+  "launch": {
+    "view": "canvas"
+  },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Paso 1 · Elegir sobandero",
+      "is_interactive": true
+    },
+    "Paso2-Dia.dc.html": {
+      "x": 470,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Paso 2 · Elegir día",
+      "is_interactive": true
+    },
+    "Paso3-Hora.dc.html": {
+      "x": 940,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Paso 3 · Elegir hora",
+      "is_interactive": true
+    },
+    "Paso4-Datos.dc.html": {
+      "x": 1410,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Paso 4 · Sus datos",
+      "is_interactive": true
+    },
+    "Confirmada.dc.html": {
+      "x": 1880,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Cita confirmada",
+      "is_interactive": true
+    },
+    "Hoy.dc.html": {
+      "x": 0,
+      "y": 1264,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Hoy",
+      "is_interactive": true
+    },
+    "Cita.dc.html": {
+      "x": 470,
+      "y": 1264,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Detalle de la cita",
+      "is_interactive": true
+    },
+    "Semana.dc.html": {
+      "x": 940,
+      "y": 1264,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Semana",
+      "is_interactive": true
+    },
+    "Horario.dc.html": {
+      "x": 1410,
+      "y": 1264,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Mi horario",
+      "is_interactive": true
+    },
+    "Bloquear.dc.html": {
+      "x": 1880,
+      "y": 1264,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Bloquear horas",
+      "is_interactive": true
+    },
+    "Paso4-Errores.dc.html": {
+      "x": 0,
+      "y": 2528,
+      "w": 390,
+      "h": 844,
+      "title": "Paso 4 · Con errores",
+      "is_interactive": true
+    },
+    "Sin-horas.dc.html": {
+      "x": 470,
+      "y": 2528,
+      "w": 390,
+      "h": 844,
+      "title": "Paso 3 · Sin horas libres",
+      "is_interactive": true
+    },
+    "Gestionar.dc.html": {
+      "x": 940,
+      "y": 2528,
+      "w": 390,
+      "h": 844,
+      "title": "Gestionar mi cita",
+      "is_interactive": true
+    },
+    "Cancelar-cliente.dc.html": {
+      "x": 1410,
+      "y": 2528,
+      "w": 390,
+      "h": 844,
+      "title": "Cancelar mi cita",
+      "is_interactive": true
+    },
+    "Cancelada.dc.html": {
+      "x": 1880,
+      "y": 2528,
+      "w": 390,
+      "h": 844,
+      "title": "Cita cancelada",
+      "is_interactive": true
+    },
+    "Clientes.dc.html": {
+      "x": 0,
+      "y": 3792,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Clientes",
+      "is_interactive": true
+    },
+    "Cliente.dc.html": {
+      "x": 470,
+      "y": 3792,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Ficha del cliente",
+      "is_interactive": true
+    },
+    "Nueva-cita.dc.html": {
+      "x": 940,
+      "y": 3792,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Nueva cita",
+      "is_interactive": true
+    },
+    "Horario-dia.dc.html": {
+      "x": 1410,
+      "y": 3792,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Horario del lunes",
+      "is_interactive": true
+    },
+    "Dia-vacio.dc.html": {
+      "x": 1880,
+      "y": 3792,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Día sin citas",
+      "is_interactive": true
+    },
+    "Ingreso.dc.html": {
+      "x": 0,
+      "y": 5056,
+      "w": 390,
+      "h": 844,
+      "title": "Ingreso",
+      "is_interactive": true
+    },
+    "Ingreso-error.dc.html": {
+      "x": 470,
+      "y": 5056,
+      "w": 390,
+      "h": 844,
+      "title": "Ingreso · Clave incorrecta",
+      "is_interactive": true
+    },
+    "Olvide-clave.dc.html": {
+      "x": 940,
+      "y": 5056,
+      "w": 390,
+      "h": 844,
+      "title": "Recuperar clave",
+      "is_interactive": true
+    },
+    "Clave-enviada.dc.html": {
+      "x": 1410,
+      "y": 5056,
+      "w": 390,
+      "h": 844,
+      "title": "Enlace enviado",
+      "is_interactive": true
+    },
+    "Hora-ocupada.dc.html": {
+      "x": 0,
+      "y": 6320,
+      "w": 390,
+      "h": 844,
+      "title": "Cliente · Hora ocupada",
+      "is_interactive": true
+    },
+    "Cargando.dc.html": {
+      "x": 470,
+      "y": 6320,
+      "w": 390,
+      "h": 844,
+      "title": "Cargando",
+      "is_interactive": true
+    },
+    "Sin-conexion.dc.html": {
+      "x": 940,
+      "y": 6320,
+      "w": 390,
+      "h": 844,
+      "title": "Sin conexión",
+      "is_interactive": true
+    },
+    "Cancelar-sobandero.dc.html": {
+      "x": 1410,
+      "y": 6320,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Cancelar cita",
+      "is_interactive": true
+    },
+    "Cita-cancelada.dc.html": {
+      "x": 1880,
+      "y": 6320,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Cita cancelada",
+      "is_interactive": true
+    },
+    "Admin-Hoy.dc.html": {
+      "x": 0,
+      "y": 7584,
+      "w": 390,
+      "h": 844,
+      "title": "Admin · Resumen",
+      "is_interactive": true
+    },
+    "Admin-Sobanderos.dc.html": {
+      "x": 470,
+      "y": 7584,
+      "w": 390,
+      "h": 844,
+      "title": "Admin · Sobanderos",
+      "is_interactive": true
+    },
+    "Admin-Sobandero.dc.html": {
+      "x": 940,
+      "y": 7584,
+      "w": 390,
+      "h": 844,
+      "title": "Admin · Ficha del sobandero",
+      "is_interactive": true
+    },
+    "Admin-Nuevo.dc.html": {
+      "x": 1410,
+      "y": 7584,
+      "w": 390,
+      "h": 844,
+      "title": "Admin · Nuevo sobandero",
+      "is_interactive": true
+    },
+    "Admin-Agenda.dc.html": {
+      "x": 1880,
+      "y": 7584,
+      "w": 390,
+      "h": 844,
+      "title": "Admin · Agenda",
+      "is_interactive": true
+    },
+    "Cambiar-clave.dc.html": {
+      "x": 0,
+      "y": 8848,
+      "w": 390,
+      "h": 844,
+      "title": "Primer ingreso · Clave nueva",
+      "is_interactive": true
+    },
+    "Cambiar-clave-error.dc.html": {
+      "x": 470,
+      "y": 8848,
+      "w": 390,
+      "h": 844,
+      "title": "Primer ingreso · Clave muy corta",
+      "is_interactive": true
+    },
+    "Perfil.dc.html": {
+      "x": 940,
+      "y": 8848,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Mi perfil",
+      "is_interactive": true
+    },
+    "Perfil-correo.dc.html": {
+      "x": 1410,
+      "y": 8848,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Cambiar correo",
+      "is_interactive": true
+    },
+    "Perfil-clave.dc.html": {
+      "x": 1880,
+      "y": 8848,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Cambiar clave",
+      "is_interactive": true
+    },
+    "Admin-Baja.dc.html": {
+      "x": 2350,
+      "y": 8848,
+      "w": 390,
+      "h": 844,
+      "title": "Admin · Dar de baja",
+      "is_interactive": true
+    },
+    "Inicio.dc.html": {
+      "x": 0,
+      "y": 10112,
+      "w": 390,
+      "h": 844,
+      "title": "Cliente · Inicio",
+      "is_interactive": true
+    },
+    "Encontrar-cita.dc.html": {
+      "x": 470,
+      "y": 10112,
+      "w": 390,
+      "h": 844,
+      "title": "Cliente · Encontrar mi cita",
+      "is_interactive": true
+    },
+    "Enlace-enviado-cliente.dc.html": {
+      "x": 940,
+      "y": 10112,
+      "w": 390,
+      "h": 844,
+      "title": "Cliente · Enlace enviado",
+      "is_interactive": true
+    },
+    "Instalar-app.dc.html": {
+      "x": 1410,
+      "y": 10112,
+      "w": 390,
+      "h": 844,
+      "title": "Cliente · Instalar la app",
+      "is_interactive": true
+    },
+    "Reprogramar.dc.html": {
+      "x": 0,
+      "y": 11376,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Cambiar la hora",
+      "is_interactive": true
+    },
+    "No-asistio.dc.html": {
+      "x": 470,
+      "y": 11376,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · No asistió",
+      "is_interactive": true
+    },
+    "Duracion.dc.html": {
+      "x": 940,
+      "y": 11376,
+      "w": 390,
+      "h": 844,
+      "title": "Admin · Duración de la cita",
+      "is_interactive": true
+    },
+    "Admin-Reporte.dc.html": {
+      "x": 1410,
+      "y": 11376,
+      "w": 390,
+      "h": 844,
+      "title": "Admin · Resumen semanal",
+      "is_interactive": true
+    },
+    "Admin-Negocio.dc.html": {
+      "x": 1880,
+      "y": 11376,
+      "w": 390,
+      "h": 844,
+      "title": "Admin · Datos del negocio",
+      "is_interactive": true
+    },
+    "Enlace-vencido.dc.html": {
+      "x": 0,
+      "y": 12640,
+      "w": 390,
+      "h": 844,
+      "title": "Cliente · Enlace vencido",
+      "is_interactive": true
+    },
+    "Sesion-vencida.dc.html": {
+      "x": 470,
+      "y": 12640,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Sesión vencida",
+      "is_interactive": true
+    },
+    "Clave-cambiada.dc.html": {
+      "x": 940,
+      "y": 12640,
+      "w": 390,
+      "h": 844,
+      "title": "Sobandero · Clave cambiada",
+      "is_interactive": true
+    },
+    "No-encontrada.dc.html": {
+      "x": 1410,
+      "y": 12640,
+      "w": 390,
+      "h": 844,
+      "title": "Página no encontrada",
+      "is_interactive": true
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Paso2-Dia.dc.html",
+    "Paso3-Hora.dc.html",
+    "Paso4-Datos.dc.html",
+    "Confirmada.dc.html",
+    "Hoy.dc.html",
+    "Cita.dc.html",
+    "Semana.dc.html",
+    "Horario.dc.html",
+    "Bloquear.dc.html",
+    "Paso4-Errores.dc.html",
+    "Sin-horas.dc.html",
+    "Gestionar.dc.html",
+    "Cancelar-cliente.dc.html",
+    "Cancelada.dc.html",
+    "Clientes.dc.html",
+    "Cliente.dc.html",
+    "Nueva-cita.dc.html",
+    "Horario-dia.dc.html",
+    "Dia-vacio.dc.html",
+    "Ingreso.dc.html",
+    "Ingreso-error.dc.html",
+    "Olvide-clave.dc.html",
+    "Clave-enviada.dc.html",
+    "Hora-ocupada.dc.html",
+    "Cargando.dc.html",
+    "Sin-conexion.dc.html",
+    "Cancelar-sobandero.dc.html",
+    "Cita-cancelada.dc.html",
+    "Admin-Hoy.dc.html",
+    "Admin-Sobanderos.dc.html",
+    "Admin-Sobandero.dc.html",
+    "Admin-Nuevo.dc.html",
+    "Admin-Agenda.dc.html",
+    "Cambiar-clave.dc.html",
+    "Cambiar-clave-error.dc.html",
+    "Perfil.dc.html",
+    "Perfil-correo.dc.html",
+    "Perfil-clave.dc.html",
+    "Admin-Baja.dc.html",
+    "Inicio.dc.html",
+    "Encontrar-cita.dc.html",
+    "Enlace-enviado-cliente.dc.html",
+    "Instalar-app.dc.html",
+    "Reprogramar.dc.html",
+    "No-asistio.dc.html",
+    "Duracion.dc.html",
+    "Admin-Reporte.dc.html",
+    "Admin-Negocio.dc.html",
+    "Enlace-vencido.dc.html",
+    "Sesion-vencida.dc.html",
+    "Clave-cambiada.dc.html",
+    "No-encontrada.dc.html"
+  ],
+  "notes": {
+    "t1": {
+      "x": 0,
+      "y": -300,
+      "text": "Flujo del cliente: agendar una cita",
+      "kind": "title1",
+      "maxW": 2270
+    },
+    "t2": {
+      "x": 0,
+      "y": 964,
+      "text": "Panel del sobandero",
+      "kind": "title1",
+      "maxW": 2270
+    },
+    "t3": {
+      "x": 0,
+      "y": 2228,
+      "text": "Cliente: cuando algo no sale como se espera",
+      "kind": "title1",
+      "maxW": 2270
+    },
+    "t4": {
+      "x": 0,
+      "y": 3492,
+      "text": "Sobandero: clientes, citas manuales y horario",
+      "kind": "title1",
+      "maxW": 2270
+    },
+    "t5": {
+      "x": 0,
+      "y": 4756,
+      "text": "Ingreso con correo y clave",
+      "kind": "title1",
+      "maxW": 2270
+    },
+    "t6": {
+      "x": 0,
+      "y": 6020,
+      "text": "Estados de la app y cancelación del sobandero",
+      "kind": "title1",
+      "maxW": 2270
+    },
+    "t7": {
+      "x": 0,
+      "y": 7284,
+      "text": "Administrador",
+      "kind": "title1",
+      "maxW": 2270
+    },
+    "t8": {
+      "x": 0,
+      "y": 8548,
+      "text": "Primer ingreso, perfil y baja de un sobandero",
+      "kind": "title1",
+      "maxW": 2740
+    },
+    "t9": {
+      "x": 0,
+      "y": 9812,
+      "text": "Cliente: inicio y encontrar mi cita",
+      "kind": "title1",
+      "maxW": 1800
+    },
+    "t10": {
+      "x": 0,
+      "y": 11076,
+      "text": "Sobandero y administrador: ajustes",
+      "kind": "title1",
+      "maxW": 2270
+    },
+    "t11": {
+      "x": 0,
+      "y": 12340,
+      "text": "Enlaces vencidos, sesión vencida y página no encontrada",
+      "kind": "title1",
+      "maxW": 1800
+    }
+  },
+  "designSystems": [
+    {
+      "title": "Sobandería — Sistema de diseño",
+      "namespace": "sobanderia",
+      "artifact": "https://claude.ai/artifact/PkCyCWcNPfTt2fSnNFZgvK",
+      "version": "1794527459-b512",
+      "copiedAt": "2026-11-12T14:15:00Z"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+<!-- @dsCard group="Agendar" height=230 subtitle="Marcada y con error" -->
+<!doctype html><html lang="es"><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet"><style>body{margin:0;padding:24px;background:var(--surface-100);color:var(--ink)}</style></head><body><div id="root"></div><script>
+(function(){var S=window.Sobanderia,h=React.createElement;
+var view=h('div',{style:{maxWidth:350,display:'flex',flexDirection:'column',gap:'var(--space-16)'}},
+h(S.CheckboxField,{id:'c1',label:'Acepto el tratamiento de mis datos personales.',linkText:'Ver política',defaultChecked:true}),
+h(S.CheckboxField,{id:'c2',label:'Acepto el tratamiento de mis datos personales.',linkText:'Ver política',error:'Para agendar, necesitamos que lo acepte.'}));
+ReactDOM.createRoot(document.getElementById("root")).render(view);})();</script></body></html>
