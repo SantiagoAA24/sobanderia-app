@@ -1,4 +1,4 @@
-import type { RouteObject } from "react-router-dom";
+import { Navigate, type RouteObject } from "react-router-dom";
 
 import { CancelarCliente } from "./CancelarCliente";
 import { Cancelada } from "./Cancelada";
@@ -16,7 +16,8 @@ import { Politica } from "./Politica";
 /** Rutas del cliente (sin cuenta). Cada pantalla se llama igual que su archivo en `design/lienzo/`. */
 export const rutasCliente: RouteObject[] = [
   { path: "/", element: <Inicio /> },
-  { path: "/instalar-app", element: <InstalarApp /> },
+  { path: "/instalar", element: <InstalarApp /> },
+  { path: "/instalar-app", element: <Navigate to="/instalar" replace /> }, // enlace anterior
   { path: "/politica", element: <Politica /> },
 
   // Agendar: el sobandero, el día y la hora viajan en la URL

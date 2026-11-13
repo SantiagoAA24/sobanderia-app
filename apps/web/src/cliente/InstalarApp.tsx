@@ -1,7 +1,7 @@
 import { Button, OptionRow } from "../componentes/ui";
 import { PantallaCliente } from "./Disposicion";
 
-/** Pantalla `Instalar-app` del lienzo. */
+/** Pantalla `Instalar-app` del lienzo. No usa la API: tiene que abrir también sin conexión. */
 export function InstalarApp() {
   return (
     <PantallaCliente
@@ -17,7 +17,9 @@ export function InstalarApp() {
       }
     >
       <h1 className="display-lg">Tenga la app a la mano</h1>
-      <p className="body-lg">Así entra con un toque, sin buscar el enlace. En iPhone:</p>
+      <p className="body-lg sb-muted">Así entra con un toque, sin buscar el enlace.</p>
+
+      <h2 className="section-title">En iPhone</h2>
       <ol className="sb-cl__lista" aria-label="Pasos en iPhone">
         <li>
           <OptionRow title="Abra esta página en Safari" initial="1" trailing="none" />
@@ -29,7 +31,19 @@ export function InstalarApp() {
           <OptionRow title="Elija «Agregar a inicio»" initial="3" trailing="none" />
         </li>
       </ol>
-      <p className="body-lg">En Android, Chrome le ofrecerá «Instalar» al abrir la página.</p>
+
+      <h2 className="section-title">En Android</h2>
+      <ol className="sb-cl__lista" aria-label="Pasos en Android">
+        <li>
+          <OptionRow title="Abra esta página en Chrome" initial="1" trailing="none" />
+        </li>
+        <li>
+          <OptionRow title="Toque el menú de los tres puntos" initial="2" trailing="none" />
+        </li>
+        <li>
+          <OptionRow title="Elija «Instalar app»" initial="3" trailing="none" />
+        </li>
+      </ol>
     </PantallaCliente>
   );
 }

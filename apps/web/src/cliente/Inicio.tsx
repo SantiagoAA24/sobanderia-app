@@ -32,7 +32,7 @@ export function Inicio() {
         title="Tenga la app a la mano"
         caption="Agréguela a su pantalla de inicio"
         icon="plus"
-        onClick={() => navigate("/instalar-app")}
+        onClick={() => navigate("/instalar")}
       />
     </PantallaCliente>
   );

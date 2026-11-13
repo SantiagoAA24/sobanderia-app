@@ -23,7 +23,7 @@ await pagina.goto(`${base}/agendar`); // pantalla que necesita datos de la API
 const h1 = await pagina.getByRole("heading", { level: 1 }).first().textContent({ timeout: 15000 });
 const hayReintento = await pagina.getByRole("button", { name: "Intentar de nuevo" }).isVisible();
 await pagina.screenshot({ path: process.env.CAPTURA ?? "sin-conexion.png" });
-const rutaProfunda = await pagina.goto(`${base}/instalar-app`).then(() => pagina.getByRole("heading", { level: 1 }).first().textContent()).catch((e) => `ERROR ${e.message}`);
+const rutaProfunda = await pagina.goto(`${base}/instalar`).then(() => pagina.getByRole("heading", { level: 1 }).first().textContent()).catch((e) => `ERROR ${e.message}`);
 
 console.log(JSON.stringify({ controlada, archivosEnCache: cache.reduce((n, [, u]) => n + u.length, 0), enCacheApi, tituloAgendarSinRed: h1, hayReintento, instalarSinRed: rutaProfunda }, null, 2));
 await navegador.close();

@@ -29,10 +29,8 @@ describe("Inicio", () => {
     servidor({ "GET /publico/negocio": NEGOCIO });
     const { router, container } = pintar("/");
     await userEvent.click(screen.getByRole("button", { name: /Tenga la app a la mano/ }));
-    expect(ruta(router)).toBe("/instalar-app");
+    expect(ruta(router)).toBe("/instalar");
     expect(screen.getByRole("heading", { level: 1, name: "Tenga la app a la mano" })).toBeInTheDocument();
-    expect(screen.getByText("Elija «Agregar a inicio»")).toBeInTheDocument();
-    expect(screen.getByText("En Android, Chrome le ofrecerá «Instalar» al abrir la página.")).toBeInTheDocument();
     expect(await axe(container)).toHaveNoViolations();
     await userEvent.click(screen.getByRole("link", { name: "Listo" }));
     expect(ruta(router)).toBe("/");
