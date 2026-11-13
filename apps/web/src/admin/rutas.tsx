@@ -1,6 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 
 import { Agenda } from "./Agenda";
+import { BajaSobandero } from "./BajaSobandero";
 import { DuracionSobandero } from "./DuracionSobandero";
 import { FichaSobandero } from "./FichaSobandero";
 import { HorarioDiaSobandero, HorarioSobandero } from "./HorarioSobandero";
@@ -15,6 +16,7 @@ export const rutasAdmin: RouteObject[] = [
   { path: "sobanderos", element: <Sobanderos /> },
   { path: "sobanderos/nuevo", element: <NuevoSobandero /> },
   { path: "sobanderos/:id", element: <FichaSobandero /> },
+  { path: "sobanderos/:id/baja", element: <BajaSobandero /> },
   { path: "sobanderos/:id/duracion", element: <DuracionSobandero /> },
   { path: "sobanderos/:id/horario", element: <HorarioSobandero /> },
   { path: "sobanderos/:id/horario/:dia", element: <HorarioDiaSobandero /> },

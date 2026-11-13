@@ -95,3 +95,18 @@ export const useEnviarEnlaceClave = (id: number) =>
       await api.POST("/admin/sobanderos/{sobandero_id}/enlace-clave", { params: { path: { sobandero_id: id } } });
     },
   });
+
+export type QueHacerConLasCitas = components["schemas"]["BajaIn"]["citas"];
+
+/** Da de baja y, según `citas`, deja las citas próximas o las cancela con aviso por WhatsApp. */
+export const useDarDeBaja = (id: number) => {
+  const cliente = useQueryClient();
+  return useMutation({
+    mutationFn: async (citas: QueHacerConLasCitas) =>
+      datos(await api.POST("/admin/sobanderos/{sobandero_id}/baja", { params: { path: { sobandero_id: id } }, body: { citas } })),
+    onSuccess: (resultado) => {
+      cliente.setQueryData([ADMIN, "sobandero", id], resultado.sobandero);
+      void cliente.invalidateQueries({ queryKey: [ADMIN] });
+    },
+  });
+};
