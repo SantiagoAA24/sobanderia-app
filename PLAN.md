@@ -62,7 +62,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
   - Horario del sobandero reutiliza `ListaDias` y `FormularioDia` del panel (sin duplicar código).
   - Diferencia con el lienzo: en «Nuevo sobandero» la duración queda en 30 minutos (fila informativa); se cambia después en la ficha.
 - [x] 7.4 Dar de baja (pantalla `Admin-Baja`: dejar o cancelar con aviso, con el número de clientes que recibirán WhatsApp)
-- [ ] 7.5 Datos del negocio y Actividad
+- [x] 7.5 Datos del negocio y Registro de actividad (pantalla nueva `Admin-Actividad`, con «Ver más»; ambas se abren desde el Resumen)
 - [ ] 7.6 Resumen semanal (`/admin/reporte`)
 - [ ] 7.7 Recorrido en el navegador: crear sobandero, primer ingreso, baja con cada opción
 

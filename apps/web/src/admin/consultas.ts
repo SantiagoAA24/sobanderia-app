@@ -1,6 +1,6 @@
 /** Consultas y cambios del panel del administrador. Todo pasa por el cliente tipado de la API. */
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api, datos } from "../api/cliente";
 import type { components } from "../api/esquema";
@@ -12,6 +12,8 @@ export type SobanderoAdmin = Esquemas["SobanderoAdminOut"];
 export type HorarioSobandero = Esquemas["HorarioOut"];
 export type DiaHorarioAdmin = Esquemas["DiaHorarioIO"];
 export type NuevoSobandero = Esquemas["NuevoSobanderoIn"];
+export type DatosNegocio = Esquemas["NegocioIn"];
+export type FilaActividad = Esquemas["ActividadOut"];
 export type CambioSobandero = Esquemas["CambioSobanderoIn"];
 
 /** Todo lo del administrador cuelga de esta clave: un cambio la invalida y las pantallas se ponen al día. */
@@ -110,3 +112,33 @@ export const useDarDeBaja = (id: number) => {
     },
   });
 };
+
+export const useDatosNegocio = () =>
+  useQuery({
+    queryKey: [ADMIN, "negocio"],
+    queryFn: async () => datos(await api.GET("/admin/negocio")),
+  });
+
+/** Lo que guarda el administrador es lo que ve el cliente en Inicio: se pone al día también esa consulta. */
+export const useGuardarNegocio = () => {
+  const cliente = useQueryClient();
+  return useMutation({
+    mutationFn: async (cuerpo: DatosNegocio) => datos(await api.PUT("/admin/negocio", { body: cuerpo })),
+    onSuccess: (negocio) => {
+      cliente.setQueryData([ADMIN, "negocio"], negocio);
+      void cliente.invalidateQueries({ queryKey: [ADMIN] });
+      void cliente.invalidateQueries({ queryKey: ["negocio"] });
+    },
+  });
+};
+
+export const FILAS_POR_PAGINA = 30;
+
+/** Lo más reciente primero; cada página pide las anteriores a la última fila vista. */
+export const useActividad = () =>
+  useInfiniteQuery({
+    queryKey: [ADMIN, "actividad"],
+    initialPageParam: undefined as number | undefined,
+    queryFn: async ({ pageParam }) => datos(await api.GET("/admin/actividad", { params: { query: { limite: FILAS_POR_PAGINA, antes: pageParam } } })),
+    getNextPageParam: (ultima) => (ultima.length === FILAS_POR_PAGINA ? ultima.at(-1)?.id : undefined),
+  });
