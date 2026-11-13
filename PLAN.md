@@ -43,7 +43,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] 6.1 API del sobandero: `GET /yo/citas/{id}`, `/yo/dias`, `/yo/horas`, `/yo/horario` (GET y PUT), `/yo/bloqueos`, `/yo/clientes` y `/yo/perfil`, con permisos por sobandero
   - Nota: una clave actual incorrecta responde 401 con código `clave_incorrecta` (antes `no_autorizado`), para que el panel no lo confunda con una sesión vencida.
   - Nota del entorno: si `mypy` falla con «No module named pydantic», ponga `/usr/local/bin` primero en el PATH.
-- [ ] 6.2 Ingreso, primer ingreso (clave temporal en memoria), recuperar clave y base del panel
+- [x] 6.2 Ingreso, primer ingreso (clave temporal en memoria), recuperar clave y base del panel
 - [ ] 6.3 Hoy, Semana, Día vacío, Cita, Cambiar la hora, No asistió y Cancelar con aviso
 - [ ] 6.4 Nueva cita, Bloquear horas (con «Horas bloqueadas» para quitarlas), Horario y Horario del día
 - [ ] 6.5 Clientes, Ficha, Mi perfil, Cambiar correo, Cambiar clave y Clave cambiada

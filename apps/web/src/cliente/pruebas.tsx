@@ -18,7 +18,7 @@ export function servidor(rutas: Record<string, Manejador>) {
     const completa = typeof m === "object" && m !== null && "estado" in m && "cuerpo" in m;
     const r = typeof m === "function" ? await (m as (p: Request) => unknown)(peticion.clone()) : completa ? m : { cuerpo: m };
     const { estado = 200, cuerpo } = r as { estado?: number; cuerpo: unknown };
-    return new Response(JSON.stringify(cuerpo), { status: estado });
+    return new Response(estado === 204 ? null : JSON.stringify(cuerpo), { status: estado });
   });
   vi.stubGlobal("fetch", falso);
   return falso;

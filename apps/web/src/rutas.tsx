@@ -2,6 +2,9 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate, type RouteObject } from "react-router-dom";
 
 import { GuardaAdmin, GuardaPanel, GuardaPrimeraClave } from "./auth/Guardas";
+import { Ingreso } from "./auth/Ingreso";
+import { PrimeraClave } from "./auth/PrimeraClave";
+import { ClaveEnviada, OlvideClave, RestablecerClave } from "./auth/RecuperarClave";
 import { rutasCliente } from "./cliente/rutas";
 import { Marcador } from "./Marcador";
 import { Cargando } from "./transversales/Cargando";
@@ -19,10 +22,11 @@ export const rutasApp: RouteObject[] = [
   ...rutasCliente,
 
   // Ingreso con correo y clave
-  { path: "/ingreso", element: m("Ingreso") },
-  { path: "/olvide-clave", element: m("Olvide-clave") },
-  { path: "/restablecer/:token", element: m("Clave nueva") },
-  { element: <GuardaPrimeraClave />, children: [{ path: "/primera-clave", element: m("Cambiar-clave") }] },
+  { path: "/ingreso", element: <Ingreso /> },
+  { path: "/olvide-clave", element: <OlvideClave /> },
+  { path: "/olvide-clave/enviado", element: <ClaveEnviada /> },
+  { path: "/restablecer/:token", element: <RestablecerClave /> },
+  { element: <GuardaPrimeraClave />, children: [{ path: "/primera-clave", element: <PrimeraClave /> }] },
 
   // Sobandero y administrador
   {

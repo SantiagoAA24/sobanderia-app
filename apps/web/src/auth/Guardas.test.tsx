@@ -46,14 +46,14 @@ describe("guardas de ruta", () => {
   it("sin sesión, /panel lleva a /ingreso", async () => {
     simularServidor("sin-sesion");
     const router = abrir("/panel/hoy");
-    expect(await titulo("Ingreso")).toBeInTheDocument();
+    expect(await titulo("Ingrese a su cuenta")).toBeInTheDocument();
     expect(router.state.location.pathname).toBe("/ingreso");
   });
 
   it("sin sesión, /admin lleva a /ingreso", async () => {
     simularServidor("sin-sesion");
     abrir("/admin/sobanderos");
-    expect(await titulo("Ingreso")).toBeInTheDocument();
+    expect(await titulo("Ingrese a su cuenta")).toBeInTheDocument();
   });
 
   it("mientras comprueba la sesión muestra «Cargando…»", async () => {
@@ -92,27 +92,27 @@ describe("guardas de ruta", () => {
   it("con clave temporal, todo el panel redirige a /primera-clave", async () => {
     simularServidor(claveTemporal);
     const router = abrir("/panel/hoy");
-    expect(await titulo("Cambiar-clave")).toBeInTheDocument();
+    expect(await titulo("Cree su clave nueva")).toBeInTheDocument();
     expect(router.state.location.pathname).toBe("/primera-clave");
   });
 
   it("con clave temporal, /admin también redirige", async () => {
     simularServidor({ ...claveTemporal, rol: "admin" });
     abrir("/admin/hoy");
-    expect(await titulo("Cambiar-clave")).toBeInTheDocument();
+    expect(await titulo("Cree su clave nueva")).toBeInTheDocument();
   });
 
   it("/primera-clave se abre sin entrar en bucle", async () => {
     simularServidor(claveTemporal);
     const router = abrir("/primera-clave");
-    expect(await titulo("Cambiar-clave")).toBeInTheDocument();
+    expect(await titulo("Cree su clave nueva")).toBeInTheDocument();
     expect(router.state.location.pathname).toBe("/primera-clave");
   });
 
   it("sin sesión, /primera-clave lleva a /ingreso", async () => {
     simularServidor("sin-sesion");
     abrir("/primera-clave");
-    expect(await titulo("Ingreso")).toBeInTheDocument();
+    expect(await titulo("Ingrese a su cuenta")).toBeInTheDocument();
   });
 
   it("si no hay red muestra «Sin conexión» y reintenta", async () => {

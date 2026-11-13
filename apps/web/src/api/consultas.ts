@@ -19,24 +19,29 @@ export function debeReintentar(intentos: number, error: unknown): boolean {
 
 export function crearClienteDeConsultas({ alVencerSesion, alVencerEnlace }: ManejadoresGlobales): QueryClient {
   // `cliente` se usa dentro de los manejadores, que solo corren después de crearlo.
-  const alFallar = (error: unknown) => {
+  const alFallar = (error: unknown, propio = false) => {
     if (!esErrorApi(error)) return; // ErrorRed: la pantalla muestra «Sin conexión»
-    if (error.estado === 401) {
+    if (error.estado === 401 && error.codigo === "clave_incorrecta") {
+      // La clave actual escrita para confirmar un cambio no coincide: lo explica la pantalla, la sesión sigue.
+    } else if (error.estado === 401) {
       // Sin sesión previa (p. ej. clave incorrecta en el ingreso) el 401 lo atiende la pantalla.
       const habiaSesion = cliente.getQueryData<Usuario | null>(CLAVES.sesion);
       if (habiaSesion) {
         cliente.setQueryData(CLAVES.sesion, null);
         alVencerSesion();
       }
-    } else if (error.estado === 410 && error.codigo === "enlace_vencido") {
+    } else if (error.estado === 410 && error.codigo === "enlace_vencido" && !propio) {
       alVencerEnlace();
     }
     // 409 hora_ocupada y el resto los maneja la pantalla, que conserva lo escrito.
   };
 
   const cliente: QueryClient = new QueryClient({
-    queryCache: new QueryCache({ onError: alFallar }),
-    mutationCache: new MutationCache({ onError: alFallar }),
+    queryCache: new QueryCache({ onError: (error) => alFallar(error) }),
+    // Una mutación con `meta.atiendeEnlaceVencido` muestra ella misma el 410 (p. ej. el enlace de recuperar clave).
+    mutationCache: new MutationCache({
+      onError: (error, _variables, _contexto, mutacion) => alFallar(error, mutacion.meta?.atiendeEnlaceVencido === true),
+    }),
     defaultOptions: {
       queries: { retry: debeReintentar, refetchOnWindowFocus: false },
       mutations: { retry: false },

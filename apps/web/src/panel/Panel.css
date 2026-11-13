@@ -1,0 +1,25 @@
+/* Estructura común de las pantallas del sobandero. Solo variables de tokens.css. */
+.sb-pn__cab { padding: var(--space-24) var(--space-20) 0; }
+.sb-pn__main { flex: 1; min-height: 0; padding: var(--space-16) var(--space-20); display: flex; flex-direction: column; gap: var(--space-16); }
+.sb-pn__pie { display: flex; flex-direction: column; gap: var(--space-10); padding: var(--space-16) var(--space-20) var(--space-24); }
+.sb-pn__lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-10); }
+.sb-pn__seccion { display: flex; flex-direction: column; gap: var(--space-10); }
+.sb-pn__fila { display: flex; gap: var(--space-10); }
+.sb-pn__fila > * { flex: 1; }
+.sb-pn__horas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-10); }
+.sb-pn__error { color: var(--brand-deep); }
+.sb-pn__marca { color: var(--brand-deep); }
+.sb-pn__nota { text-align: center; }
+.sb-pn__nav { position: sticky; bottom: 0; }
+.sb-pn__encabezado { position: relative; }
+.sb-pn__avatar {
+  position: absolute;
+  right: var(--space-20);
+  top: var(--space-24);
+  width: var(--tactil-min);
+  height: var(--tactil-min);
+  border: 0;
+  border-radius: var(--radius-round);
+  background: transparent;
+}
+.sb-pn__enlace { display: inline-flex; align-items: center; min-height: var(--tactil-min); }
