@@ -8,6 +8,7 @@ import { FichaSobandero } from "./FichaSobandero";
 import { HorarioDiaSobandero, HorarioSobandero } from "./HorarioSobandero";
 import { Negocio } from "./Negocio";
 import { NuevoSobandero } from "./NuevoSobandero";
+import { Reporte } from "./Reporte";
 import { Resumen } from "./Resumen";
 import { Sobanderos } from "./Sobanderos";
 
@@ -15,6 +16,7 @@ import { Sobanderos } from "./Sobanderos";
 export const rutasAdmin: RouteObject[] = [
   { path: "hoy", element: <Resumen /> },
   { path: "agenda", element: <Agenda /> },
+  { path: "reporte", element: <Reporte /> },
   { path: "negocio", element: <Negocio /> },
   { path: "actividad", element: <Actividad /> },
   { path: "sobanderos", element: <Sobanderos /> },

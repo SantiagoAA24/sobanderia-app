@@ -12,6 +12,7 @@ export type SobanderoAdmin = Esquemas["SobanderoAdminOut"];
 export type HorarioSobandero = Esquemas["HorarioOut"];
 export type DiaHorarioAdmin = Esquemas["DiaHorarioIO"];
 export type NuevoSobandero = Esquemas["NuevoSobanderoIn"];
+export type ReporteSemanal = Esquemas["ReporteOut"];
 export type DatosNegocio = Esquemas["NegocioIn"];
 export type FilaActividad = Esquemas["ActividadOut"];
 export type CambioSobandero = Esquemas["CambioSobanderoIn"];
@@ -141,4 +142,11 @@ export const useActividad = () =>
     initialPageParam: undefined as number | undefined,
     queryFn: async ({ pageParam }) => datos(await api.GET("/admin/actividad", { params: { query: { limite: FILAS_POR_PAGINA, antes: pageParam } } })),
     getNextPageParam: (ultima) => (ultima.length === FILAS_POR_PAGINA ? ultima.at(-1)?.id : undefined),
+  });
+
+/** Semana de hoy (lunes a domingo): el servidor la calcula en hora de Bogotá. */
+export const useReporte = () =>
+  useQuery({
+    queryKey: [ADMIN, "reporte"],
+    queryFn: async () => datos(await api.GET("/admin/reporte", { params: { query: {} } })),
   });

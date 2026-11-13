@@ -308,6 +308,51 @@ def agenda(db: Session, dia: date) -> list[tuple[Cita, Cliente, Sobandero]]:
     return [(c, cl, s) for c, cl, s in db.execute(consulta)]
 
 
+@dataclass
+class FilaReporte:
+    sobandero: Sobandero
+    atendidas: int
+    no_asistieron: int
+    canceladas: int
+
+
+def reporte(db: Session, semana: date) -> tuple[date, date, list[FilaReporte]]:
+    """Atendidas, no asistidas y canceladas de la semana (lunes a domingo) que contiene `semana`.
+
+    Salen quienes están activos y quienes, aun de baja, tuvieron citas esa semana.
+    """
+    lunes = semana - timedelta(days=semana.weekday())
+    ventana = Range(a_utc(lunes, time(0)), a_utc(lunes + timedelta(days=7), time(0)), bounds="[)")
+    cuentas: dict[tuple[int, str], int] = {
+        (sid, estado): n
+        for sid, estado, n in db.execute(
+            select(Cita.sobandero_id, Cita.estado, func.count(Cita.id))
+            .where(
+                Cita.rango.overlaps(ventana),
+                Cita.estado.in_(("atendida", "no_asistio", "cancelada")),
+            )
+            .group_by(Cita.sobandero_id, Cita.estado)
+        )
+    }
+    con_citas = {sid for sid, _ in cuentas}
+    sobanderos = db.scalars(
+        select(Sobandero)
+        .join(Usuario, Usuario.id == Sobandero.usuario_id)
+        .where(Usuario.activo | Sobandero.id.in_(con_citas))
+        .order_by(Sobandero.id)
+    ).all()
+    filas = [
+        FilaReporte(
+            s,
+            cuentas.get((s.id, "atendida"), 0),
+            cuentas.get((s.id, "no_asistio"), 0),
+            cuentas.get((s.id, "cancelada"), 0),
+        )
+        for s in sobanderos
+    ]
+    return lunes, lunes + timedelta(days=6), filas
+
+
 def dia_de_hoy(ahora: datetime) -> date:
     return dia_local(ahora)
 

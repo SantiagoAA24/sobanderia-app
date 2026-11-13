@@ -110,6 +110,25 @@ class CitaAgendaOut(BaseModel):
     sobandero: SobanderoCortoOut
 
 
+class FilaReporteOut(BaseModel):
+    id: int
+    nombre: str
+    atendidas: int
+    no_asistieron: int
+    canceladas: int
+
+
+class ReporteOut(BaseModel):
+    """`desde` es el lunes y `hasta` el domingo de la semana."""
+
+    desde: date
+    hasta: date
+    atendidas: int
+    no_asistieron: int
+    canceladas: int
+    por_sobandero: list[FilaReporteOut]
+
+
 class NegocioIn(BaseModel):
     nombre: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=120)]
     direccion: Annotated[
@@ -185,6 +204,29 @@ def ver_agenda(db: Db, ahora: Ahora, dia: date | None = None) -> list[CitaAgenda
         )
         for c, cl, s in servicio.agenda(db, dia)
     ]
+
+
+@router.get("/reporte")
+def ver_reporte(db: Db, ahora: Ahora, semana: date | None = None) -> ReporteOut:
+    """Resumen semanal. Sin `semana` es la de hoy; con una fecha, la semana que la contiene."""
+    desde, hasta, filas = servicio.reporte(db, semana or servicio.dia_de_hoy(ahora))
+    return ReporteOut(
+        desde=desde,
+        hasta=hasta,
+        atendidas=sum(f.atendidas for f in filas),
+        no_asistieron=sum(f.no_asistieron for f in filas),
+        canceladas=sum(f.canceladas for f in filas),
+        por_sobandero=[
+            FilaReporteOut(
+                id=f.sobandero.id,
+                nombre=f.sobandero.usuario.nombre,
+                atendidas=f.atendidas,
+                no_asistieron=f.no_asistieron,
+                canceladas=f.canceladas,
+            )
+            for f in filas
+        ],
+    )
 
 
 # --- Sobanderos -------------------------------------------------------------------------------

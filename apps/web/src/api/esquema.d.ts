@@ -62,6 +62,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/reporte": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ver Reporte
+         * @description Resumen semanal. Sin `semana` es la de hoy; con una fecha, la semana que la contiene.
+         */
+        get: operations["ver_reporte_admin_reporte_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/resumen": {
         parameters: {
             query?: never;
@@ -937,6 +957,19 @@ export interface components {
             /** Total */
             total: number;
         };
+        /** FilaReporteOut */
+        FilaReporteOut: {
+            /** Atendidas */
+            atendidas: number;
+            /** Canceladas */
+            canceladas: number;
+            /** Id */
+            id: number;
+            /** No Asistieron */
+            no_asistieron: number;
+            /** Nombre */
+            nombre: string;
+        };
         /** FilaResumenOut */
         FilaResumenOut: {
             /** Citas */
@@ -1079,6 +1112,30 @@ export interface components {
         RecuperarIn: {
             /** Correo */
             correo: string;
+        };
+        /**
+         * ReporteOut
+         * @description `desde` es el lunes y `hasta` el domingo de la semana.
+         */
+        ReporteOut: {
+            /** Atendidas */
+            atendidas: number;
+            /** Canceladas */
+            canceladas: number;
+            /**
+             * Desde
+             * Format: date
+             */
+            desde: string;
+            /**
+             * Hasta
+             * Format: date
+             */
+            hasta: string;
+            /** No Asistieron */
+            no_asistieron: number;
+            /** Por Sobandero */
+            por_sobandero: components["schemas"]["FilaReporteOut"][];
         };
         /** ReprogramarIn */
         ReprogramarIn: {
@@ -1387,6 +1444,55 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    ver_reporte_admin_reporte_get: {
+        parameters: {
+            query?: {
+                semana?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReporteOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

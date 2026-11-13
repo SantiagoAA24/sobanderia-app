@@ -649,6 +649,39 @@
         "title": "FichaClienteOut",
         "type": "object"
       },
+      "FilaReporteOut": {
+        "properties": {
+          "atendidas": {
+            "title": "Atendidas",
+            "type": "integer"
+          },
+          "canceladas": {
+            "title": "Canceladas",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "no_asistieron": {
+            "title": "No Asistieron",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "atendidas",
+          "no_asistieron",
+          "canceladas"
+        ],
+        "title": "FilaReporteOut",
+        "type": "object"
+      },
       "FilaResumenOut": {
         "properties": {
           "citas": {
@@ -1056,6 +1089,50 @@
           "correo"
         ],
         "title": "RecuperarIn",
+        "type": "object"
+      },
+      "ReporteOut": {
+        "description": "`desde` es el lunes y `hasta` el domingo de la semana.",
+        "properties": {
+          "atendidas": {
+            "title": "Atendidas",
+            "type": "integer"
+          },
+          "canceladas": {
+            "title": "Canceladas",
+            "type": "integer"
+          },
+          "desde": {
+            "format": "date",
+            "title": "Desde",
+            "type": "string"
+          },
+          "hasta": {
+            "format": "date",
+            "title": "Hasta",
+            "type": "string"
+          },
+          "no_asistieron": {
+            "title": "No Asistieron",
+            "type": "integer"
+          },
+          "por_sobandero": {
+            "items": {
+              "$ref": "#/components/schemas/FilaReporteOut"
+            },
+            "title": "Por Sobandero",
+            "type": "array"
+          }
+        },
+        "required": [
+          "desde",
+          "hasta",
+          "atendidas",
+          "no_asistieron",
+          "canceladas",
+          "por_sobandero"
+        ],
+        "title": "ReporteOut",
         "type": "object"
       },
       "ReprogramarIn": {
@@ -1609,6 +1686,77 @@
           }
         },
         "summary": "Guardar Negocio",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/reporte": {
+      "get": {
+        "description": "Resumen semanal. Sin `semana` es la de hoy; con una fecha, la semana que la contiene.",
+        "operationId": "ver_reporte_admin_reporte_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "semana",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semana"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReporteOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ver Reporte",
         "tags": [
           "admin"
         ]

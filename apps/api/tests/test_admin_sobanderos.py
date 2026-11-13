@@ -40,6 +40,7 @@ def nuevo(**cambios: object) -> dict[str, object]:
 RUTAS = [
     ("GET", "/admin/resumen"),
     ("GET", "/admin/agenda"),
+    ("GET", "/admin/reporte"),
     ("GET", "/admin/sobanderos"),
     ("POST", "/admin/sobanderos"),
     ("GET", "/admin/sobanderos/1"),

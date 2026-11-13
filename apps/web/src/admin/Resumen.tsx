@@ -54,6 +54,7 @@ function ContenidoResumen({ resumen }: { resumen: ResumenAdmin }) {
           ))}
         </ul>
       </section>
+      <OptionRow title="Resumen de la semana" caption="Citas atendidas, no asistidas y canceladas" icon="calendar-week" onClick={() => navigate("/admin/reporte")} />
       <OptionRow title="Datos del negocio" caption="Teléfono, dirección y mensaje de bienvenida" icon="users" onClick={() => navigate("/admin/negocio")} />
       <OptionRow title="Registro de actividad" caption="Quién cambió qué y cuándo" icon="clock" onClick={() => navigate("/admin/actividad")} />
     </>

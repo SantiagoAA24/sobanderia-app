@@ -63,7 +63,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
   - Diferencia con el lienzo: en «Nuevo sobandero» la duración queda en 30 minutos (fila informativa); se cambia después en la ficha.
 - [x] 7.4 Dar de baja (pantalla `Admin-Baja`: dejar o cancelar con aviso, con el número de clientes que recibirán WhatsApp)
 - [x] 7.5 Datos del negocio y Registro de actividad (pantalla nueva `Admin-Actividad`, con «Ver más»; ambas se abren desde el Resumen)
-- [ ] 7.6 Resumen semanal (`/admin/reporte`)
+- [x] 7.6 Resumen semanal (`GET /admin/reporte` y pantalla `Admin-Reporte`; solo la semana actual, como el lienzo)
 - [ ] 7.7 Recorrido en el navegador: crear sobandero, primer ingreso, baja con cada opción
 
 ## Fase 8 — WhatsApp y recordatorios
