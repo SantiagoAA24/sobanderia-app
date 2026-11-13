@@ -18,10 +18,18 @@ const HORAS = opcionesDeHora("05:00", "21:00");
 export function HorarioDia() {
   const indice = SEGMENTOS_DIA.indexOf(useParams().dia as (typeof SEGMENTOS_DIA)[number]);
   const horario = useHorario();
+  const guardar = useGuardarHorario();
   if (indice < 0) return <Navigate to="/panel/horario" replace />;
   return (
     <Cargable consulta={horario} texto="Buscando su horario…">
-      {(h) => <FormularioDia indice={indice} inicial={h.dias.find((d) => d.dia_semana === indice)?.franjas ?? []} />}
+      {(h) => (
+        <FormularioDia
+          indice={indice}
+          inicial={h.dias.find((d) => d.dia_semana === indice)?.franjas ?? []}
+          volverA="/panel/horario"
+          guardador={guardar}
+        />
+      )}
     </Cargable>
   );
 }
@@ -44,9 +52,15 @@ function Selector({ etiqueta, valor, onChange }: { etiqueta: string; valor: stri
   );
 }
 
-function FormularioDia({ indice, inicial }: { indice: number; inicial: Franja[] }) {
+/** Lo que necesita el formulario para guardar: la mutación del sobandero o la del administrador. */
+export interface Guardador {
+  isPending: boolean;
+  mutate: (dias: DiaHorario[], opciones: { onSuccess: () => void; onError: (e: unknown) => void }) => void;
+}
+
+/** Si atiende ese día y sus franjas. Al guardar vuelve a `volverA`. */
+export function FormularioDia({ indice, inicial, volverA, guardador: guardar }: { indice: number; inicial: Franja[]; volverA: string; guardador: Guardador }) {
   const navigate = useNavigate();
-  const guardar = useGuardarHorario();
   const nombre = nombreDiaSemana(indice);
   const [franjas, setFranjas] = useState<Franja[]>(inicial);
   const [error, setError] = useState<string | null>(null);
@@ -73,14 +87,14 @@ function FormularioDia({ indice, inicial }: { indice: number; inicial: Franja[] 
       }
     }
     guardar.mutate([{ dia_semana: indice, franjas }], {
-      onSuccess: () => navigate("/panel/horario", { replace: true }),
+      onSuccess: () => navigate(volverA, { replace: true }),
       onError: (e) => setError(textoDeError(e)),
     });
   };
 
   return (
     <PantallaPanel
-      cabecera={<BackHeader onBack={() => navigate("/panel/horario")} />}
+      cabecera={<BackHeader onBack={() => navigate(volverA)} />}
       pie={
         <Button icon="check" onClick={enviar} disabled={guardar.isPending} block>
           Guardar horario

@@ -4,7 +4,7 @@ import { useSesion } from "../api/sesion";
 import { Button, IconButton, OptionRow } from "../componentes/ui";
 import { Cargable } from "../cliente/Disposicion";
 import { diaBogota, fechaLarga } from "../lib/fechas";
-import { useBloqueos, useHorario, useQuitarBloqueo, type Bloqueo } from "./consultas";
+import { useBloqueos, useHorario, useQuitarBloqueo, type Bloqueo, type Horario as HorarioSemana } from "./consultas";
 import { PantallaPanel } from "./Disposicion";
 import { inicialDe, nombreDiaSemana, textoFranjas, textoHora } from "./formato";
 
@@ -21,13 +21,7 @@ export function Horario() {
       <Cargable consulta={horario} texto="Buscando su horario…">
         {(h) => (
           <>
-            <ul className="sb-pn__lista">
-              {h.dias.map((d) => (
-                <li key={d.dia_semana}>
-                  <OptionRow title={nombreDiaSemana(d.dia_semana)} caption={textoFranjas(d.franjas)} onClick={() => navigate(`/panel/horario/${SEGMENTOS_DIA[d.dia_semana]}`)} />
-                </li>
-              ))}
-            </ul>
+            <ListaDias horario={h} alElegir={(dia) => navigate(`/panel/horario/${SEGMENTOS_DIA[dia]}`)} />
             <OptionRow title="Duración de cada cita" caption={`${h.duracion_min} minutos. La cambia el administrador.`} icon="clock" trailing="none" />
             <HorasBloqueadas />
           </>
@@ -37,6 +31,19 @@ export function Horario() {
         Bloquear horas
       </Button>
     </PantallaPanel>
+  );
+}
+
+/** Los siete días con sus franjas; cada fila abre ese día. La usan el sobandero y el administrador. */
+export function ListaDias({ horario, alElegir }: { horario: HorarioSemana; alElegir: (dia: number) => void }) {
+  return (
+    <ul className="sb-pn__lista">
+      {horario.dias.map((d) => (
+        <li key={d.dia_semana}>
+          <OptionRow title={nombreDiaSemana(d.dia_semana)} caption={textoFranjas(d.franjas)} onClick={() => alElegir(d.dia_semana)} />
+        </li>
+      ))}
+    </ul>
   );
 }
 

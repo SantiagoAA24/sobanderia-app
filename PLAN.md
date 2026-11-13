@@ -57,7 +57,10 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
   - Decisión: el registro de actividad usa la tabla `auditoria`; la pantalla `Admin-Actividad` es nueva (no estaba en el lienzo) y se enlaza desde el Resumen.
 - [x] 7.2 Base del admin (barra de tres elementos), Resumen y Agenda
   - Nota: la Agenda muestra solo el día de hoy, como el lienzo. El administrador no tiene pantalla de perfil ni cerrar sesión en el lienzo; queda pendiente de decisión de diseño.
-- [ ] 7.3 Sobanderos: lista, Nuevo, Ficha, Duración y Horario
+- [x] 7.3 Sobanderos: lista, Nuevo, Ficha, Duración y Horario
+  - La clave temporal solo vive en el campo de «Nuevo sobandero»: se envía una vez y no pasa por la URL, el historial ni la respuesta.
+  - Horario del sobandero reutiliza `ListaDias` y `FormularioDia` del panel (sin duplicar código).
+  - Diferencia con el lienzo: en «Nuevo sobandero» la duración queda en 30 minutos (fila informativa); se cambia después en la ficha.
 - [ ] 7.4 Dar de baja
 - [ ] 7.5 Datos del negocio y Actividad
 - [ ] 7.6 Resumen semanal (`/admin/reporte`)

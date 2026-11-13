@@ -16,8 +16,9 @@ function simularServidor(sesion: Respuesta) {
     if (sesion === "sin-sesion") {
       return new Response(JSON.stringify({ codigo: "no_autorizado", mensaje: "Debe ingresar para continuar." }), { status: 401 });
     }
-    // Las pantallas del panel piden sus citas: sin citas, para que solo se pruebe la guarda.
-    if (new URL(peticion.url).pathname.includes("/yo/citas")) return new Response("[]", { status: 200 });
+    // Las pantallas del panel y del administrador piden sus listas: vacías, para que solo se pruebe la guarda.
+    const { pathname } = new URL(peticion.url);
+    if (pathname.includes("/yo/citas") || pathname.endsWith("/admin/sobanderos")) return new Response("[]", { status: 200 });
     return new Response(JSON.stringify(sesion), { status: 200 });
   });
   vi.stubGlobal("fetch", fetchFalso);
@@ -88,7 +89,7 @@ describe("guardas de ruta", () => {
   it("el administrador entra a /admin y también al panel", async () => {
     simularServidor(admin);
     const primero = abrir("/admin/sobanderos");
-    expect(await titulo("Admin-Sobanderos")).toBeInTheDocument();
+    expect(await titulo("Sobanderos")).toBeInTheDocument();
     expect(primero.state.location.pathname).toBe("/admin/sobanderos");
   });
 
