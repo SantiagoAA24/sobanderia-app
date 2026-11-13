@@ -10,9 +10,9 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] GitHub Actions que corre `make check` en cada pull request
 
 ## Fase 1 — Base de datos
-- [ ] Modelos, migración con las doce tablas y restricción `citas_sin_cruce`
-- [ ] `make seed` con datos de ejemplo
-- [ ] Pruebas de cruce contra PostgreSQL real
+- [x] Modelos, migración con las doce tablas y restricción `citas_sin_cruce`
+- [x] `make seed` con datos de ejemplo
+- [x] Pruebas de cruce contra PostgreSQL real
 
 ## Fase 2 — Ingreso y roles
 - [ ] Argon2id, sesiones y cookie
