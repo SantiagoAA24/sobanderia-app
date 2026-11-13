@@ -28,3 +28,9 @@ FabricaSesion = sessionmaker(motor, expire_on_commit=False)
 def sesion_nueva() -> Iterator[Session]:
     with FabricaSesion() as sesion:
         yield sesion
+
+
+def obtener_sesion() -> Iterator[Session]:
+    """Dependencia de FastAPI: una sesión de base por petición."""
+    with FabricaSesion() as sesion:
+        yield sesion

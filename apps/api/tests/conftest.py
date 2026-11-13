@@ -8,6 +8,8 @@ from pathlib import Path
 import pytest
 from alembic import command
 from alembic.config import Config
+from fastapi.testclient import TestClient
+from httpx import Response
 from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.dialects.postgresql import Range
 from sqlalchemy.engine import make_url
@@ -124,3 +126,65 @@ def crear_cita(
         sesion.add(cita)
         sesion.flush()
     return cita
+
+
+# --- Autenticación -------------------------------------------------------------------------
+
+CLAVE = "clave-segura-1"
+CSRF = {"X-Sobanderia": "1"}
+
+
+class CorreoEspia:
+    """Reemplaza al enviador de correo y guarda lo que se habría enviado."""
+
+    def __init__(self) -> None:
+        self.enviados: list[tuple[str, str, str]] = []
+
+    def enviar(self, destino: str, asunto: str, cuerpo: str) -> None:
+        self.enviados.append((destino, asunto, cuerpo))
+
+
+@pytest.fixture
+def correo() -> CorreoEspia:
+    return CorreoEspia()
+
+
+@pytest.fixture
+def api(sesion: Session, correo: CorreoEspia) -> Iterator[TestClient]:
+    from app.correo import obtener_enviador
+    from app.db import obtener_sesion
+    from app.main import app
+
+    app.dependency_overrides[obtener_sesion] = lambda: sesion
+    app.dependency_overrides[obtener_enviador] = lambda: correo
+    try:
+        yield TestClient(app)
+    finally:
+        app.dependency_overrides.clear()
+
+
+def crear_usuario(
+    sesion: Session,
+    correo: str = "ana@sobanderia.test",
+    clave: str = CLAVE,
+    rol: str = "sobandero",
+    activo: bool = True,
+    debe_cambiar_clave: bool = False,
+) -> Usuario:
+    from app.seguridad.claves import hashear_clave
+
+    usuario = Usuario(
+        correo=correo,
+        nombre="Ana",
+        clave_hash=hashear_clave(clave),
+        rol=rol,
+        activo=activo,
+        debe_cambiar_clave=debe_cambiar_clave,
+    )
+    sesion.add(usuario)
+    sesion.flush()
+    return usuario
+
+
+def ingresar(api: TestClient, correo: str = "ana@sobanderia.test", clave: str = CLAVE) -> Response:
+    return api.post("/auth/ingreso", json={"correo": correo, "clave": clave}, headers=CSRF)

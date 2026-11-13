@@ -45,3 +45,15 @@ class RecuperacionClave(Base):
     vence_en: Mapped[Momento]
     usado: Mapped[bool] = mapped_column(Boolean, server_default=false())
     creado_en: Mapped[CreadoEn]
+
+
+class IntentoIngreso(Base):
+    """Intento fallido de ingreso o solicitud de recuperación; sirve para limitar la frecuencia."""
+
+    __tablename__ = "intentos_ingreso"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    tipo: Mapped[str] = mapped_column(String(20))  # "ingreso" o "recuperar"
+    correo: Mapped[str] = mapped_column(String(254))  # normalizado en minúsculas
+    ip: Mapped[str] = mapped_column(String(45))
+    momento: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

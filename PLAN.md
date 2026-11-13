@@ -15,8 +15,9 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] Pruebas de cruce contra PostgreSQL real
 
 ## Fase 2 — Ingreso y roles
-- [ ] Argon2id, sesiones y cookie
-- [ ] Ingreso, salida, roles, primer ingreso, recuperación y cambio de clave
+- [x] Argon2id, sesiones y cookie
+- [x] Ingreso, salida, roles, primer ingreso, recuperación y cambio de clave
+- [ ] Cambio de correo desde el perfil (pendiente: va con `PATCH /yo/perfil` en la Fase 6)
 
 ## Fase 3 — Horas libres y agendamiento
 - [ ] `horas_libres` y rutas públicas

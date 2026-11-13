@@ -16,10 +16,11 @@ TABLAS = {
     "recuperaciones_clave",
     "negocio",
     "auditoria",
+    "intentos_ingreso",
 }
 
 
-def test_migracion_desde_cero_crea_las_doce_tablas_y_extensiones(motor: Engine) -> None:
+def test_migracion_desde_cero_crea_las_trece_tablas_y_extensiones(motor: Engine) -> None:
     reiniciar_esquema(motor)
     command.upgrade(config_alembic(), "head")
     assert TABLAS <= set(inspect(motor).get_table_names())
