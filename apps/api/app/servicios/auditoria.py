@@ -50,6 +50,8 @@ def texto(accion: str, detalle: dict[str, Any] | None) -> str:
         return f"Dio de baja a {quien} y canceló {citas} con aviso."
     if accion == "baja_completada":
         return f"{quien} terminó sus citas y quedó dado de baja."
+    if accion == "mensaje_reenviado":
+        return "Reenvió un mensaje que no había salido."
     if accion == "negocio_editado":
         return "Cambió los datos del negocio."
     return "Hizo un cambio."

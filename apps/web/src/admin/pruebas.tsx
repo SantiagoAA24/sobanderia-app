@@ -7,6 +7,7 @@ export const RESUMEN: ResumenAdmin = {
   dia: "2030-01-07",
   citas_total: 22,
   sobanderos_atendiendo: 3,
+  mensajes_fallidos: 0,
   por_sobandero: [
     { id: 3, nombre: "Carlos", citas: 6, siguiente: "2099-01-05T14:30:00Z" },
     { id: 4, nombre: "Marcela", citas: 1, siguiente: "2099-01-05T15:00:00Z" },

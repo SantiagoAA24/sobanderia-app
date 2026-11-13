@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.correo import EnviadorCorreo, obtener_enviador
 from app.db import obtener_sesion
-from app.modelos import Usuario
+from app.modelos import Cita, Cliente, Notificacion, Usuario
 from app.reloj import Ahora
 from app.rutas.esquemas import (
     NO_ENCONTRADO,
@@ -21,9 +21,10 @@ from app.rutas.esquemas import (
     Respuestas,
 )
 from app.rutas.yo_agenda import HorarioIn, HorarioOut, dias_de_entrada, horario_out
+from app.seguridad.celular import enmascarar
 from app.seguridad.dependencias import requiere_admin
 from app.servicios import admin as servicio
-from app.servicios import auditoria
+from app.servicios import auditoria, mensajes
 from app.servicios import horario as servicio_horario
 
 router = APIRouter(
@@ -94,6 +95,7 @@ class ResumenOut(BaseModel):
     citas_total: int
     sobanderos_atendiendo: int
     por_sobandero: list[FilaResumenOut]
+    mensajes_fallidos: int
 
 
 class SobanderoCortoOut(BaseModel):
@@ -186,6 +188,7 @@ def ver_resumen(db: Db, ahora: Ahora, dia: date | None = None) -> ResumenOut:
             )
             for f in filas
         ],
+        mensajes_fallidos=mensajes.contar_fallidas(db),
     )
 
 
@@ -306,6 +309,68 @@ def dar_de_baja(sobandero_id: int, datos: BajaIn, db: Db, admin: Admin, ahora: A
         sobandero=_salida(servicio.ficha(db, sobandero, ahora)),
         citas_canceladas=resultado.citas_canceladas,
     )
+
+
+# --- Mensajes de WhatsApp ---------------------------------------------------------------------
+
+EstadoMensaje = Literal["pendiente", "enviada", "fallida", "cancelada"]
+MensajeNoReenviable: Respuestas = {
+    409: {"model": ErrorOut, "description": "`mensaje_no_reenviable`"}
+}
+
+
+class MensajeOut(BaseModel):
+    id: int
+    creado_en: datetime
+    plantilla: str
+    estado: EstadoMensaje
+    intentos: int
+    ultimo_error: str | None
+    cliente_nombre: str
+    celular: str  # enmascarado: «300 *** 4567»
+    cita_inicio: datetime
+    enviada_en: datetime | None
+    entregada_en: datetime | None
+    leida_en: datetime | None
+
+
+def _mensaje_out(n: Notificacion, c: Cita, cliente: Cliente) -> MensajeOut:
+    return MensajeOut(
+        id=n.id,
+        creado_en=n.creado_en,
+        plantilla=n.plantilla,
+        estado=n.estado,
+        intentos=n.intentos,
+        ultimo_error=n.ultimo_error,
+        cliente_nombre=cliente.nombre,
+        celular=enmascarar(cliente.celular),
+        cita_inicio=c.inicio,
+        enviada_en=n.enviada_en,
+        entregada_en=n.entregada_en,
+        leida_en=n.leida_en,
+    )
+
+
+@router.get("/mensajes", responses=Invalido)
+def ver_mensajes(
+    db: Db,
+    estado: EstadoMensaje | None = None,
+    limite: Annotated[int, Query(ge=1, le=100)] = 50,
+    antes: int | None = None,
+) -> list[MensajeOut]:
+    """Lo más reciente primero. Para ver más, pase `antes` con el id de la última fila vista."""
+    return [_mensaje_out(*fila) for fila in mensajes.listar(db, estado, limite, antes)]
+
+
+@router.post("/mensajes/{mensaje_id}/reenviar", responses={**NO_ENCONTRADO, **MensajeNoReenviable})
+def reenviar_mensaje(mensaje_id: int, db: Db, admin: Admin, ahora: Ahora) -> MensajeOut:
+    """Pone de nuevo en la bandeja un mensaje que falló; el worker lo envía en su próxima vuelta."""
+    fila = mensajes.reenviar(db, admin, mensaje_id, ahora)
+    cita = db.get(Cita, fila.cita_id)
+    assert cita is not None
+    cliente = db.get(Cliente, cita.cliente_id)
+    assert cliente is not None
+    return _mensaje_out(fila, cita, cliente)
 
 
 # --- Negocio y actividad ----------------------------------------------------------------------

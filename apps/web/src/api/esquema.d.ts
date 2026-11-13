@@ -44,6 +44,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/mensajes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ver Mensajes
+         * @description Lo más reciente primero. Para ver más, pase `antes` con el id de la última fila vista.
+         */
+        get: operations["ver_mensajes_admin_mensajes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/mensajes/{mensaje_id}/reenviar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reenviar Mensaje
+         * @description Pone de nuevo en la bandeja un mensaje que falló; el worker lo envía en su próxima vuelta.
+         */
+        post: operations["reenviar_mensaje_admin_mensajes__mensaje_id__reenviar_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/negocio": {
         parameters: {
             query?: never;
@@ -1036,11 +1076,6 @@ export interface components {
             /** Correo */
             correo: string;
         };
-        /** MensajeOut */
-        MensajeOut: {
-            /** Mensaje */
-            mensaje: string;
-        };
         /** NegocioIn */
         NegocioIn: {
             /** Direccion */
@@ -1161,6 +1196,8 @@ export interface components {
              * Format: date
              */
             dia: string;
+            /** Mensajes Fallidos */
+            mensajes_fallidos: number;
             /** Por Sobandero */
             por_sobandero: components["schemas"]["FilaResumenOut"][];
             /** Sobanderos Atendiendo */
@@ -1241,6 +1278,47 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** MensajeOut */
+        app__rutas__admin__MensajeOut: {
+            /** Celular */
+            celular: string;
+            /**
+             * Cita Inicio
+             * Format: date-time
+             */
+            cita_inicio: string;
+            /** Cliente Nombre */
+            cliente_nombre: string;
+            /**
+             * Creado En
+             * Format: date-time
+             */
+            creado_en: string;
+            /** Entregada En */
+            entregada_en: string | null;
+            /** Enviada En */
+            enviada_en: string | null;
+            /**
+             * Estado
+             * @enum {string}
+             */
+            estado: "pendiente" | "enviada" | "fallida" | "cancelada";
+            /** Id */
+            id: number;
+            /** Intentos */
+            intentos: number;
+            /** Leida En */
+            leida_en: string | null;
+            /** Plantilla */
+            plantilla: string;
+            /** Ultimo Error */
+            ultimo_error: string | null;
+        };
+        /** MensajeOut */
+        app__rutas__auth__MensajeOut: {
+            /** Mensaje */
+            mensaje: string;
         };
     };
     responses: never;
@@ -1332,6 +1410,124 @@ export interface operations {
             };
             /** @description Forbidden */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ver_mensajes_admin_mensajes_get: {
+        parameters: {
+            query?: {
+                estado?: ("pendiente" | "enviada" | "fallida" | "cancelada") | null;
+                limite?: number;
+                antes?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["app__rutas__admin__MensajeOut"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    reenviar_mensaje_admin_mensajes__mensaje_id__reenviar_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mensaje_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["app__rutas__admin__MensajeOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `mensaje_no_reenviable` */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2114,7 +2310,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MensajeOut"];
+                    "application/json": components["schemas"]["app__rutas__auth__MensajeOut"];
                 };
             };
             /** @description Validation Error */

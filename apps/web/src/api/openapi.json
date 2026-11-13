@@ -866,19 +866,6 @@
         "title": "IngresoIn",
         "type": "object"
       },
-      "MensajeOut": {
-        "properties": {
-          "mensaje": {
-            "title": "Mensaje",
-            "type": "string"
-          }
-        },
-        "required": [
-          "mensaje"
-        ],
-        "title": "MensajeOut",
-        "type": "object"
-      },
       "NegocioIn": {
         "properties": {
           "direccion": {
@@ -1182,6 +1169,10 @@
             "title": "Dia",
             "type": "string"
           },
+          "mensajes_fallidos": {
+            "title": "Mensajes Fallidos",
+            "type": "integer"
+          },
           "por_sobandero": {
             "items": {
               "$ref": "#/components/schemas/FilaResumenOut"
@@ -1198,7 +1189,8 @@
           "dia",
           "citas_total",
           "sobanderos_atendiendo",
-          "por_sobandero"
+          "por_sobandero",
+          "mensajes_fallidos"
         ],
         "title": "ResumenOut",
         "type": "object"
@@ -1411,6 +1403,126 @@
         ],
         "title": "ValidationError",
         "type": "object"
+      },
+      "app__rutas__admin__MensajeOut": {
+        "properties": {
+          "celular": {
+            "title": "Celular",
+            "type": "string"
+          },
+          "cita_inicio": {
+            "format": "date-time",
+            "title": "Cita Inicio",
+            "type": "string"
+          },
+          "cliente_nombre": {
+            "title": "Cliente Nombre",
+            "type": "string"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "entregada_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entregada En"
+          },
+          "enviada_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enviada En"
+          },
+          "estado": {
+            "enum": [
+              "pendiente",
+              "enviada",
+              "fallida",
+              "cancelada"
+            ],
+            "title": "Estado",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "intentos": {
+            "title": "Intentos",
+            "type": "integer"
+          },
+          "leida_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Leida En"
+          },
+          "plantilla": {
+            "title": "Plantilla",
+            "type": "string"
+          },
+          "ultimo_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ultimo Error"
+          }
+        },
+        "required": [
+          "id",
+          "creado_en",
+          "plantilla",
+          "estado",
+          "intentos",
+          "ultimo_error",
+          "cliente_nombre",
+          "celular",
+          "cita_inicio",
+          "enviada_en",
+          "entregada_en",
+          "leida_en"
+        ],
+        "title": "MensajeOut",
+        "type": "object"
+      },
+      "app__rutas__auth__MensajeOut": {
+        "properties": {
+          "mensaje": {
+            "title": "Mensaje",
+            "type": "string"
+          }
+        },
+        "required": [
+          "mensaje"
+        ],
+        "title": "MensajeOut",
+        "type": "object"
       }
     }
   },
@@ -1576,6 +1688,197 @@
           }
         },
         "summary": "Ver Agenda",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/mensajes": {
+      "get": {
+        "description": "Lo más reciente primero. Para ver más, pase `antes` con el id de la última fila vista.",
+        "operationId": "ver_mensajes_admin_mensajes_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "estado",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "pendiente",
+                    "enviada",
+                    "fallida",
+                    "cancelada"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Estado"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limite",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limite",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "antes",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Antes"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/app__rutas__admin__MensajeOut"
+                  },
+                  "title": "Response Ver Mensajes Admin Mensajes Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Ver Mensajes",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/mensajes/{mensaje_id}/reenviar": {
+      "post": {
+        "description": "Pone de nuevo en la bandeja un mensaje que falló; el worker lo envía en su próxima vuelta.",
+        "operationId": "reenviar_mensaje_admin_mensajes__mensaje_id__reenviar_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "mensaje_id",
+            "required": true,
+            "schema": {
+              "title": "Mensaje Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/app__rutas__admin__MensajeOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`mensaje_no_reenviable`"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reenviar Mensaje",
         "tags": [
           "admin"
         ]
@@ -2538,7 +2841,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MensajeOut"
+                  "$ref": "#/components/schemas/app__rutas__auth__MensajeOut"
                 }
               }
             },
