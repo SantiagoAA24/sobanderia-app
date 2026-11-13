@@ -46,7 +46,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] 6.2 Ingreso, primer ingreso (clave temporal en memoria), recuperar clave y base del panel
 - [x] 6.3 Hoy, Semana, Día vacío, Cita, Cambiar la hora, No asistió y Cancelar con aviso
 - [x] 6.4 Nueva cita, Bloquear horas (con «Horas bloqueadas» para quitarlas), Horario y Horario del día
-- [ ] 6.5 Clientes, Ficha, Mi perfil, Cambiar correo, Cambiar clave y Clave cambiada
+- [x] 6.5 Clientes, Ficha, Mi perfil, Cambiar correo, Cambiar clave y Clave cambiada
 - [ ] 6.6 Recorrido de un día completo en el navegador
 
 ## Fase 7 — Panel del administrador

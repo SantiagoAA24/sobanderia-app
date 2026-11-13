@@ -1,9 +1,10 @@
 /** Consultas y cambios del panel del sobandero. Todo pasa por el cliente tipado de la API. */
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api, datos } from "../api/cliente";
 import type { components } from "../api/esquema";
+import { CLAVES, type Usuario } from "../api/sesion";
 
 type Esquemas = components["schemas"];
 export type CitaPanel = Esquemas["CitaSobanderoOut"];
@@ -11,6 +12,10 @@ export type CitaPanel = Esquemas["CitaSobanderoOut"];
 export type Horario = Esquemas["HorarioOut"];
 export type DiaHorario = Esquemas["DiaHorarioIO"];
 export type Bloqueo = Esquemas["BloqueoOut"];
+
+export type ClienteLista = Esquemas["ClienteListaOut"];
+export type FichaCliente = Esquemas["FichaClienteOut"];
+export type Perfil = Esquemas["PerfilOut"];
 
 export type CambioCita = Omit<Esquemas["CambioCitaIn"], "avisar"> & { avisar?: boolean };
 
@@ -118,5 +123,39 @@ export const useQuitarBloqueo = () => {
       await api.DELETE("/yo/bloqueos/{bloqueo_id}", { params: { path: { bloqueo_id: id } } });
     },
     onSuccess: () => void cliente.invalidateQueries({ queryKey: [PANEL] }),
+  });
+};
+
+/** Clientes de este sobandero; `q` busca por nombre o celular. Mientras llega otra búsqueda, deja la lista anterior. */
+export const useClientes = (q: string) =>
+  useQuery({
+    queryKey: [PANEL, "clientes", q],
+    placeholderData: keepPreviousData,
+    queryFn: async () => datos(await api.GET("/yo/clientes", { params: { query: { q } } })),
+  });
+
+export const useFichaCliente = (id: number) =>
+  useQuery({
+    queryKey: [PANEL, "cliente", id],
+    enabled: Number.isInteger(id),
+    queryFn: async () => datos(await api.GET("/yo/clientes/{cliente_id}", { params: { path: { cliente_id: id } } })),
+  });
+
+export const usePerfil = () =>
+  useQuery({
+    queryKey: [PANEL, "perfil"],
+    queryFn: async () => datos(await api.GET("/yo/perfil")),
+  });
+
+/** Nombre o correo (el correo pide la clave actual). Deja el perfil y la sesión al día con el nombre nuevo. */
+export const useCambiarPerfil = () => {
+  const cliente = useQueryClient();
+  return useMutation({
+    mutationFn: async (cuerpo: { nombre?: string; correo?: string; clave_actual?: string }) =>
+      datos(await api.PATCH("/yo/perfil", { body: cuerpo })),
+    onSuccess: (perfil) => {
+      cliente.setQueryData([PANEL, "perfil"], perfil);
+      cliente.setQueryData<Usuario | null>(CLAVES.sesion, (u) => (u ? { ...u, nombre: perfil.nombre } : u));
+    },
   });
 };

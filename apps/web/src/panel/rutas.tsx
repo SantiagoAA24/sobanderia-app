@@ -3,6 +3,9 @@ import type { RouteObject } from "react-router-dom";
 import { Cita } from "./Cita";
 import { CancelarSobandero, CitaCancelada, NoAsistio, Reprogramar } from "./CambiosCita";
 import { Bloquear } from "./Bloquear";
+import { Cliente } from "./FichaCliente";
+import { Clientes } from "./Clientes";
+import { ClaveCambiada, Perfil, PerfilClave, PerfilCorreo } from "./Perfil";
 import { Hoy } from "./Hoy";
 import { Horario } from "./Horario";
 import { HorarioDia } from "./HorarioDia";
@@ -22,4 +25,10 @@ export const rutasPanel: RouteObject[] = [
   { path: "bloquear", element: <Bloquear /> },
   { path: "horario", element: <Horario /> },
   { path: "horario/:dia", element: <HorarioDia /> },
+  { path: "clientes", element: <Clientes /> },
+  { path: "clientes/:id", element: <Cliente /> },
+  { path: "perfil", element: <Perfil /> },
+  { path: "perfil/correo", element: <PerfilCorreo /> },
+  { path: "perfil/clave", element: <PerfilClave /> },
+  { path: "perfil/clave-cambiada", element: <ClaveCambiada /> },
 ];

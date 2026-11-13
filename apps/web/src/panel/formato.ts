@@ -116,3 +116,31 @@ export function pasosDeFranjas(franjas: { desde: string; hasta: string }[], paso
 
 export const mayorQue = (a: string, b: string) => aMinutos(a) > aMinutos(b);
 export { aMinutos, aHhmm };
+
+/** «2026-11-05» -> «5 de noviembre». */
+export function fechaCorta(dia: string): string {
+  const [, m, d] = dia.split("-").map(Number) as [number, number, number];
+  return `${d} de ${MESES[m - 1]}`;
+}
+
+/** «Última cita: hoy», «ayer» o «5 de noviembre». */
+export function cuandoFue(momento: string, hoy: string): string {
+  const dia = diaBogota(momento);
+  if (dia === hoy) return "hoy";
+  if (dia === sumarDias(hoy, -1)) return "ayer";
+  return fechaCorta(dia);
+}
+
+/** «marzo de 2026», en hora de Bogotá. */
+export function mesYAnio(momento: string): string {
+  const [a, m] = diaBogota(momento).split("-").map(Number) as [number, number];
+  return `${MESES[m - 1]} de ${a}`;
+}
+
+/** Cómo se llama cada estado de una cita en las listas. */
+export const ESTADO_CITA: Record<string, string> = {
+  agendada: "Sin marcar",
+  atendida: "Atendida",
+  no_asistio: "No asistió",
+  cancelada: "Cancelada",
+};
