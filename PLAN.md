@@ -37,7 +37,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] Agendar: Paso 4, errores, Hora ocupada, Confirmada y Política
 - [x] Gestionar, cambiar, cancelar y Cancelada
 - [x] Encontrar mi cita y Enlace enviado
-- [ ] Recorrido completo en el navegador
+- [x] Recorrido completo en el navegador (agendar, cambiar, cancelar y hora ocupada contra la API local)
 
 ## Fase 6 — Panel del sobandero
 - [ ] Ingreso, Hoy, Semana, Cita, Horario, Clientes y Perfil
