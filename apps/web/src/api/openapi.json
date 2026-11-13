@@ -1,6 +1,80 @@
 {
   "components": {
     "schemas": {
+      "BloqueoIn": {
+        "properties": {
+          "fin": {
+            "format": "date-time",
+            "title": "Fin",
+            "type": "string"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "motivo": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Motivo"
+          }
+        },
+        "required": [
+          "inicio",
+          "fin"
+        ],
+        "title": "BloqueoIn",
+        "type": "object"
+      },
+      "BloqueoOut": {
+        "properties": {
+          "citas_afectadas": {
+            "title": "Citas Afectadas",
+            "type": "integer"
+          },
+          "fin": {
+            "format": "date-time",
+            "title": "Fin",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "motivo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Motivo"
+          }
+        },
+        "required": [
+          "id",
+          "inicio",
+          "fin",
+          "motivo",
+          "citas_afectadas"
+        ],
+        "title": "BloqueoOut",
+        "type": "object"
+      },
       "CambiarClaveIn": {
         "properties": {
           "clave_actual": {
@@ -151,6 +225,10 @@
           "origen": {
             "title": "Origen",
             "type": "string"
+          },
+          "puede_modificar": {
+            "title": "Puede Modificar",
+            "type": "boolean"
           }
         },
         "required": [
@@ -159,9 +237,52 @@
           "origen",
           "inicio",
           "fin",
-          "cliente"
+          "cliente",
+          "puede_modificar"
         ],
         "title": "CitaSobanderoOut",
+        "type": "object"
+      },
+      "ClienteListaOut": {
+        "description": "`ultima_cita` es la última que ya empezó y no se canceló; nula si no tiene.",
+        "properties": {
+          "celular": {
+            "title": "Celular",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "ultima_cita": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ultima Cita"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "celular",
+          "ultima_cita",
+          "total"
+        ],
+        "title": "ClienteListaOut",
         "type": "object"
       },
       "ClienteOut": {
@@ -223,6 +344,30 @@
           "consentimiento"
         ],
         "title": "CrearCitaIn",
+        "type": "object"
+      },
+      "DiaHorarioIO": {
+        "description": "`dia_semana`: 0 = lunes ... 6 = domingo. Sin franjas, ese día no atiende.",
+        "properties": {
+          "dia_semana": {
+            "maximum": 6.0,
+            "minimum": 0.0,
+            "title": "Dia Semana",
+            "type": "integer"
+          },
+          "franjas": {
+            "items": {
+              "$ref": "#/components/schemas/FranjaIO"
+            },
+            "title": "Franjas",
+            "type": "array"
+          }
+        },
+        "required": [
+          "dia_semana",
+          "franjas"
+        ],
+        "title": "DiaHorarioIO",
         "type": "object"
       },
       "DiasOut": {
@@ -287,6 +432,77 @@
         "title": "ErrorOut",
         "type": "object"
       },
+      "FichaClienteOut": {
+        "properties": {
+          "celular": {
+            "title": "Celular",
+            "type": "string"
+          },
+          "cliente_desde": {
+            "format": "date-time",
+            "title": "Cliente Desde",
+            "type": "string"
+          },
+          "historial": {
+            "items": {
+              "$ref": "#/components/schemas/CitaSobanderoOut"
+            },
+            "title": "Historial",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "proximas": {
+            "items": {
+              "$ref": "#/components/schemas/CitaSobanderoOut"
+            },
+            "title": "Proximas",
+            "type": "array"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "celular",
+          "cliente_desde",
+          "total",
+          "proximas",
+          "historial"
+        ],
+        "title": "FichaClienteOut",
+        "type": "object"
+      },
+      "FranjaIO": {
+        "description": "Hora de pared de Bogotá, «HH:MM».",
+        "properties": {
+          "desde": {
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Desde",
+            "type": "string"
+          },
+          "hasta": {
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Hasta",
+            "type": "string"
+          }
+        },
+        "required": [
+          "desde",
+          "hasta"
+        ],
+        "title": "FranjaIO",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -325,6 +541,43 @@
           "alternativas"
         ],
         "title": "HoraOcupadaOut",
+        "type": "object"
+      },
+      "HorarioIn": {
+        "properties": {
+          "dias": {
+            "items": {
+              "$ref": "#/components/schemas/DiaHorarioIO"
+            },
+            "title": "Dias",
+            "type": "array"
+          }
+        },
+        "required": [
+          "dias"
+        ],
+        "title": "HorarioIn",
+        "type": "object"
+      },
+      "HorarioOut": {
+        "properties": {
+          "dias": {
+            "items": {
+              "$ref": "#/components/schemas/DiaHorarioIO"
+            },
+            "title": "Dias",
+            "type": "array"
+          },
+          "duracion_min": {
+            "title": "Duracion Min",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "duracion_min",
+          "dias"
+        ],
+        "title": "HorarioOut",
         "type": "object"
       },
       "HorasOut": {
@@ -444,6 +697,72 @@
           "inicio"
         ],
         "title": "NuevaCitaIn",
+        "type": "object"
+      },
+      "PerfilIn": {
+        "properties": {
+          "clave_actual": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clave Actual"
+          },
+          "correo": {
+            "anyOf": [
+              {
+                "maxLength": 254,
+                "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correo"
+          },
+          "nombre": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 2,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre"
+          }
+        },
+        "title": "PerfilIn",
+        "type": "object"
+      },
+      "PerfilOut": {
+        "properties": {
+          "correo": {
+            "title": "Correo",
+            "type": "string"
+          },
+          "duracion_min": {
+            "title": "Duracion Min",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "correo",
+          "duracion_min"
+        ],
+        "title": "PerfilOut",
         "type": "object"
       },
       "RecuperarIn": {
@@ -1308,6 +1627,176 @@
         "summary": "Salud"
       }
     },
+    "/yo/bloqueos": {
+      "get": {
+        "operationId": "listar_bloqueos_yo_bloqueos_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BloqueoOut"
+                  },
+                  "title": "Response Listar Bloqueos Yo Bloqueos Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Listar Bloqueos",
+        "tags": [
+          "sobandero"
+        ]
+      },
+      "post": {
+        "description": "Las citas ya agendadas en el rango no se cancelan: `citas_afectadas` dice cuántas hay.",
+        "operationId": "crear_bloqueo_yo_bloqueos_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BloqueoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BloqueoOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Crear Bloqueo",
+        "tags": [
+          "sobandero"
+        ]
+      }
+    },
+    "/yo/bloqueos/{bloqueo_id}": {
+      "delete": {
+        "operationId": "quitar_bloqueo_yo_bloqueos__bloqueo_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bloqueo_id",
+            "required": true,
+            "schema": {
+              "title": "Bloqueo Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Quitar Bloqueo",
+        "tags": [
+          "sobandero"
+        ]
+      }
+    },
     "/yo/citas": {
       "get": {
         "description": "Hoy (`dia=`) o Semana (`semana=` con cualquier fecha de esa semana, de lunes a domingo).",
@@ -1480,6 +1969,76 @@
       }
     },
     "/yo/citas/{cita_id}": {
+      "get": {
+        "operationId": "detalle_yo_citas__cita_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cita_id",
+            "required": true,
+            "schema": {
+              "title": "Cita Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaSobanderoOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Detalle",
+        "tags": [
+          "sobandero"
+        ]
+      },
       "patch": {
         "description": "Marca atendida o no asistió, cancela o cambia la hora (devuelve la cita resultante).",
         "operationId": "cambiar_yo_citas__cita_id__patch",
@@ -1554,6 +2113,481 @@
               }
             },
             "description": "`hora_ocupada` con hasta 3 alternativas"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Cambiar",
+        "tags": [
+          "sobandero"
+        ]
+      }
+    },
+    "/yo/clientes": {
+      "get": {
+        "description": "Solo los clientes que han tenido citas con este sobandero. `q` busca por nombre o celular.",
+        "operationId": "listar_yo_clientes_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Q",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ClienteListaOut"
+                  },
+                  "title": "Response Listar Yo Clientes Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Listar",
+        "tags": [
+          "sobandero"
+        ]
+      }
+    },
+    "/yo/clientes/{cliente_id}": {
+      "get": {
+        "description": "Próximas citas e historial de este cliente con este sobandero, nunca con otros.",
+        "operationId": "ficha_yo_clientes__cliente_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cliente_id",
+            "required": true,
+            "schema": {
+              "title": "Cliente Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FichaClienteOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ficha",
+        "tags": [
+          "sobandero"
+        ]
+      }
+    },
+    "/yo/dias": {
+      "get": {
+        "description": "Días con horas libres, sin la antelación que se exige al cliente.",
+        "operationId": "dias_yo_dias_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiasOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Dias",
+        "tags": [
+          "sobandero"
+        ]
+      }
+    },
+    "/yo/horario": {
+      "get": {
+        "operationId": "ver_horario_yo_horario_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HorarioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Ver Horario",
+        "tags": [
+          "sobandero"
+        ]
+      },
+      "put": {
+        "description": "Reemplaza las franjas de los días enviados. No toca las citas ya agendadas.",
+        "operationId": "guardar_horario_yo_horario_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HorarioIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HorarioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Guardar Horario",
+        "tags": [
+          "sobandero"
+        ]
+      }
+    },
+    "/yo/horas": {
+      "get": {
+        "description": "Horas libres de un día. Al cambiar una cita, `excluir_cita` libera su propia hora.",
+        "operationId": "horas_yo_horas_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "dia",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Dia",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "excluir_cita",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Excluir Cita"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HorasOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Horas",
+        "tags": [
+          "sobandero"
+        ]
+      }
+    },
+    "/yo/perfil": {
+      "get": {
+        "operationId": "ver_yo_perfil_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerfilOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Ver",
+        "tags": [
+          "sobandero"
+        ]
+      },
+      "patch": {
+        "description": "El correo pide la clave actual (401 `clave_incorrecta` si no coincide).",
+        "operationId": "cambiar_yo_perfil_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PerfilIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerfilOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`correo_en_uso`"
           },
           "422": {
             "content": {

@@ -41,6 +41,7 @@ class CitaSobanderoOut(BaseModel):
     inicio: datetime
     fin: datetime
     cliente: ClienteOut
+    puede_modificar: bool
 
 
 class NuevaCitaIn(BaseModel):
@@ -57,7 +58,7 @@ class CambioCitaIn(BaseModel):
     avisar: bool = True
 
 
-def _salida(cita: Cita, cliente: Cliente) -> CitaSobanderoOut:
+def salida_cita(cita: Cita, cliente: Cliente, ahora: datetime) -> CitaSobanderoOut:
     return CitaSobanderoOut(
         id=cita.id,
         estado=cita.estado,
@@ -65,6 +66,7 @@ def _salida(cita: Cita, cliente: Cliente) -> CitaSobanderoOut:
         inicio=cita.inicio,
         fin=cita.fin,
         cliente=ClienteOut(id=cliente.id, nombre=cliente.nombre, celular=cliente.celular),
+        puede_modificar=cita.estado == "agendada" and cita.inicio > ahora,
     )
 
 
@@ -103,7 +105,15 @@ def listar(
     )
     if not incluir_canceladas:
         consulta = consulta.where(Cita.estado != "cancelada")
-    return [_salida(c, cl) for c, cl in db.execute(consulta)]
+    return [salida_cita(c, cl, ahora) for c, cl in db.execute(consulta)]
+
+
+@router.get("/{cita_id}", responses=SESION | NO_ENCONTRADO)
+def detalle(cita_id: int, db: Db, yo: Yo, ahora: Ahora) -> CitaSobanderoOut:
+    cita = _propia(db, yo, cita_id)
+    cliente = db.get(Cliente, cita.cliente_id)
+    assert cliente is not None
+    return salida_cita(cita, cliente, ahora)
 
 
 @router.post("", status_code=201, responses=SESION | ERRORES_AGENDA)
@@ -111,7 +121,7 @@ def crear(datos: NuevaCitaIn, db: Db, yo: Yo, ahora: Ahora) -> CitaSobanderoOut:
     cita, cliente, _ = servicio.crear_cita(
         db, yo, datos.nombre, datos.celular, datos.inicio, ahora, origen="sobandero"
     )
-    return _salida(cita, cliente)
+    return salida_cita(cita, cliente, ahora)
 
 
 @router.patch("/{cita_id}", responses=SESION | ERRORES_AGENDA | NO_ENCONTRADO)
@@ -131,4 +141,4 @@ def cambiar(cita_id: int, datos: CambioCitaIn, db: Db, yo: Yo, ahora: Ahora) -> 
         servicio.cerrar(db, cita, datos.estado)
     cliente = db.get(Cliente, cita.cliente_id)
     assert cliente is not None
-    return _salida(cita, cliente)
+    return salida_cita(cita, cliente, ahora)

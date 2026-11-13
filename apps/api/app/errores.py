@@ -29,6 +29,14 @@ def no_autorizado(mensaje: str = "Debe ingresar para continuar.") -> ErrorApi:
     return ErrorApi(401, "no_autorizado", mensaje)
 
 
+def clave_incorrecta() -> ErrorApi:
+    """La clave actual escrita para confirmar un cambio no es la correcta.
+
+    Lleva código propio: con `no_autorizado` el panel creería que la sesión venció.
+    """
+    return ErrorApi(401, "clave_incorrecta", "La clave actual no es correcta.")
+
+
 def sin_permiso(mensaje: str = "No tiene permiso para esto.") -> ErrorApi:
     return ErrorApi(403, "sin_permiso", mensaje)
 

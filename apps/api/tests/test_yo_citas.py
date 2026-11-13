@@ -8,12 +8,14 @@ from sqlalchemy.orm import Session
 
 from app.modelos import Cita, Notificacion
 from tests.conftest import (
+    AHORA_PRUEBA,
     CSRF,
     INICIO,
     crear_cita,
     crear_cliente,
     crear_usuario,
     ingresar,
+    sobandero_con_horario,
     sobandero_con_login,
 )
 
@@ -196,3 +198,29 @@ def test_cuerpo_ambiguo_da_422(api: TestClient, sesion: Session) -> None:
     cita = crear_cita(sesion, yo, crear_cliente(sesion, 1))
     for cuerpo in ({}, {"estado": "atendida", "inicio": NUEVA.isoformat()}, {"estado": "borrada"}):
         assert api.patch(f"/yo/citas/{cita.id}", json=cuerpo, headers=CSRF).status_code == 422
+
+
+def test_detalle_de_una_cita_propia_y_ajena(api: TestClient, sesion: Session) -> None:
+    yo = entrar(api, sesion, 1)
+    otro = sobandero_con_horario(sesion, 2)
+    mia = crear_cita(sesion, yo, crear_cliente(sesion, 1), INICIO)
+    ajena = crear_cita(sesion, otro, crear_cliente(sesion, 2), INICIO)
+
+    r = api.get(f"/yo/citas/{mia.id}")
+    assert r.status_code == 200
+    assert r.json()["id"] == mia.id
+    assert r.json()["puede_modificar"] is True
+    assert api.get(f"/yo/citas/{ajena.id}").status_code == 404
+    assert api.get("/yo/citas/999999").status_code == 404
+
+
+def test_puede_modificar_es_falso_si_ya_paso_o_no_esta_agendada(
+    api: TestClient, sesion: Session
+) -> None:
+    yo = entrar(api, sesion)
+    pasada = crear_cita(sesion, yo, crear_cliente(sesion, 1), AHORA_PRUEBA - timedelta(hours=3))
+    atendida = crear_cita(sesion, yo, crear_cliente(sesion, 2), INICIO, estado="atendida")
+    assert api.get(f"/yo/citas/{pasada.id}").json()["puede_modificar"] is False
+    assert api.get(f"/yo/citas/{atendida.id}").json()["puede_modificar"] is False
+    lista = api.get("/yo/citas", params={"dia": "2030-01-07"}).json()
+    assert lista[0]["puede_modificar"] is False

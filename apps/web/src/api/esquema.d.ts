@@ -279,6 +279,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/yo/bloqueos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listar Bloqueos */
+        get: operations["listar_bloqueos_yo_bloqueos_get"];
+        put?: never;
+        /**
+         * Crear Bloqueo
+         * @description Las citas ya agendadas en el rango no se cancelan: `citas_afectadas` dice cuántas hay.
+         */
+        post: operations["crear_bloqueo_yo_bloqueos_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/yo/bloqueos/{bloqueo_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Quitar Bloqueo */
+        delete: operations["quitar_bloqueo_yo_bloqueos__bloqueo_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/yo/citas": {
         parameters: {
             query?: never;
@@ -307,7 +345,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Detalle */
+        get: operations["detalle_yo_citas__cita_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -320,10 +359,166 @@ export interface paths {
         patch: operations["cambiar_yo_citas__cita_id__patch"];
         trace?: never;
     };
+    "/yo/clientes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Listar
+         * @description Solo los clientes que han tenido citas con este sobandero. `q` busca por nombre o celular.
+         */
+        get: operations["listar_yo_clientes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/yo/clientes/{cliente_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ficha
+         * @description Próximas citas e historial de este cliente con este sobandero, nunca con otros.
+         */
+        get: operations["ficha_yo_clientes__cliente_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/yo/dias": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Dias
+         * @description Días con horas libres, sin la antelación que se exige al cliente.
+         */
+        get: operations["dias_yo_dias_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/yo/horario": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ver Horario */
+        get: operations["ver_horario_yo_horario_get"];
+        /**
+         * Guardar Horario
+         * @description Reemplaza las franjas de los días enviados. No toca las citas ya agendadas.
+         */
+        put: operations["guardar_horario_yo_horario_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/yo/horas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Horas
+         * @description Horas libres de un día. Al cambiar una cita, `excluir_cita` libera su propia hora.
+         */
+        get: operations["horas_yo_horas_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/yo/perfil": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ver */
+        get: operations["ver_yo_perfil_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Cambiar
+         * @description El correo pide la clave actual (401 `clave_incorrecta` si no coincide).
+         */
+        patch: operations["cambiar_yo_perfil_patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** BloqueoIn */
+        BloqueoIn: {
+            /**
+             * Fin
+             * Format: date-time
+             */
+            fin: string;
+            /**
+             * Inicio
+             * Format: date-time
+             */
+            inicio: string;
+            /** Motivo */
+            motivo?: string | null;
+        };
+        /** BloqueoOut */
+        BloqueoOut: {
+            /** Citas Afectadas */
+            citas_afectadas: number;
+            /**
+             * Fin
+             * Format: date-time
+             */
+            fin: string;
+            /** Id */
+            id: number;
+            /**
+             * Inicio
+             * Format: date-time
+             */
+            inicio: string;
+            /** Motivo */
+            motivo: string | null;
+        };
         /** CambiarClaveIn */
         CambiarClaveIn: {
             /** Clave Actual */
@@ -396,6 +591,24 @@ export interface components {
             inicio: string;
             /** Origen */
             origen: string;
+            /** Puede Modificar */
+            puede_modificar: boolean;
+        };
+        /**
+         * ClienteListaOut
+         * @description `ultima_cita` es la última que ya empezó y no se canceló; nula si no tiene.
+         */
+        ClienteListaOut: {
+            /** Celular */
+            celular: string;
+            /** Id */
+            id: number;
+            /** Nombre */
+            nombre: string;
+            /** Total */
+            total: number;
+            /** Ultima Cita */
+            ultima_cita: string | null;
         };
         /** ClienteOut */
         ClienteOut: {
@@ -421,6 +634,16 @@ export interface components {
             nombre: string;
             /** Sobandero Id */
             sobandero_id: number;
+        };
+        /**
+         * DiaHorarioIO
+         * @description `dia_semana`: 0 = lunes ... 6 = domingo. Sin franjas, ese día no atiende.
+         */
+        DiaHorarioIO: {
+            /** Dia Semana */
+            dia_semana: number;
+            /** Franjas */
+            franjas: components["schemas"]["FranjaIO"][];
         };
         /** DiasOut */
         DiasOut: {
@@ -450,6 +673,36 @@ export interface components {
             /** Mensaje */
             mensaje: string;
         };
+        /** FichaClienteOut */
+        FichaClienteOut: {
+            /** Celular */
+            celular: string;
+            /**
+             * Cliente Desde
+             * Format: date-time
+             */
+            cliente_desde: string;
+            /** Historial */
+            historial: components["schemas"]["CitaSobanderoOut"][];
+            /** Id */
+            id: number;
+            /** Nombre */
+            nombre: string;
+            /** Proximas */
+            proximas: components["schemas"]["CitaSobanderoOut"][];
+            /** Total */
+            total: number;
+        };
+        /**
+         * FranjaIO
+         * @description Hora de pared de Bogotá, «HH:MM».
+         */
+        FranjaIO: {
+            /** Desde */
+            desde: string;
+            /** Hasta */
+            hasta: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -463,6 +716,18 @@ export interface components {
             codigo: string;
             /** Mensaje */
             mensaje: string;
+        };
+        /** HorarioIn */
+        HorarioIn: {
+            /** Dias */
+            dias: components["schemas"]["DiaHorarioIO"][];
+        };
+        /** HorarioOut */
+        HorarioOut: {
+            /** Dias */
+            dias: components["schemas"]["DiaHorarioIO"][];
+            /** Duracion Min */
+            duracion_min: number;
         };
         /** HorasOut */
         HorasOut: {
@@ -508,6 +773,24 @@ export interface components {
              * Format: date-time
              */
             inicio: string;
+            /** Nombre */
+            nombre: string;
+        };
+        /** PerfilIn */
+        PerfilIn: {
+            /** Clave Actual */
+            clave_actual?: string | null;
+            /** Correo */
+            correo?: string | null;
+            /** Nombre */
+            nombre?: string | null;
+        };
+        /** PerfilOut */
+        PerfilOut: {
+            /** Correo */
+            correo: string;
+            /** Duracion Min */
+            duracion_min: number;
             /** Nombre */
             nombre: string;
         };
@@ -1142,6 +1425,151 @@ export interface operations {
             };
         };
     };
+    listar_bloqueos_yo_bloqueos_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BloqueoOut"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    crear_bloqueo_yo_bloqueos_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BloqueoIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BloqueoOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    quitar_bloqueo_yo_bloqueos__bloqueo_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                bloqueo_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     listar_yo_citas_get: {
         parameters: {
             query?: {
@@ -1253,6 +1681,64 @@ export interface operations {
             };
         };
     };
+    detalle_yo_citas__cita_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cita_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CitaSobanderoOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     cambiar_yo_citas__cita_id__patch: {
         parameters: {
             query?: never;
@@ -1311,6 +1797,388 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HoraOcupadaOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    listar_yo_clientes_get: {
+        parameters: {
+            query?: {
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClienteListaOut"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ficha_yo_clientes__cliente_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cliente_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FichaClienteOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dias_yo_dias_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DiasOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    ver_horario_yo_horario_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HorarioOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    guardar_horario_yo_horario_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HorarioIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HorarioOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    horas_yo_horas_get: {
+        parameters: {
+            query: {
+                dia: string;
+                excluir_cita?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HorasOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ver_yo_perfil_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PerfilOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    cambiar_yo_perfil_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PerfilIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PerfilOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `correo_en_uso` */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
                 };
             };
             /** @description `validacion` */

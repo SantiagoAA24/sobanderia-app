@@ -17,7 +17,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 ## Fase 2 — Ingreso y roles
 - [x] Argon2id, sesiones y cookie
 - [x] Ingreso, salida, roles, primer ingreso, recuperación y cambio de clave
-- [ ] Cambio de correo desde el perfil (pendiente: va con `PATCH /yo/perfil` en la Fase 6)
+- [x] Cambio de correo desde el perfil (`PATCH /yo/perfil`, Fase 6.1)
 
 ## Fase 3 — Horas libres y agendamiento
 - [x] `horas_libres` y rutas públicas
@@ -40,7 +40,14 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] Recorrido completo en el navegador (agendar, cambiar, cancelar y hora ocupada contra la API local)
 
 ## Fase 6 — Panel del sobandero
-- [ ] Ingreso, Hoy, Semana, Cita, Horario, Clientes y Perfil
+- [x] 6.1 API del sobandero: `GET /yo/citas/{id}`, `/yo/dias`, `/yo/horas`, `/yo/horario` (GET y PUT), `/yo/bloqueos`, `/yo/clientes` y `/yo/perfil`, con permisos por sobandero
+  - Nota: una clave actual incorrecta responde 401 con código `clave_incorrecta` (antes `no_autorizado`), para que el panel no lo confunda con una sesión vencida.
+  - Nota del entorno: si `mypy` falla con «No module named pydantic», ponga `/usr/local/bin` primero en el PATH.
+- [ ] 6.2 Ingreso, primer ingreso (clave temporal en memoria), recuperar clave y base del panel
+- [ ] 6.3 Hoy, Semana, Día vacío, Cita, Cambiar la hora, No asistió y Cancelar con aviso
+- [ ] 6.4 Nueva cita, Bloquear horas (con «Horas bloqueadas» para quitarlas), Horario y Horario del día
+- [ ] 6.5 Clientes, Ficha, Mi perfil, Cambiar correo, Cambiar clave y Clave cambiada
+- [ ] 6.6 Recorrido de un día completo en el navegador
 
 ## Fase 7 — Panel del administrador
 - [ ] Resumen, Agenda, Sobanderos, baja y Datos del negocio

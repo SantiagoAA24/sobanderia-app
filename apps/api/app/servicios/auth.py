@@ -8,7 +8,13 @@ from sqlalchemy.orm import Session
 
 from app.config import ajustes
 from app.correo import EnviadorCorreo
-from app.errores import ErrorApi, demasiados_intentos, enlace_vencido, no_autorizado
+from app.errores import (
+    ErrorApi,
+    clave_incorrecta,
+    demasiados_intentos,
+    enlace_vencido,
+    no_autorizado,
+)
 from app.modelos import IntentoIngreso, RecuperacionClave, Sesion, Usuario
 from app.seguridad.claves import (
     HASH_FALSO,
@@ -175,7 +181,7 @@ def cambiar_clave(
     clave_nueva: str,
 ) -> None:
     if not verificar_clave(usuario.clave_hash, clave_actual):
-        raise no_autorizado("La clave actual no es correcta.")
+        raise clave_incorrecta()
     _validar_clave_nueva(clave_nueva, clave_actual)
     usuario.clave_hash = hashear_clave(clave_nueva)
     usuario.debe_cambiar_clave = False
