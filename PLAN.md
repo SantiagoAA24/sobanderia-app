@@ -55,7 +55,8 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] 7.1 API del administrador: `/admin/resumen`, `/agenda`, `/sobanderos` (crear con clave temporal, editar, horario, enlace de clave, baja), `/negocio` y `/actividad`, solo rol admin
   - Decisión: «Dejarlas como están» pone `recibe_citas = false` y `baja_en`; la cuenta sigue activa y se desactiva sola al cerrar la última cita agendada (migración 0003). «Cancelar y avisar» desactiva y cierra sesiones al instante; las citas quedan `cancelada_por = 'admin'` con la plantilla `cita_cancelada_sobandero`.
   - Decisión: el registro de actividad usa la tabla `auditoria`; la pantalla `Admin-Actividad` es nueva (no estaba en el lienzo) y se enlaza desde el Resumen.
-- [ ] 7.2 Base del admin, Resumen y Agenda
+- [x] 7.2 Base del admin (barra de tres elementos), Resumen y Agenda
+  - Nota: la Agenda muestra solo el día de hoy, como el lienzo. El administrador no tiene pantalla de perfil ni cerrar sesión en el lienzo; queda pendiente de decisión de diseño.
 - [ ] 7.3 Sobanderos: lista, Nuevo, Ficha, Duración y Horario
 - [ ] 7.4 Dar de baja
 - [ ] 7.5 Datos del negocio y Actividad

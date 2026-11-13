@@ -2,11 +2,11 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate, type RouteObject } from "react-router-dom";
 
 import { GuardaAdmin, GuardaPanel, GuardaPrimeraClave } from "./auth/Guardas";
+import { rutasAdmin } from "./admin/rutas";
 import { Ingreso } from "./auth/Ingreso";
 import { PrimeraClave } from "./auth/PrimeraClave";
 import { ClaveEnviada, OlvideClave, RestablecerClave } from "./auth/RecuperarClave";
 import { rutasCliente } from "./cliente/rutas";
-import { Marcador } from "./Marcador";
 import { rutasPanel } from "./panel/rutas";
 import { Cargando } from "./transversales/Cargando";
 import { EnlaceVencido } from "./transversales/EnlaceVencido";
@@ -15,8 +15,6 @@ import { SesionVencida } from "./transversales/SesionVencida";
 
 /** `/ui` solo existe fuera de producción (o con VITE_MOSTRAR_UI=1): el catálogo no se publica a los clientes. */
 const Catalogo = __MOSTRAR_UI__ ? lazy(() => import("./ui/Catalogo")) : null;
-
-const m = (nombre: string) => <Marcador nombre={nombre} />;
 
 export const rutasApp: RouteObject[] = [
   // Cliente: sin cuenta
@@ -46,9 +44,7 @@ export const rutasApp: RouteObject[] = [
     element: <GuardaAdmin />,
     children: [
       { index: true, element: <Navigate to="hoy" replace /> },
-      { path: "hoy", element: m("Admin-Hoy") },
-      { path: "sobanderos", element: m("Admin-Sobanderos") },
-      { path: "agenda", element: m("Admin-Agenda") },
+      ...rutasAdmin,
       { path: "*", element: <NoEncontrada /> },
     ],
   },
