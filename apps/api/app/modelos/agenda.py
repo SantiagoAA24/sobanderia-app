@@ -4,6 +4,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     CheckConstraint,
+    DateTime,
     ForeignKey,
     SmallInteger,
     String,
@@ -27,6 +28,8 @@ class Sobandero(Base):
     usuario_id: Mapped[int] = mapped_column(ForeignKey("usuarios.id"), unique=True)
     recibe_citas: Mapped[bool] = mapped_column(Boolean, server_default=true())
     duracion_min: Mapped[int] = mapped_column(SmallInteger, server_default="30")
+    # Cuándo se le dio de baja; con citas «dejadas» la cuenta sigue activa hasta cerrarlas.
+    baja_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     usuario: Mapped[Usuario] = relationship()
 

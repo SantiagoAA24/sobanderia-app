@@ -52,7 +52,15 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
   - Pendiente de decisión de diseño: ver otras semanas en Semana (hoy solo la actual, o cualquier día por `?dia=`).
 
 ## Fase 7 — Panel del administrador
-- [ ] Resumen, Agenda, Sobanderos, baja y Datos del negocio
+- [x] 7.1 API del administrador: `/admin/resumen`, `/agenda`, `/sobanderos` (crear con clave temporal, editar, horario, enlace de clave, baja), `/negocio` y `/actividad`, solo rol admin
+  - Decisión: «Dejarlas como están» pone `recibe_citas = false` y `baja_en`; la cuenta sigue activa y se desactiva sola al cerrar la última cita agendada (migración 0003). «Cancelar y avisar» desactiva y cierra sesiones al instante; las citas quedan `cancelada_por = 'admin'` con la plantilla `cita_cancelada_sobandero`.
+  - Decisión: el registro de actividad usa la tabla `auditoria`; la pantalla `Admin-Actividad` es nueva (no estaba en el lienzo) y se enlaza desde el Resumen.
+- [ ] 7.2 Base del admin, Resumen y Agenda
+- [ ] 7.3 Sobanderos: lista, Nuevo, Ficha, Duración y Horario
+- [ ] 7.4 Dar de baja
+- [ ] 7.5 Datos del negocio y Actividad
+- [ ] 7.6 Resumen semanal (`/admin/reporte`)
+- [ ] 7.7 Recorrido en el navegador: crear sobandero, primer ingreso, baja con cada opción
 
 ## Fase 8 — WhatsApp y recordatorios
 - [ ] Proveedor falso y Cloud API, worker, disparadores y webhook

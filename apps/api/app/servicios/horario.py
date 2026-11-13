@@ -44,9 +44,12 @@ def validar_franjas(franjas: list[Franja]) -> list[Franja]:
 
 
 def guardar_horario(
-    db: Session, sobandero: Sobandero, dias: dict[int, list[Franja]]
+    db: Session, sobandero: Sobandero, dias: dict[int, list[Franja]], confirmar: bool = True
 ) -> dict[int, list[Franja]]:
-    """Reemplaza los días indicados; los demás quedan como estaban."""
+    """Reemplaza los días indicados; los demás quedan como estaban.
+
+    Con `confirmar=False` quien llama cierra la transacción (para sumar su propio registro).
+    """
     validados = {dia: validar_franjas(franjas) for dia, franjas in dias.items()}
     db.execute(
         delete(Horario).where(
@@ -57,7 +60,10 @@ def guardar_horario(
     for dia, franjas in validados.items():
         for desde, hasta in franjas:
             db.add(Horario(sobandero_id=sobandero.id, dia_semana=dia, desde=desde, hasta=hasta))
-    db.commit()
+    if confirmar:
+        db.commit()
+    else:
+        db.flush()
     return horario_semanal(db, sobandero)
 
 

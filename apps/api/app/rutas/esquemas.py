@@ -6,6 +6,15 @@ from typing import Annotated, Any
 from pydantic import AwareDatetime, BaseModel, StringConstraints
 
 Nombre = Annotated[str, StringConstraints(strip_whitespace=True, min_length=2, max_length=120)]
+CorreoTexto = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
+        to_lower=True,
+        max_length=254,
+        pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+    ),
+]
 Celular = Annotated[str, StringConstraints(strip_whitespace=True, min_length=7, max_length=30)]
 
 

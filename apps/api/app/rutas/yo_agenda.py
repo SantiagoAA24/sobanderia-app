@@ -76,7 +76,14 @@ def _texto(hora: time) -> str:
     return hora.strftime("%H:%M")
 
 
-def _horario_out(yo: Sobandero, dias: dict[int, list[tuple[time, time]]]) -> HorarioOut:
+def dias_de_entrada(datos: HorarioIn) -> dict[int, list[tuple[time, time]]]:
+    vistos = [d.dia_semana for d in datos.dias]
+    if len(set(vistos)) != len(vistos):
+        raise ErrorApi(422, "validacion", "Cada día puede aparecer una sola vez.")
+    return {d.dia_semana: [(_hora(f.desde), _hora(f.hasta)) for f in d.franjas] for d in datos.dias}
+
+
+def horario_out(yo: Sobandero, dias: dict[int, list[tuple[time, time]]]) -> HorarioOut:
     return HorarioOut(
         duracion_min=yo.duracion_min,
         dias=[
@@ -116,19 +123,13 @@ def horas(db: Db, yo: Yo, ahora: Ahora, dia: date, excluir_cita: int | None = No
 
 @router.get("/horario", responses=SESION)
 def ver_horario(db: Db, yo: Yo) -> HorarioOut:
-    return _horario_out(yo, servicio.horario_semanal(db, yo))
+    return horario_out(yo, servicio.horario_semanal(db, yo))
 
 
 @router.put("/horario", responses=SESION | Invalido)
 def guardar_horario(datos: HorarioIn, db: Db, yo: Yo) -> HorarioOut:
     """Reemplaza las franjas de los días enviados. No toca las citas ya agendadas."""
-    vistos = [d.dia_semana for d in datos.dias]
-    if len(set(vistos)) != len(vistos):
-        raise ErrorApi(422, "validacion", "Cada día puede aparecer una sola vez.")
-    nuevo = {
-        d.dia_semana: [(_hora(f.desde), _hora(f.hasta)) for f in d.franjas] for d in datos.dias
-    }
-    return _horario_out(yo, servicio.guardar_horario(db, yo, nuevo))
+    return horario_out(yo, servicio.guardar_horario(db, yo, dias_de_entrada(datos)))
 
 
 @router.get("/bloqueos", responses=SESION)

@@ -202,6 +202,11 @@ def pedir_recuperacion(sesion: Session, enviador: EnviadorCorreo, correo: str, i
     usuario = sesion.scalar(select(Usuario).where(Usuario.correo == correo))
     if usuario is None or not usuario.activo:
         return
+    emitir_enlace_recuperacion(sesion, enviador, usuario)
+
+
+def emitir_enlace_recuperacion(sesion: Session, enviador: EnviadorCorreo, usuario: Usuario) -> None:
+    """Crea el enlace de un solo uso y lo envía (lo usan el sobandero y el administrador)."""
     # Un enlace nuevo invalida los anteriores.
     sesion.execute(
         update(RecuperacionClave)

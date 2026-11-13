@@ -17,7 +17,7 @@ from app.config import ajustes
 from app.errores import ErrorApi, cita_no_modificable, hora_ocupada
 from app.modelos import Cita, Cliente, EnlaceCita, Sobandero
 from app.seguridad.celular import enmascarar, normalizar_celular
-from app.servicios import enlaces, notificaciones
+from app.servicios import bajas, enlaces, notificaciones
 from app.servicios.horas import alternativas, dia_local, horas_libres
 
 registro = logging.getLogger("sobanderia.citas")
@@ -176,7 +176,10 @@ def reprogramar(
     return nueva, token_final
 
 
-def cancelar(db: Session, cita: Cita, ahora: datetime, por: str, avisar: bool = True) -> Cita:
+def cancelar_sin_guardar(
+    db: Session, cita: Cita, ahora: datetime, por: str, avisar: bool = True
+) -> Cita:
+    """Cancela y encola el aviso sin cerrar la transacción (la baja cancela varias citas)."""
     _exigir_modificable(cita, ahora)
     cita.estado = "cancelada"
     cita.cancelada_por = por
@@ -187,6 +190,12 @@ def cancelar(db: Session, cita: Cita, ahora: datetime, por: str, avisar: bool = 
         assert sobandero is not None and cliente is not None
         plantilla = "cita_cancelada" if por == "cliente" else "cita_cancelada_sobandero"
         notificaciones.encolar(db, cita, cliente, sobandero, "cancelacion", plantilla, ahora)
+    return cita
+
+
+def cancelar(db: Session, cita: Cita, ahora: datetime, por: str, avisar: bool = True) -> Cita:
+    cancelar_sin_guardar(db, cita, ahora, por, avisar)
+    bajas.revisar_baja(db, cita.sobandero_id)
     db.commit()
     registro.info("cita cancelada id=%s por=%s", cita.id, por)
     return cita
@@ -198,5 +207,6 @@ def cerrar(db: Session, cita: Cita, estado: str) -> Cita:
         raise cita_no_modificable()
     cita.estado = estado
     notificaciones.cancelar_pendientes(db, cita.id)
+    bajas.revisar_baja(db, cita.sobandero_id)
     db.commit()
     return cita

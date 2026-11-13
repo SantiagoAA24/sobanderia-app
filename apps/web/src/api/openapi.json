@@ -1,6 +1,74 @@
 {
   "components": {
     "schemas": {
+      "ActividadOut": {
+        "properties": {
+          "accion": {
+            "title": "Accion",
+            "type": "string"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "quien": {
+            "title": "Quien",
+            "type": "string"
+          },
+          "texto": {
+            "title": "Texto",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "creado_en",
+          "quien",
+          "texto",
+          "accion"
+        ],
+        "title": "ActividadOut",
+        "type": "object"
+      },
+      "BajaIn": {
+        "properties": {
+          "citas": {
+            "enum": [
+              "dejar",
+              "cancelar"
+            ],
+            "title": "Citas",
+            "type": "string"
+          }
+        },
+        "required": [
+          "citas"
+        ],
+        "title": "BajaIn",
+        "type": "object"
+      },
+      "BajaOut": {
+        "properties": {
+          "citas_canceladas": {
+            "title": "Citas Canceladas",
+            "type": "integer"
+          },
+          "sobandero": {
+            "$ref": "#/components/schemas/SobanderoAdminOut"
+          }
+        },
+        "required": [
+          "sobandero",
+          "citas_canceladas"
+        ],
+        "title": "BajaOut",
+        "type": "object"
+      },
       "BloqueoIn": {
         "properties": {
           "fin": {
@@ -135,6 +203,105 @@
           }
         },
         "title": "CambioCitaIn",
+        "type": "object"
+      },
+      "CambioSobanderoIn": {
+        "properties": {
+          "correo": {
+            "anyOf": [
+              {
+                "maxLength": 254,
+                "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correo"
+          },
+          "duracion_min": {
+            "anyOf": [
+              {
+                "enum": [
+                  20,
+                  30,
+                  45,
+                  60
+                ],
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duracion Min"
+          },
+          "nombre": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 2,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre"
+          },
+          "recibe_citas": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recibe Citas"
+          }
+        },
+        "title": "CambioSobanderoIn",
+        "type": "object"
+      },
+      "CitaAgendaOut": {
+        "properties": {
+          "cliente_nombre": {
+            "title": "Cliente Nombre",
+            "type": "string"
+          },
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "fin": {
+            "format": "date-time",
+            "title": "Fin",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "inicio": {
+            "format": "date-time",
+            "title": "Inicio",
+            "type": "string"
+          },
+          "sobandero": {
+            "$ref": "#/components/schemas/SobanderoCortoOut"
+          }
+        },
+        "required": [
+          "id",
+          "estado",
+          "inicio",
+          "fin",
+          "cliente_nombre",
+          "sobandero"
+        ],
+        "title": "CitaAgendaOut",
         "type": "object"
       },
       "CitaClienteOut": {
@@ -482,6 +649,42 @@
         "title": "FichaClienteOut",
         "type": "object"
       },
+      "FilaResumenOut": {
+        "properties": {
+          "citas": {
+            "title": "Citas",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "siguiente": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Siguiente"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "citas",
+          "siguiente"
+        ],
+        "title": "FilaResumenOut",
+        "type": "object"
+      },
       "FranjaIO": {
         "description": "Hora de pared de Bogotá, «HH:MM».",
         "properties": {
@@ -643,6 +846,41 @@
         "title": "MensajeOut",
         "type": "object"
       },
+      "NegocioIn": {
+        "properties": {
+          "direccion": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Direccion",
+            "type": "string"
+          },
+          "mensaje_bienvenida": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Mensaje Bienvenida",
+            "type": "string"
+          },
+          "nombre": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Nombre",
+            "type": "string"
+          },
+          "telefono": {
+            "pattern": "^\\+?[0-9][0-9 ()\\-]{5,28}$",
+            "title": "Telefono",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "direccion",
+          "telefono",
+          "mensaje_bienvenida"
+        ],
+        "title": "NegocioIn",
+        "type": "object"
+      },
       "NegocioOut": {
         "properties": {
           "direccion": {
@@ -697,6 +935,46 @@
           "inicio"
         ],
         "title": "NuevaCitaIn",
+        "type": "object"
+      },
+      "NuevoSobanderoIn": {
+        "properties": {
+          "clave_temporal": {
+            "maxLength": 200,
+            "minLength": 8,
+            "title": "Clave Temporal",
+            "type": "string"
+          },
+          "correo": {
+            "maxLength": 254,
+            "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+            "title": "Correo",
+            "type": "string"
+          },
+          "duracion_min": {
+            "default": 30,
+            "enum": [
+              20,
+              30,
+              45,
+              60
+            ],
+            "title": "Duracion Min",
+            "type": "integer"
+          },
+          "nombre": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "correo",
+          "clave_temporal"
+        ],
+        "title": "NuevoSobanderoIn",
         "type": "object"
       },
       "PerfilIn": {
@@ -814,6 +1092,120 @@
           "clave_nueva"
         ],
         "title": "RestablecerIn",
+        "type": "object"
+      },
+      "ResumenOut": {
+        "properties": {
+          "citas_total": {
+            "title": "Citas Total",
+            "type": "integer"
+          },
+          "dia": {
+            "format": "date",
+            "title": "Dia",
+            "type": "string"
+          },
+          "por_sobandero": {
+            "items": {
+              "$ref": "#/components/schemas/FilaResumenOut"
+            },
+            "title": "Por Sobandero",
+            "type": "array"
+          },
+          "sobanderos_atendiendo": {
+            "title": "Sobanderos Atendiendo",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "dia",
+          "citas_total",
+          "sobanderos_atendiendo",
+          "por_sobandero"
+        ],
+        "title": "ResumenOut",
+        "type": "object"
+      },
+      "SobanderoAdminOut": {
+        "properties": {
+          "activo": {
+            "title": "Activo",
+            "type": "boolean"
+          },
+          "baja_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baja En"
+          },
+          "citas_proximas": {
+            "title": "Citas Proximas",
+            "type": "integer"
+          },
+          "correo": {
+            "title": "Correo",
+            "type": "string"
+          },
+          "dias": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Dias",
+            "type": "array"
+          },
+          "duracion_min": {
+            "title": "Duracion Min",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "recibe_citas": {
+            "title": "Recibe Citas",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "correo",
+          "activo",
+          "recibe_citas",
+          "duracion_min",
+          "baja_en",
+          "dias",
+          "citas_proximas"
+        ],
+        "title": "SobanderoAdminOut",
+        "type": "object"
+      },
+      "SobanderoCortoOut": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ],
+        "title": "SobanderoCortoOut",
         "type": "object"
       },
       "SobanderoOut": {
@@ -951,6 +1343,960 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/admin/actividad": {
+      "get": {
+        "description": "Lo más reciente primero. Para ver más, pase `antes` con el id de la última fila vista.",
+        "operationId": "actividad_admin_actividad_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limite",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limite",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "antes",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Antes"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ActividadOut"
+                  },
+                  "title": "Response Actividad Admin Actividad Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Actividad",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/agenda": {
+      "get": {
+        "description": "Citas del día de todos los sobanderos, sin celulares y sin canceladas.",
+        "operationId": "ver_agenda_admin_agenda_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "dia",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dia"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CitaAgendaOut"
+                  },
+                  "title": "Response Ver Agenda Admin Agenda Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ver Agenda",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/negocio": {
+      "get": {
+        "operationId": "ver_negocio_admin_negocio_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegocioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "summary": "Ver Negocio",
+        "tags": [
+          "admin"
+        ]
+      },
+      "put": {
+        "operationId": "guardar_negocio_admin_negocio_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NegocioIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegocioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Guardar Negocio",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/resumen": {
+      "get": {
+        "description": "Total del día y una fila por sobandero activo.",
+        "operationId": "ver_resumen_admin_resumen_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "dia",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Dia"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumenOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ver Resumen",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/sobanderos": {
+      "get": {
+        "operationId": "listar_sobanderos_admin_sobanderos_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "incluir_inactivos",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Incluir Inactivos",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SobanderoAdminOut"
+                  },
+                  "title": "Response Listar Sobanderos Admin Sobanderos Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Listar Sobanderos",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "description": "La clave temporal no vuelve a mostrarse; el sobandero la cambia en su primer ingreso.",
+        "operationId": "crear_sobandero_admin_sobanderos_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoSobanderoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SobanderoAdminOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`correo_en_uso`"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Crear Sobandero",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/sobanderos/{sobandero_id}": {
+      "get": {
+        "operationId": "ver_sobandero_admin_sobanderos__sobandero_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sobandero_id",
+            "required": true,
+            "schema": {
+              "title": "Sobandero Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SobanderoAdminOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ver Sobandero",
+        "tags": [
+          "admin"
+        ]
+      },
+      "patch": {
+        "description": "La duración nueva solo aplica a las citas nuevas; las agendadas no cambian.",
+        "operationId": "editar_sobandero_admin_sobanderos__sobandero_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sobandero_id",
+            "required": true,
+            "schema": {
+              "title": "Sobandero Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CambioSobanderoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SobanderoAdminOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`correo_en_uso`"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Editar Sobandero",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/sobanderos/{sobandero_id}/baja": {
+      "post": {
+        "description": "`dejar`: sus citas próximas siguen y la cuenta se cierra al terminarlas.\n`cancelar`: se cancelan con aviso por WhatsApp y la cuenta se cierra al instante.\nEl historial se conserva.",
+        "operationId": "dar_de_baja_admin_sobanderos__sobandero_id__baja_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sobandero_id",
+            "required": true,
+            "schema": {
+              "title": "Sobandero Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BajaIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BajaOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`ya_dado_de_baja`"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Dar De Baja",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/sobanderos/{sobandero_id}/enlace-clave": {
+      "post": {
+        "description": "Envía al sobandero un enlace de un solo uso para crear una clave nueva.",
+        "operationId": "enlace_clave_admin_sobanderos__sobandero_id__enlace_clave_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sobandero_id",
+            "required": true,
+            "schema": {
+              "title": "Sobandero Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Enlace Clave",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/admin/sobanderos/{sobandero_id}/horario": {
+      "get": {
+        "operationId": "ver_horario_admin_sobanderos__sobandero_id__horario_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sobandero_id",
+            "required": true,
+            "schema": {
+              "title": "Sobandero Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HorarioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Ver Horario",
+        "tags": [
+          "admin"
+        ]
+      },
+      "put": {
+        "description": "Reemplaza las franjas de los días enviados. No toca las citas ya agendadas.",
+        "operationId": "guardar_horario_admin_sobanderos__sobandero_id__horario_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sobandero_id",
+            "required": true,
+            "schema": {
+              "title": "Sobandero Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HorarioIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HorarioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          }
+        },
+        "summary": "Guardar Horario",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/auth/cambiar-clave": {
       "post": {
         "operationId": "cambiar_clave_auth_cambiar_clave_post",

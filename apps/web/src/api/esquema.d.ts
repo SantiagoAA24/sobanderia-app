@@ -4,6 +4,189 @@
  */
 
 export interface paths {
+    "/admin/actividad": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Actividad
+         * @description Lo más reciente primero. Para ver más, pase `antes` con el id de la última fila vista.
+         */
+        get: operations["actividad_admin_actividad_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/agenda": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ver Agenda
+         * @description Citas del día de todos los sobanderos, sin celulares y sin canceladas.
+         */
+        get: operations["ver_agenda_admin_agenda_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/negocio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ver Negocio */
+        get: operations["ver_negocio_admin_negocio_get"];
+        /** Guardar Negocio */
+        put: operations["guardar_negocio_admin_negocio_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/resumen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ver Resumen
+         * @description Total del día y una fila por sobandero activo.
+         */
+        get: operations["ver_resumen_admin_resumen_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/sobanderos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Listar Sobanderos */
+        get: operations["listar_sobanderos_admin_sobanderos_get"];
+        put?: never;
+        /**
+         * Crear Sobandero
+         * @description La clave temporal no vuelve a mostrarse; el sobandero la cambia en su primer ingreso.
+         */
+        post: operations["crear_sobandero_admin_sobanderos_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/sobanderos/{sobandero_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ver Sobandero */
+        get: operations["ver_sobandero_admin_sobanderos__sobandero_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Editar Sobandero
+         * @description La duración nueva solo aplica a las citas nuevas; las agendadas no cambian.
+         */
+        patch: operations["editar_sobandero_admin_sobanderos__sobandero_id__patch"];
+        trace?: never;
+    };
+    "/admin/sobanderos/{sobandero_id}/baja": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Dar De Baja
+         * @description `dejar`: sus citas próximas siguen y la cuenta se cierra al terminarlas.
+         *     `cancelar`: se cancelan con aviso por WhatsApp y la cuenta se cierra al instante.
+         *     El historial se conserva.
+         */
+        post: operations["dar_de_baja_admin_sobanderos__sobandero_id__baja_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/sobanderos/{sobandero_id}/enlace-clave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Enlace Clave
+         * @description Envía al sobandero un enlace de un solo uso para crear una clave nueva.
+         */
+        post: operations["enlace_clave_admin_sobanderos__sobandero_id__enlace_clave_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/sobanderos/{sobandero_id}/horario": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ver Horario */
+        get: operations["ver_horario_admin_sobanderos__sobandero_id__horario_get"];
+        /**
+         * Guardar Horario
+         * @description Reemplaza las franjas de los días enviados. No toca las citas ya agendadas.
+         */
+        put: operations["guardar_horario_admin_sobanderos__sobandero_id__horario_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/cambiar-clave": {
         parameters: {
             query?: never;
@@ -485,6 +668,36 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ActividadOut */
+        ActividadOut: {
+            /** Accion */
+            accion: string;
+            /**
+             * Creado En
+             * Format: date-time
+             */
+            creado_en: string;
+            /** Id */
+            id: number;
+            /** Quien */
+            quien: string;
+            /** Texto */
+            texto: string;
+        };
+        /** BajaIn */
+        BajaIn: {
+            /**
+             * Citas
+             * @enum {string}
+             */
+            citas: "dejar" | "cancelar";
+        };
+        /** BajaOut */
+        BajaOut: {
+            /** Citas Canceladas */
+            citas_canceladas: number;
+            sobandero: components["schemas"]["SobanderoAdminOut"];
+        };
         /** BloqueoIn */
         BloqueoIn: {
             /**
@@ -540,6 +753,37 @@ export interface components {
             estado?: ("atendida" | "no_asistio" | "cancelada") | null;
             /** Inicio */
             inicio?: string | null;
+        };
+        /** CambioSobanderoIn */
+        CambioSobanderoIn: {
+            /** Correo */
+            correo?: string | null;
+            /** Duracion Min */
+            duracion_min?: (20 | 30 | 45 | 60) | null;
+            /** Nombre */
+            nombre?: string | null;
+            /** Recibe Citas */
+            recibe_citas?: boolean | null;
+        };
+        /** CitaAgendaOut */
+        CitaAgendaOut: {
+            /** Cliente Nombre */
+            cliente_nombre: string;
+            /** Estado */
+            estado: string;
+            /**
+             * Fin
+             * Format: date-time
+             */
+            fin: string;
+            /** Id */
+            id: number;
+            /**
+             * Inicio
+             * Format: date-time
+             */
+            inicio: string;
+            sobandero: components["schemas"]["SobanderoCortoOut"];
         };
         /**
          * CitaClienteOut
@@ -693,6 +937,17 @@ export interface components {
             /** Total */
             total: number;
         };
+        /** FilaResumenOut */
+        FilaResumenOut: {
+            /** Citas */
+            citas: number;
+            /** Id */
+            id: number;
+            /** Nombre */
+            nombre: string;
+            /** Siguiente */
+            siguiente: string | null;
+        };
         /**
          * FranjaIO
          * @description Hora de pared de Bogotá, «HH:MM».
@@ -753,6 +1008,17 @@ export interface components {
             /** Mensaje */
             mensaje: string;
         };
+        /** NegocioIn */
+        NegocioIn: {
+            /** Direccion */
+            direccion: string;
+            /** Mensaje Bienvenida */
+            mensaje_bienvenida: string;
+            /** Nombre */
+            nombre: string;
+            /** Telefono */
+            telefono: string;
+        };
         /** NegocioOut */
         NegocioOut: {
             /** Direccion */
@@ -773,6 +1039,21 @@ export interface components {
              * Format: date-time
              */
             inicio: string;
+            /** Nombre */
+            nombre: string;
+        };
+        /** NuevoSobanderoIn */
+        NuevoSobanderoIn: {
+            /** Clave Temporal */
+            clave_temporal: string;
+            /** Correo */
+            correo: string;
+            /**
+             * Duracion Min
+             * @default 30
+             * @enum {integer}
+             */
+            duracion_min: 20 | 30 | 45 | 60;
             /** Nombre */
             nombre: string;
         };
@@ -813,6 +1094,48 @@ export interface components {
             clave_nueva: string;
             /** Token */
             token: string;
+        };
+        /** ResumenOut */
+        ResumenOut: {
+            /** Citas Total */
+            citas_total: number;
+            /**
+             * Dia
+             * Format: date
+             */
+            dia: string;
+            /** Por Sobandero */
+            por_sobandero: components["schemas"]["FilaResumenOut"][];
+            /** Sobanderos Atendiendo */
+            sobanderos_atendiendo: number;
+        };
+        /** SobanderoAdminOut */
+        SobanderoAdminOut: {
+            /** Activo */
+            activo: boolean;
+            /** Baja En */
+            baja_en: string | null;
+            /** Citas Proximas */
+            citas_proximas: number;
+            /** Correo */
+            correo: string;
+            /** Dias */
+            dias: number[];
+            /** Duracion Min */
+            duracion_min: number;
+            /** Id */
+            id: number;
+            /** Nombre */
+            nombre: string;
+            /** Recibe Citas */
+            recibe_citas: boolean;
+        };
+        /** SobanderoCortoOut */
+        SobanderoCortoOut: {
+            /** Id */
+            id: number;
+            /** Nombre */
+            nombre: string;
         };
         /** SobanderoOut */
         SobanderoOut: {
@@ -871,6 +1194,737 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    actividad_admin_actividad_get: {
+        parameters: {
+            query?: {
+                limite?: number;
+                antes?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActividadOut"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    ver_agenda_admin_agenda_get: {
+        parameters: {
+            query?: {
+                dia?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CitaAgendaOut"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ver_negocio_admin_negocio_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NegocioOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    guardar_negocio_admin_negocio_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NegocioIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NegocioOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    ver_resumen_admin_resumen_get: {
+        parameters: {
+            query?: {
+                dia?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResumenOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listar_sobanderos_admin_sobanderos_get: {
+        parameters: {
+            query?: {
+                incluir_inactivos?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SobanderoAdminOut"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    crear_sobandero_admin_sobanderos_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NuevoSobanderoIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SobanderoAdminOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `correo_en_uso` */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    ver_sobandero_admin_sobanderos__sobandero_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sobandero_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SobanderoAdminOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    editar_sobandero_admin_sobanderos__sobandero_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sobandero_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CambioSobanderoIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SobanderoAdminOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `correo_en_uso` */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    dar_de_baja_admin_sobanderos__sobandero_id__baja_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sobandero_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BajaIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BajaOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `ya_dado_de_baja` */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    enlace_clave_admin_sobanderos__sobandero_id__enlace_clave_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sobandero_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ver_horario_admin_sobanderos__sobandero_id__horario_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sobandero_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HorarioOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    guardar_horario_admin_sobanderos__sobandero_id__horario_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sobandero_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HorarioIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HorarioOut"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
     cambiar_clave_auth_cambiar_clave_post: {
         parameters: {
             query?: never;

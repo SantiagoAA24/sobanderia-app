@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import ajustes
 from app.errores import registrar_manejadores
 from app.rutas import (
+    admin,
     auth,
     mi_cita,
     publico,
@@ -31,6 +32,7 @@ app.include_router(yo_citas.router)
 app.include_router(yo_agenda.router)
 app.include_router(yo_clientes.router)
 app.include_router(yo_perfil.router)
+app.include_router(admin.router)
 
 
 @app.get("/salud")

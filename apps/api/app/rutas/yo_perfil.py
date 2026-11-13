@@ -3,14 +3,14 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel, StringConstraints
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.correo import EnviadorCorreo, obtener_enviador
 from app.db import obtener_sesion
 from app.errores import ErrorApi
 from app.modelos import Sobandero
-from app.rutas.esquemas import SESION, ErrorOut, Nombre
+from app.rutas.esquemas import SESION, CorreoTexto, ErrorOut, Nombre
 from app.seguridad.dependencias import sobandero_actual
 from app.servicios import perfil as servicio
 
@@ -18,16 +18,6 @@ router = APIRouter(prefix="/yo/perfil", tags=["sobandero"])
 Db = Annotated[Session, Depends(obtener_sesion)]
 Yo = Annotated[Sobandero, Depends(sobandero_actual)]
 Correo = Annotated[EnviadorCorreo, Depends(obtener_enviador)]
-
-CorreoTexto = Annotated[
-    str,
-    StringConstraints(
-        strip_whitespace=True,
-        to_lower=True,
-        max_length=254,
-        pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-    ),
-]
 
 
 class PerfilOut(BaseModel):
