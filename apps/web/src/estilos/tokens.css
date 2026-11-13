@@ -1,0 +1,13 @@
+/* Tokens mínimos de la Fase 0. El sistema completo llega en la Fase 4. */
+:root {
+  --color-fondo: #faf6ef;
+  --color-texto: #2b2118;
+  --fuente-texto: "Nunito Sans", system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-texto);
+}
