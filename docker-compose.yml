@@ -1,0 +1,84 @@
+# Entorno local de desarrollo. Producción usa imágenes propias (Fase 11).
+# Uso: make dev   (o: docker compose up)
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sobanderia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sobanderia}
+      POSTGRES_DB: ${POSTGRES_DB:-sobanderia}
+      TZ: UTC
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sobanderia} -d ${POSTGRES_DB:-sobanderia}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    image: python:3.12-slim
+    working_dir: /app
+    command: >
+      sh -c "pip install -q -e '.[dev]' &&
+             alembic upgrade head &&
+             uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-sobanderia}:${POSTGRES_PASSWORD:-sobanderia}@db:5432/${POSTGRES_DB:-sobanderia}
+      ENTORNO: desarrollo
+      ORIGEN_WEB: http://localhost:5173
+      PROVEEDOR_WHATSAPP: falso
+      TZ_NEGOCIO: America/Bogota
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./apps/api:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    image: python:3.12-slim
+    working_dir: /app
+    command: >
+      sh -c "pip install -q -e '.[dev]' &&
+             python -m app.worker"
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-sobanderia}:${POSTGRES_PASSWORD:-sobanderia}@db:5432/${POSTGRES_DB:-sobanderia}
+      ENTORNO: desarrollo
+      PROVEEDOR_WHATSAPP: falso
+      TZ_NEGOCIO: America/Bogota
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ./apps/api:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      api:
+        condition: service_started
+
+  web:
+    image: node:20
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+    environment:
+      VITE_API_URL: http://localhost:8000
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./apps/web:/app
+      - web_node_modules:/app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  db_data:
+  web_node_modules:
