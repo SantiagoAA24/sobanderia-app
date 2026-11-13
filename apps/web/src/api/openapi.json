@@ -242,6 +242,33 @@
         "title": "DiasOut",
         "type": "object"
       },
+      "EncontrarCitaIn": {
+        "properties": {
+          "celular": {
+            "maxLength": 30,
+            "minLength": 7,
+            "title": "Celular",
+            "type": "string"
+          }
+        },
+        "required": [
+          "celular"
+        ],
+        "title": "EncontrarCitaIn",
+        "type": "object"
+      },
+      "EnlaceEnviadoOut": {
+        "description": "Siempre la misma respuesta, exista o no la cita.",
+        "properties": {
+          "enviado": {
+            "default": true,
+            "title": "Enviado",
+            "type": "boolean"
+          }
+        },
+        "title": "EnlaceEnviadoOut",
+        "type": "object"
+      },
       "ErrorOut": {
         "properties": {
           "codigo": {
@@ -363,6 +390,34 @@
         "title": "MensajeOut",
         "type": "object"
       },
+      "NegocioOut": {
+        "properties": {
+          "direccion": {
+            "title": "Direccion",
+            "type": "string"
+          },
+          "mensaje_bienvenida": {
+            "title": "Mensaje Bienvenida",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "telefono": {
+            "title": "Telefono",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "direccion",
+          "telefono",
+          "mensaje_bienvenida"
+        ],
+        "title": "NegocioOut",
+        "type": "object"
+      },
       "NuevaCitaIn": {
         "properties": {
           "celular": {
@@ -463,6 +518,43 @@
           "duracion_min"
         ],
         "title": "SobanderoOut",
+        "type": "object"
+      },
+      "SobanderoPublicoOut": {
+        "description": "Con su próximo cupo, para el Paso 1. Es nulo si no tiene horas libres.",
+        "properties": {
+          "duracion_min": {
+            "title": "Duracion Min",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "proximo_cupo": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Proximo Cupo"
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "duracion_min",
+          "proximo_cupo"
+        ],
+        "title": "SobanderoPublicoOut",
         "type": "object"
       },
       "UsuarioOut": {
@@ -972,6 +1064,89 @@
         ]
       }
     },
+    "/publico/mi-cita/enlace": {
+      "post": {
+        "description": "Responde igual exista o no la cita para no revelar quién tiene una.",
+        "operationId": "pedir_enlace_publico_mi_cita_enlace_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncontrarCitaIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnlaceEnviadoOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`validacion`"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`demasiados_intentos`"
+          }
+        },
+        "summary": "Pedir Enlace",
+        "tags": [
+          "publico"
+        ]
+      }
+    },
+    "/publico/negocio": {
+      "get": {
+        "operationId": "negocio_publico_negocio_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NegocioOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "summary": "Negocio",
+        "tags": [
+          "publico"
+        ]
+      }
+    },
     "/publico/sobanderos": {
       "get": {
         "operationId": "listar_sobanderos_publico_sobanderos_get",
@@ -981,7 +1156,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/SobanderoOut"
+                    "$ref": "#/components/schemas/SobanderoPublicoOut"
                   },
                   "title": "Response Listar Sobanderos Publico Sobanderos Get",
                   "type": "array"

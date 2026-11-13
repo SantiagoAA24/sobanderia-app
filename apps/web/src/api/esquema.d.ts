@@ -174,6 +174,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/publico/mi-cita/enlace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Pedir Enlace
+         * @description Responde igual exista o no la cita para no revelar quién tiene una.
+         */
+        post: operations["pedir_enlace_publico_mi_cita_enlace_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/publico/negocio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Negocio */
+        get: operations["negocio_publico_negocio_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/publico/sobanderos": {
         parameters: {
             query?: never;
@@ -390,6 +427,22 @@ export interface components {
             /** Dias */
             dias: string[];
         };
+        /** EncontrarCitaIn */
+        EncontrarCitaIn: {
+            /** Celular */
+            celular: string;
+        };
+        /**
+         * EnlaceEnviadoOut
+         * @description Siempre la misma respuesta, exista o no la cita.
+         */
+        EnlaceEnviadoOut: {
+            /**
+             * Enviado
+             * @default true
+             */
+            enviado: boolean;
+        };
         /** ErrorOut */
         ErrorOut: {
             /** Codigo */
@@ -435,6 +488,17 @@ export interface components {
             /** Mensaje */
             mensaje: string;
         };
+        /** NegocioOut */
+        NegocioOut: {
+            /** Direccion */
+            direccion: string;
+            /** Mensaje Bienvenida */
+            mensaje_bienvenida: string;
+            /** Nombre */
+            nombre: string;
+            /** Telefono */
+            telefono: string;
+        };
         /** NuevaCitaIn */
         NuevaCitaIn: {
             /** Celular */
@@ -475,6 +539,20 @@ export interface components {
             id: number;
             /** Nombre */
             nombre: string;
+        };
+        /**
+         * SobanderoPublicoOut
+         * @description Con su próximo cupo, para el Paso 1. Es nulo si no tiene horas libres.
+         */
+        SobanderoPublicoOut: {
+            /** Duracion Min */
+            duracion_min: number;
+            /** Id */
+            id: number;
+            /** Nombre */
+            nombre: string;
+            /** Proximo Cupo */
+            proximo_cupo: string | null;
         };
         /** UsuarioOut */
         UsuarioOut: {
@@ -869,6 +947,77 @@ export interface operations {
             };
         };
     };
+    pedir_enlace_publico_mi_cita_enlace_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EncontrarCitaIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EnlaceEnviadoOut"];
+                };
+            };
+            /** @description `validacion` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `demasiados_intentos` */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    negocio_publico_negocio_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NegocioOut"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
     listar_sobanderos_publico_sobanderos_get: {
         parameters: {
             query?: never;
@@ -884,7 +1033,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SobanderoOut"][];
+                    "application/json": components["schemas"]["SobanderoPublicoOut"][];
                 };
             };
         };

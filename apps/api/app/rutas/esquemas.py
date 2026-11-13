@@ -37,6 +37,29 @@ class SobanderoOut(BaseModel):
     duracion_min: int
 
 
+class SobanderoPublicoOut(SobanderoOut):
+    """Con su próximo cupo, para el Paso 1. Es nulo si no tiene horas libres."""
+
+    proximo_cupo: AwareDatetime | None
+
+
+class NegocioOut(BaseModel):
+    nombre: str
+    direccion: str
+    telefono: str
+    mensaje_bienvenida: str
+
+
+class EncontrarCitaIn(BaseModel):
+    celular: Celular
+
+
+class EnlaceEnviadoOut(BaseModel):
+    """Siempre la misma respuesta, exista o no la cita."""
+
+    enviado: bool = True
+
+
 class DiasOut(BaseModel):
     dias: list[date]
 

@@ -142,3 +142,13 @@ def alternativas(
     todas = [h for horas in por_dia.values() for h in horas if h != pedida]
     cercanas = sorted(todas, key=lambda h: (abs(h - pedida), h))[:cuantas]
     return sorted(cercanas)
+
+
+def proximo_cupo(
+    db: Session, sobandero: Sobandero, ahora: datetime, antelacion_min: int = 0
+) -> datetime | None:
+    """La primera hora libre (UTC) dentro de la ventana de agenda, o None si no hay ninguna."""
+    hoy = dia_local(ahora)
+    lista = [hoy + timedelta(days=n) for n in range(ajustes.dias_agenda)]
+    por_dia = _calcular(db, sobandero, lista, ahora, antelacion_min, None)
+    return next((por_dia[dia][0] for dia in lista if por_dia[dia]), None)

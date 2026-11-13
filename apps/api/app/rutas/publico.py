@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import AwareDatetime, BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from app.config import ajustes
 from app.db import obtener_sesion
 from app.errores import no_encontrado
-from app.modelos import Sobandero, Usuario
+from app.modelos import Negocio, Sobandero, Usuario
 from app.reloj import Ahora
 from app.rutas.esquemas import (
     ERRORES_AGENDA,
@@ -17,13 +17,18 @@ from app.rutas.esquemas import (
     Celular,
     CitaCreadaOut,
     DiasOut,
+    EncontrarCitaIn,
+    EnlaceEnviadoOut,
+    ErrorOut,
     HorasOut,
+    NegocioOut,
     Nombre,
-    SobanderoOut,
+    SobanderoPublicoOut,
 )
 from app.seguridad.dependencias import exige_csrf
 from app.servicios import citas as servicio
-from app.servicios.horas import dias_con_horas, horas_libres
+from app.servicios.encontrar_cita import enviar_enlace
+from app.servicios.horas import dias_con_horas, horas_libres, proximo_cupo
 from app.servicios.vistas import vista_cliente
 
 router = APIRouter(prefix="/publico", tags=["publico"])
@@ -49,8 +54,21 @@ def _sobandero(db: Session, sobandero_id: int) -> Sobandero:
     return sobandero
 
 
+@router.get("/negocio", responses=NO_ENCONTRADO)
+def negocio(db: Db) -> NegocioOut:
+    fila = db.get(Negocio, 1)
+    if fila is None:
+        raise no_encontrado("No encontramos los datos del local.")
+    return NegocioOut(
+        nombre=fila.nombre,
+        direccion=fila.direccion,
+        telefono=fila.telefono,
+        mensaje_bienvenida=fila.mensaje_bienvenida,
+    )
+
+
 @router.get("/sobanderos")
-def listar_sobanderos(db: Db) -> list[SobanderoOut]:
+def listar_sobanderos(db: Db, ahora: Ahora) -> list[SobanderoPublicoOut]:
     filas = db.scalars(
         select(Sobandero)
         .join(Usuario, Usuario.id == Sobandero.usuario_id)
@@ -58,7 +76,13 @@ def listar_sobanderos(db: Db) -> list[SobanderoOut]:
         .order_by(Sobandero.id)
     )
     return [
-        SobanderoOut(id=s.id, nombre=s.usuario.nombre, duracion_min=s.duracion_min) for s in filas
+        SobanderoPublicoOut(
+            id=s.id,
+            nombre=s.usuario.nombre,
+            duracion_min=s.duracion_min,
+            proximo_cupo=proximo_cupo(db, s, ahora, ajustes.antelacion_min),
+        )
+        for s in filas
     ]
 
 
@@ -94,3 +118,21 @@ def crear_cita(datos: CrearCitaIn, db: Db, ahora: Ahora) -> CitaCreadaOut:
         consentimiento=datos.consentimiento,
     )
     return CitaCreadaOut(token=token, cita=vista_cliente(db, cita, ahora))
+
+
+@router.post(
+    "/mi-cita/enlace",
+    status_code=202,
+    dependencies=[Depends(exige_csrf)],
+    responses={
+        422: {"model": ErrorOut, "description": "`validacion`"},
+        429: {"model": ErrorOut, "description": "`demasiados_intentos`"},
+    },
+)
+def pedir_enlace(
+    datos: EncontrarCitaIn, request: Request, db: Db, ahora: Ahora
+) -> EnlaceEnviadoOut:
+    """Responde igual exista o no la cita para no revelar quién tiene una."""
+    ip = request.client.host if request.client else "desconocida"
+    enviar_enlace(db, datos.celular, ip, ahora)
+    return EnlaceEnviadoOut()
