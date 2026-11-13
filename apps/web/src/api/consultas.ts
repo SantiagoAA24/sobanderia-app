@@ -43,8 +43,11 @@ export function crearClienteDeConsultas({ alVencerSesion, alVencerEnlace }: Mane
       onError: (error, _variables, _contexto, mutacion) => alFallar(error, mutacion.meta?.atiendeEnlaceVencido === true),
     }),
     defaultOptions: {
-      queries: { retry: debeReintentar, refetchOnWindowFocus: false },
-      mutations: { retry: false },
+      // `networkMode: "always"`: con la red caída se intenta igual y falla con ErrorRed («Sin conexión»).
+      // Por defecto TanStack pausa las consultas (pantalla en «Cargando» para siempre) y encola las
+      // escrituras para enviarlas al volver la red: la app no escribe nada sin conexión.
+      queries: { retry: debeReintentar, refetchOnWindowFocus: false, networkMode: "always" },
+      mutations: { retry: false, networkMode: "always" },
     },
   });
   return cliente;
