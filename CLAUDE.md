@@ -19,7 +19,7 @@ App de citas para una sobandería familiar (4 sobanderos, citas de ~30 min). PWA
 - La restricción de exclusión `citas_sin_cruce` en la tabla `citas` es la única garantía contra el doble agendamiento. El código solo traduce su error a `hora_ocupada` (409).
 - El servidor calcula las horas libres; el frontend solo las muestra.
 - Cada cambio de una cita crea su fila en `notificaciones` dentro de la misma transacción.
-- Tokens (enlaces de cita, sesiones, recuperación) se guardan solo como hash. Claves con argon2id.
+- Tokens (enlaces de cita, sesiones, recuperación) se guardan solo como hash. Claves con argon2id. Única excepción aceptada (H-04, `docs/SEGURIDAD.md`): el token de un enlace de cita vive en claro en `notificaciones.variables` hasta que el worker envía el mensaje; ahí se borra.
 - Nunca guardar ni registrar celulares completos en logs (enmascarar: `300 *** 4567`).
 - El rol se verifica en el servidor en cada ruta, no solo ocultando botones.
 - Las pruebas de reglas de negocio corren contra PostgreSQL real, nunca SQLite.

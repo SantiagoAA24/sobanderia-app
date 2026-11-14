@@ -7,9 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.correo import EnviadorCorreo, enmascarar_correo
-from app.errores import ErrorApi, clave_incorrecta
+from app.errores import ErrorApi
 from app.modelos import Usuario
-from app.seguridad.claves import verificar_clave
+from app.servicios.auth import comprobar_clave_actual
 
 registro = logging.getLogger("sobanderia.perfil")
 
@@ -25,13 +25,13 @@ def actualizar(
     nombre: str | None,
     correo: str | None,
     clave_actual: str | None,
+    ip: str,
 ) -> Usuario:
     cambia_correo = correo is not None and correo != usuario.correo
     if cambia_correo:
         if not clave_actual:
             raise ErrorApi(422, "validacion", "Escriba su clave actual para cambiar el correo.")
-        if not verificar_clave(usuario.clave_hash, clave_actual):
-            raise clave_incorrecta()
+        comprobar_clave_actual(db, usuario, clave_actual, ip)
         if db.scalar(select(Usuario.id).where(Usuario.correo == correo, Usuario.id != usuario.id)):
             raise _correo_en_uso()
     anterior = usuario.correo

@@ -13,6 +13,7 @@ from app.seguridad.dependencias import (
     sesion_activa,
     token_de_cookie,
 )
+from app.seguridad.ip import ip_del_cliente
 from app.servicios import auth as servicio
 
 router = APIRouter(prefix="/auth", tags=["auth"], dependencies=[Depends(exige_csrf)])
@@ -57,13 +58,9 @@ def _salida(usuario: Usuario) -> UsuarioOut:
     )
 
 
-def _ip(request: Request) -> str:
-    return request.client.host if request.client else "desconocida"
-
-
 @router.post("/ingreso")
 def ingreso(datos: IngresoIn, request: Request, response: Response, db: Db) -> UsuarioOut:
-    usuario, token = servicio.ingresar(db, datos.correo, datos.clave, _ip(request))
+    usuario, token = servicio.ingresar(db, datos.correo, datos.clave, ip_del_cliente(request))
     response.set_cookie(
         ajustes.cookie_sesion,
         token,
@@ -92,18 +89,27 @@ def yo(usuario: Annotated[Usuario, Depends(sesion_activa)]) -> UsuarioOut:
 @router.post("/cambiar-clave", status_code=204)
 def cambiar_clave(
     datos: CambiarClaveIn,
+    request: Request,
     db: Db,
     correo: Correo,
     token: Token,
     usuario: Annotated[Usuario, Depends(sesion_activa)],
 ) -> Response:
-    servicio.cambiar_clave(db, correo, usuario, token or "", datos.clave_actual, datos.clave_nueva)
+    servicio.cambiar_clave(
+        db,
+        correo,
+        usuario,
+        token or "",
+        datos.clave_actual,
+        datos.clave_nueva,
+        ip_del_cliente(request),
+    )
     return Response(status_code=204)
 
 
 @router.post("/recuperar")
 def recuperar(datos: RecuperarIn, request: Request, db: Db, correo: Correo) -> MensajeOut:
-    servicio.pedir_recuperacion(db, correo, datos.correo, _ip(request))
+    servicio.pedir_recuperacion(db, correo, datos.correo, ip_del_cliente(request))
     return MensajeOut(mensaje="Si el correo está registrado, le enviamos un enlace.")
 
 

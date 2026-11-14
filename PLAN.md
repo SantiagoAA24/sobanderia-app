@@ -88,8 +88,8 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
   - Pasan 3 veces seguidas en local (cada una con la base reiniciada) y 15 de 15 con `E2E_REPETIR=3`. La CI tiene el trabajo `e2e` con tres corridas; su primera ejecución en GitHub está pendiente.
   - Las herramientas `herramientas/e2e_*.py` se niegan a correr si la base no termina en `_e2e`.
 - [x] 10.2 Revisión de seguridad ruta por ruta: `docs/SEGURIDAD.md` (49 endpoints, comparada con el código por `test_seguridad_rutas.py`) y pruebas de acceso indebido (401, 403, 404, CSRF, enumeración, límites, CORS, cookies, webhook, registros)
-  - Resultado: los controles de acceso funcionan; 9 hallazgos abiertos (H-01 a H-09), reportados sin arreglar. Ocho tienen prueba `xfail(strict=True)`.
-- [ ] 10.2b Arreglar los hallazgos H-01 a H-09 según lo que decida el responsable (ver `docs/SEGURIDAD.md`)
+  - Resultado: los controles de acceso funcionan; 9 hallazgos (H-01 a H-09), reportados antes de arreglarlos y resueltos en 10.2b.
+- [x] 10.2b Hallazgos H-01 a H-09 resueltos (`docs/SEGURIDAD.md`): correo SMTP, topes de reserva y de «Encontrar mi cita», límite de la clave actual, IP real detrás de un proxy, cabeceras (API y web, con CSP vigilada por Playwright), documentación de la API cerrada en producción y limpieza de filas vencidas. H-04 queda como excepción aceptada (anotada en `CLAUDE.md`).
 - [x] 10.3 Ruta `/politica` con aviso visible «Texto pendiente de revisión legal» (versión `borrador-1`) y comando `python -m app.cli_datos exportar|anonimizar` (`docs/DATOS_PERSONALES.md`)
   - Anonimizar conserva las citas (decisión acordada). Además del cliente limpia el nombre y el token de `notificaciones.variables`, revoca los enlaces y borra los intentos de «Encontrar mi cita». Con citas futuras se detiene salvo `--cancelar-citas-futuras`, que cancela sin avisar.
   - Pendiente de negocio: el texto legal definitivo.
@@ -99,7 +99,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] 10.5 La app se niega a arrancar en producción con configuración de desarrollo (`app/config.py`; API, worker, alembic y seed)
   - Reglas en producción: base con credenciales de ejemplo o local, `ORIGEN_WEB` sin https o local, `PROVEEDOR_WHATSAPP=falso`, faltan las variables de WhatsApp, o correo que no es real. `ENTORNO` solo admite `desarrollo`, `pruebas` o `produccion`. Un servidor previo al lanzamiento también debe llamarse `produccion`.
   - También rechaza `ENTORNO=desarrollo` si `ORIGEN_WEB` es una dirección pública con https (caso de olvidar la variable). `cloudapi` en desarrollo sí se permite, para probar con el número de prueba de Meta.
-  - **Consecuencia a tener presente:** mientras no exista un proveedor de correo real (H-01), ninguna configuración de producción arranca.
+  - Producción exige además `CORREO_PROVEEDOR=smtp` con `SMTP_HOST` y `CORREO_DESDE` (H-01).
   - `SECRETO_APP` se quitó de `.env.example` (nada la usaba).
 
 ## Fase 11 — Despliegue, piloto y lanzamiento

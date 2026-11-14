@@ -1,6 +1,6 @@
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
 
-import { celularNuevo, elemento, diaHabil, horasLibres, nuevaApi, sobanderosPublicos } from "./ayudas";
+import { celularNuevo, elemento, diaHabil, horasLibres, nuevaApi, sobanderosPublicos, test } from "./ayudas";
 
 /** Recorrido 1: una persona sin cuenta agenda, cambia la hora y cancela, todo desde el celular. */
 test("el cliente agenda, reagenda y cancela su cita", async ({ page }) => {

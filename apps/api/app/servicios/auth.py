@@ -28,6 +28,7 @@ registro = logging.getLogger("sobanderia.auth")
 
 INGRESO = "ingreso"
 RECUPERAR = "recuperar"
+CLAVE_ACTUAL = "clave_actual"
 MENSAJE_INGRESO = "Correo o clave incorrectos."
 
 
@@ -42,11 +43,19 @@ def normalizar_correo(correo: str) -> str:
 # --- Límite de intentos ------------------------------------------------------------------
 
 
-def _segundos_de_espera(sesion: Session, tipo: str, columna: str, valor: str) -> int:
+def _segundos_de_espera(
+    sesion: Session,
+    tipo: str,
+    columna: str,
+    valor: str,
+    limite: int | None = None,
+    ventana: timedelta | None = None,
+) -> int:
     """Segundos que faltan para poder intentar de nuevo; 0 si no está bloqueado."""
-    ventana = timedelta(minutes=ajustes.ventana_intentos_min)
+    ventana = ventana or timedelta(minutes=ajustes.ventana_intentos_min)
     campo = IntentoIngreso.correo if columna == "correo" else IntentoIngreso.ip
-    limite = ajustes.intentos_max_correo if columna == "correo" else ajustes.intentos_max_ip
+    if limite is None:
+        limite = ajustes.intentos_max_correo if columna == "correo" else ajustes.intentos_max_ip
     momentos = sesion.scalars(
         select(IntentoIngreso.momento)
         .where(
@@ -61,10 +70,20 @@ def _segundos_de_espera(sesion: Session, tipo: str, columna: str, valor: str) ->
     return int((momentos[-1] + ventana - ahora()).total_seconds()) + 1
 
 
-def verificar_no_bloqueado(sesion: Session, tipo: str, correo: str, ip: str) -> None:
+def verificar_no_bloqueado(
+    sesion: Session,
+    tipo: str,
+    correo: str,
+    ip: str,
+    *,
+    limite_correo: int | None = None,
+    limite_ip: int | None = None,
+    ventana: timedelta | None = None,
+) -> None:
+    """429 si `correo` (o el identificador que haga sus veces) o la IP pasaron su tope."""
     espera = max(
-        _segundos_de_espera(sesion, tipo, "correo", correo),
-        _segundos_de_espera(sesion, tipo, "ip", ip),
+        _segundos_de_espera(sesion, tipo, "correo", correo, limite_correo, ventana),
+        _segundos_de_espera(sesion, tipo, "ip", ip, limite_ip, ventana),
     )
     if espera > 0:
         raise demasiados_intentos(espera)
@@ -172,6 +191,21 @@ def _avisar_cambio(enviador: EnviadorCorreo, usuario: Usuario) -> None:
     )
 
 
+def comprobar_clave_actual(sesion: Session, usuario: Usuario, clave_actual: str, ip: str) -> None:
+    """La «clave actual» que se pide para cambiar la clave o el correo, con límite de intentos:
+    una sesión robada no debe poder adivinarla sin tope (H-06)."""
+    identificador = f"usuario:{usuario.id}"
+    verificar_no_bloqueado(sesion, CLAVE_ACTUAL, identificador, ip)
+    if not verificar_clave(usuario.clave_hash, clave_actual):
+        registrar_intento(sesion, CLAVE_ACTUAL, identificador, ip)
+        raise clave_incorrecta()
+    sesion.execute(
+        delete(IntentoIngreso).where(
+            IntentoIngreso.tipo == CLAVE_ACTUAL, IntentoIngreso.correo == identificador
+        )
+    )
+
+
 def cambiar_clave(
     sesion: Session,
     enviador: EnviadorCorreo,
@@ -179,9 +213,9 @@ def cambiar_clave(
     token_actual: str,
     clave_actual: str,
     clave_nueva: str,
+    ip: str,
 ) -> None:
-    if not verificar_clave(usuario.clave_hash, clave_actual):
-        raise clave_incorrecta()
+    comprobar_clave_actual(sesion, usuario, clave_actual, ip)
     _validar_clave_nueva(clave_nueva, clave_actual)
     usuario.clave_hash = hashear_clave(clave_nueva)
     usuario.debe_cambiar_clave = False

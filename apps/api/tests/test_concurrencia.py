@@ -15,6 +15,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import Engine, create_engine, func, select, text
 from sqlalchemy.orm import Session, sessionmaker
 
+from app.config import ajustes
 from app.db import obtener_sesion
 from app.main import app
 from app.modelos import Cita, Cliente, Horario, Notificacion, Sobandero, Usuario
@@ -22,11 +23,18 @@ from app.reloj import reloj
 from tests.conftest import AHORA_PRUEBA, CSRF, INICIO, URL_PRUEBAS
 
 HILOS = 20
-TABLAS = "notificaciones, enlaces_cita, citas, clientes, bloqueos, horarios, sobanderos, usuarios"
+TABLAS = (
+    "notificaciones, enlaces_cita, citas, clientes, bloqueos, horarios, sobanderos, usuarios, "
+    "intentos_ingreso"
+)
 
 
 @pytest.fixture
-def motor_real(motor: Engine) -> Iterator[Engine]:  # `motor` deja el esquema listo
+def motor_real(motor: Engine, monkeypatch: pytest.MonkeyPatch) -> Iterator[Engine]:
+    # Aquí se prueba la restricción de la base con muchas solicitudes de un mismo lugar y celular:
+    # los topes anti-abuso (por IP y por celular) tienen sus propias pruebas.
+    monkeypatch.setattr(ajustes, "reservas_max_ip", 10**6)
+    monkeypatch.setattr(ajustes, "citas_max_por_celular", 10**6)
     engine = create_engine(
         URL_PRUEBAS, pool_size=HILOS + 5, connect_args={"options": "-c timezone=UTC"}
     )

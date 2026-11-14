@@ -1,6 +1,6 @@
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
 
-import { CLAVE, CORREO_ADMIN, esperarEnlaceDeCorreo, ingresarPorApi, marcaDeCorreo, nuevaApi } from "./ayudas";
+import { CLAVE, CORREO_ADMIN, esperarEnlaceDeCorreo, ingresarPorApi, marcaDeCorreo, nuevaApi, test } from "./ayudas";
 
 /** Recorrido 5: quien olvidó su clave la recupera con un enlace de un solo uso. */
 test("recuperación de clave con enlace de un solo uso", async ({ page }) => {

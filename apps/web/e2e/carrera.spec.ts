@@ -1,9 +1,9 @@
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
 
-import { celularNuevo, elemento, horasLibres, nuevaApi, proximoDiaHabil, sobanderosPublicos } from "./ayudas";
+import { celularNuevo, elemento, horasLibres, nuevaApi, proximoDiaHabil, sobanderosPublicos, test } from "./ayudas";
 
 /** Recorrido 2: dos clientes llegan a la misma hora; solo uno la consigue y el otro no pierde sus datos. */
-test("dos clientes pelean la misma hora", async ({ browser }) => {
+test("dos clientes pelean la misma hora", async ({ browser, vigilar }) => {
   const api = await nuevaApi();
   const uno = elemento(await sobanderosPublicos(api), 0, "sobandero");
   const dia = proximoDiaHabil(4);
@@ -15,6 +15,8 @@ test("dos clientes pelean la misma hora", async ({ browser }) => {
   const contexto = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, locale: "es-CO", baseURL: "http://localhost:4175" };
   const ana = await (await browser.newContext(contexto)).newPage();
   const beto = await (await browser.newContext(contexto)).newPage();
+  vigilar(ana);
+  vigilar(beto);
 
   async function llenar(pagina: typeof ana, nombre: string, celular: string) {
     await pagina.goto(url);

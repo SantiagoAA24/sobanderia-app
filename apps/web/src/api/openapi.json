@@ -3121,6 +3121,7 @@
     },
     "/publico/citas": {
       "post": {
+        "description": "409 `limite_citas` si ese celular ya tiene el máximo de citas agendadas por venir.",
         "operationId": "crear_cita_publico_citas_post",
         "requestBody": {
           "content": {
@@ -3172,6 +3173,16 @@
               }
             },
             "description": "`validacion`"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "`demasiados_intentos`"
           }
         },
         "summary": "Crear Cita",

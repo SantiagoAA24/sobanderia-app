@@ -7,7 +7,7 @@ error a `hora_ocupada`. Cada cambio escribe su notificación en la misma transac
 import logging
 from datetime import datetime, timedelta
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import Range
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.exc import IntegrityError
@@ -83,6 +83,31 @@ def _crear(
     return cita
 
 
+def _exigir_cupo_por_celular(db: Session, celular: str, ahora: datetime) -> None:
+    """Un mismo celular no puede acaparar la agenda ni recibir confirmaciones sin límite (H-05).
+    Cuentan las citas agendadas por venir; las canceladas, atendidas o pasadas no."""
+    numero = normalizar_celular(celular)
+    cliente_id = db.scalar(select(Cliente.id).where(Cliente.celular == numero))
+    if cliente_id is None:
+        return
+    agendadas = db.scalar(
+        select(func.count())
+        .select_from(Cita)
+        .where(
+            Cita.cliente_id == cliente_id,
+            Cita.estado == "agendada",
+            func.lower(Cita.rango) > ahora,
+        )
+    )
+    if (agendadas or 0) >= ajustes.citas_max_por_celular:
+        raise ErrorApi(
+            409,
+            "limite_citas",
+            f"Ya tiene {agendadas} citas agendadas. Cancele una o espere a que pase para "
+            "agendar otra.",
+        )
+
+
 def crear_cita(
     db: Session,
     sobandero: Sobandero,
@@ -96,6 +121,8 @@ def crear_cita(
     """Crea la cita, su enlace y su notificación de confirmación. Devuelve el token del enlace."""
     if origen == "cliente" and not consentimiento:
         raise ErrorApi(422, "validacion", "Debe aceptar el uso de sus datos para continuar.")
+    if origen == "cliente":
+        _exigir_cupo_por_celular(db, celular, ahora)
     cliente = obtener_o_crear_cliente(db, nombre, celular, ahora, consentimiento)
     # Una cita manual puede ser para dentro de poco; el cliente por internet necesita antelación.
     antelacion = ajustes.antelacion_min if origen == "cliente" else 0

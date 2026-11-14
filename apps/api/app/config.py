@@ -9,9 +9,8 @@ ENTORNOS = ("desarrollo", "pruebas", "produccion")
 SOLO_DESARROLLO = ("desarrollo", "pruebas")
 HOSTS_LOCALES = {"localhost", "127.0.0.1", "::1"}
 CREDENCIALES_DE_EJEMPLO = "sobanderia:sobanderia@"
-# Proveedores de correo que de verdad envían. Hoy no hay ninguno: la recuperación de clave por
-# correo solo existe con `CorreoFalso` (hallazgo H-01 de docs/SEGURIDAD.md).
-PROVEEDORES_CORREO_REALES: frozenset[str] = frozenset()
+# Proveedores de correo que de verdad envían ("falso" solo escribe en el registro).
+PROVEEDORES_CORREO_REALES: frozenset[str] = frozenset({"smtp"})
 
 
 def _es_local(url: str) -> bool:
@@ -56,8 +55,29 @@ class Ajustes(BaseSettings):
     recuperacion_horas: int = 2
     clave_minimo: int = 8
 
-    # Correo: "falso" escribe el mensaje en el registro (solo desarrollo y pruebas)
+    # Correo: "falso" escribe el mensaje en el registro (solo desarrollo y pruebas); "smtp" envía
     correo_proveedor: str = "falso"
+    correo_desde: str = ""  # remitente, p. ej. «Sobandería <no-responder@dominio.co>»
+    smtp_host: str = ""
+    smtp_puerto: int = 587
+    smtp_usuario: str = ""
+    smtp_clave: str = ""
+    smtp_starttls: bool = True
+
+    # Límites contra el abuso de las rutas públicas
+    citas_max_por_celular: int = 2  # citas agendadas por venir que puede tener un mismo celular
+    reservas_max_ip: int = 20  # reservas por IP en la ventana
+    ventana_reservas_min: int = 60
+    enlace_max_hora: int = 3  # «Encontrar mi cita» por celular en una hora
+    enlace_max_dia: int = 6  # y en un día
+
+    # IP real detrás de un proxy: direcciones o redes (CIDR) separadas por coma ("10.0.0.0/8").
+    # Vacío = no se confía en ningún encabezado X-Forwarded-For.
+    proxy_confiable: str = ""
+
+    # Limpieza de filas vencidas que hace el worker
+    limpieza_cada_min: int = 60
+    intentos_conservar_horas: int = 48
 
     def problemas(self) -> list[str]:
         """Lo que impide arrancar con esta configuración. Vacío si todo está en orden."""
@@ -102,8 +122,10 @@ class Ajustes(BaseSettings):
         if self.correo_proveedor not in PROVEEDORES_CORREO_REALES:
             problemas.append(
                 f"CORREO_PROVEEDOR «{self.correo_proveedor}» no envía correo real: la recuperación "
-                "de clave no funcionaría y su enlace quedaría en el registro (H-01)."
+                "de clave no funcionaría. Use «smtp»."
             )
+        elif self.correo_proveedor == "smtp" and not (self.smtp_host and self.correo_desde):
+            problemas.append("Con CORREO_PROVEEDOR=smtp faltan SMTP_HOST y CORREO_DESDE.")
         return problemas
 
     @model_validator(mode="after")

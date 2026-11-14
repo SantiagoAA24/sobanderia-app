@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
@@ -26,10 +26,14 @@ from app.rutas.esquemas import (
     SobanderoPublicoOut,
 )
 from app.seguridad.dependencias import exige_csrf
+from app.seguridad.ip import ip_del_cliente
 from app.servicios import citas as servicio
+from app.servicios.auth import registrar_intento, verificar_no_bloqueado
 from app.servicios.encontrar_cita import enviar_enlace
 from app.servicios.horas import dias_con_horas, horas_libres, proximo_cupo
 from app.servicios.vistas import vista_cliente
+
+RESERVAR = "reservar"  # tipo de intento (tabla intentos_ingreso)
 
 router = APIRouter(prefix="/publico", tags=["publico"])
 Db = Annotated[Session, Depends(obtener_sesion)]
@@ -103,9 +107,25 @@ def horas(sobandero_id: int, dia: date, db: Db, ahora: Ahora) -> HorasOut:
     "/citas",
     status_code=201,
     dependencies=[Depends(exige_csrf)],
-    responses=ERRORES_AGENDA | NO_ENCONTRADO,
+    responses=ERRORES_AGENDA
+    | NO_ENCONTRADO
+    | {429: {"model": ErrorOut, "description": "`demasiados_intentos`"}},
 )
-def crear_cita(datos: CrearCitaIn, db: Db, ahora: Ahora) -> CitaCreadaOut:
+def crear_cita(datos: CrearCitaIn, request: Request, db: Db, ahora: Ahora) -> CitaCreadaOut:
+    """409 `limite_citas` si ese celular ya tiene el máximo de citas agendadas por venir."""
+    ip = ip_del_cliente(request)
+    ventana = timedelta(minutes=ajustes.ventana_reservas_min)
+    # Un tope por IP evita llenar la agenda desde un solo lugar; el del celular, en el servicio.
+    verificar_no_bloqueado(
+        db,
+        RESERVAR,
+        "-",
+        ip,
+        limite_correo=10**6,
+        limite_ip=ajustes.reservas_max_ip,
+        ventana=ventana,
+    )
+    registrar_intento(db, RESERVAR, "-", ip)
     sobandero = _sobandero(db, datos.sobandero_id)
     cita, _, token = servicio.crear_cita(
         db,
@@ -133,6 +153,5 @@ def pedir_enlace(
     datos: EncontrarCitaIn, request: Request, db: Db, ahora: Ahora
 ) -> EnlaceEnviadoOut:
     """Responde igual exista o no la cita para no revelar quién tiene una."""
-    ip = request.client.host if request.client else "desconocida"
-    enviar_enlace(db, datos.celular, ip, ahora)
+    enviar_enlace(db, datos.celular, ip_del_cliente(request), ahora)
     return EnlaceEnviadoOut()

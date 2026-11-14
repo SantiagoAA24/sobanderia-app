@@ -120,7 +120,7 @@ def test_celular_invalido_da_422(api: TestClient) -> None:
 
 def test_limita_los_intentos_por_celular(api: TestClient, sesion: Session) -> None:
     _agendar(api, sesion)
-    limite = ajustes.intentos_max_correo
+    limite = ajustes.enlace_max_hora
     codigos = [_pedir(api).status_code for _ in range(limite + 2)]
     assert codigos[:limite] == [202] * limite
     assert codigos[limite:] == [429, 429]

@@ -184,9 +184,9 @@ def test_recuperar_clave_tiene_limite(api: TestClient, sesion: Session) -> None:
 def test_encontrar_mi_cita_tiene_limite_por_celular(api: TestClient) -> None:
     codigos = [
         api.post("/publico/mi-cita/enlace", json={"celular": CELULAR}, headers=CSRF).status_code
-        for _ in range(ajustes.intentos_max_correo + 1)
+        for _ in range(ajustes.enlace_max_hora + 1)
     ]
-    assert codigos == [202] * ajustes.intentos_max_correo + [429]
+    assert codigos == [202] * ajustes.enlace_max_hora + [429]
 
 
 def test_el_limite_de_encontrar_cita_no_guarda_el_celular(api: TestClient, sesion: Session) -> None:
@@ -230,16 +230,15 @@ def test_el_token_de_la_cita_solo_queda_como_hash(api: TestClient, sesion: Sessi
     assert "enlaces_cita" not in tablas_que_contienen(sesion, token)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="H-04: notificaciones.variables guarda el token en claro hasta que el worker envía",
-)
-def test_el_token_de_la_cita_no_queda_en_claro_en_ninguna_tabla(
+def test_el_token_de_la_cita_solo_esta_en_claro_en_la_bandeja(
     api: TestClient, sesion: Session
 ) -> None:
+    """H-04, excepción aceptada: el mensaje de WhatsApp necesita el enlace completo, así que el
+    token vive en `notificaciones.variables` hasta que el worker envía (o falla, o se cancela) y
+    entonces se borra (`test_bandeja.py`, `test_ciclo_mensajes.py`). En ninguna otra tabla."""
     sobandero = sobandero_con_horario(sesion, 1)
     token = reservar(api, sobandero.id, horas_del_dia(api, sobandero.id)[0]).json()["token"]
-    assert tablas_que_contienen(sesion, token) == set()
+    assert tablas_que_contienen(sesion, token) == {"notificaciones"}
 
 
 def test_el_token_de_recuperacion_solo_queda_como_hash(
@@ -404,11 +403,24 @@ def test_los_registros_no_traen_celulares_completos_ni_tokens_de_cita(
     assert CLAVE not in registrado
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="H-01: CorreoFalso, la única implementación, escribe el enlace en el log",
-)
-def test_el_registro_no_trae_el_enlace_de_recuperacion(
+def test_el_registro_de_produccion_no_trae_el_enlace_de_recuperacion(
+    api_con_correo_real: TestClient,
+    sesion: Session,
+    caplog: pytest.LogCaptureFixture,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """H-01: fuera de desarrollo y pruebas, el correo falso no escribe el cuerpo en el registro."""
+    monkeypatch.setattr(ajustes, "entorno", "produccion")
+    caplog.set_level(logging.DEBUG)
+    crear_usuario(sesion)
+    api_con_correo_real.post(
+        "/auth/recuperar", json={"correo": "ana@sobanderia.test"}, headers=CSRF
+    )
+    registrado = "\n".join(r.getMessage() for r in caplog.records)
+    assert "/restablecer/" not in registrado and "a***@sobanderia.test" in registrado
+
+
+def test_en_desarrollo_el_correo_falso_si_deja_el_enlace_para_poder_abrirlo(
     api_con_correo_real: TestClient, sesion: Session, caplog: pytest.LogCaptureFixture
 ) -> None:
     caplog.set_level(logging.DEBUG)
@@ -416,7 +428,7 @@ def test_el_registro_no_trae_el_enlace_de_recuperacion(
     api_con_correo_real.post(
         "/auth/recuperar", json={"correo": "ana@sobanderia.test"}, headers=CSRF
     )
-    assert "/restablecer/" not in "\n".join(r.getMessage() for r in caplog.records)
+    assert "/restablecer/" in "\n".join(r.getMessage() for r in caplog.records)
 
 
 def test_el_correo_falso_enmascara_el_destino(caplog: pytest.LogCaptureFixture) -> None:
@@ -438,10 +450,6 @@ def test_los_errores_de_validacion_no_devuelven_lo_que_se_escribio(api: TestClie
 # --- HALLAZGOS: lo que hoy falla y debería pasar -----------------------------------------------
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="H-02: la API no envía X-Content-Type-Options, Referrer-Policy ni Cache-Control",
-)
 def test_la_api_envia_cabeceras_de_seguridad(api: TestClient) -> None:
     r = api.get("/salud")
     assert r.headers.get("x-content-type-options") == "nosniff"
@@ -449,10 +457,6 @@ def test_la_api_envia_cabeceras_de_seguridad(api: TestClient) -> None:
     assert "frame-ancestors" in r.headers.get("content-security-policy", "")
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="H-02: las respuestas con datos personales no llevan Cache-Control: no-store",
-)
 def test_las_respuestas_con_sesion_no_se_guardan_en_cache(api: TestClient, sesion: Session) -> None:
     sobandero_con_login(sesion, 1)
     ingresar(api, "sobandero1@sobanderia.test")
@@ -460,21 +464,23 @@ def test_las_respuestas_con_sesion_no_se_guardan_en_cache(api: TestClient, sesio
     assert "no-store" in api.get("/auth/yo").headers.get("cache-control", "")
 
 
-@pytest.mark.xfail(
-    strict=True, reason="H-03: /docs, /redoc y /openapi.json siguen abiertos fuera de desarrollo"
-)
-def test_la_documentacion_de_la_api_se_cierra_en_produccion(
-    api: TestClient, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    monkeypatch.setattr(ajustes, "entorno", "produccion")
-    for ruta in ("/docs", "/redoc", "/openapi.json"):
-        assert api.get(ruta).status_code == 404, ruta
+def test_la_documentacion_de_la_api_se_cierra_fuera_de_desarrollo() -> None:
+    """H-03."""
+    from app.main import crear_app
+
+    for entorno in ("produccion",):
+        cerrada = TestClient(crear_app(entorno))
+        for ruta in ("/docs", "/redoc", "/openapi.json"):
+            assert cerrada.get(ruta).status_code == 404, (entorno, ruta)
+        assert cerrada.get("/salud").status_code == 200
+    for entorno in ("desarrollo", "pruebas"):
+        abierta = TestClient(crear_app(entorno))
+        assert abierta.get("/openapi.json").status_code == 200
+        assert "content-security-policy" not in abierta.get("/docs").headers  # carga scripts
+    # El contrato del cliente de la web se escribe sin HTTP, aun con la documentación cerrada.
+    assert "paths" in crear_app("produccion").openapi()
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="H-05: crear cita no tiene tope por celular ni por IP (spam de WhatsApp y agenda llena)",
-)
 def test_un_mismo_celular_no_puede_reservar_sin_limite(api: TestClient, sesion: Session) -> None:
     """El tope exacto es decisión de negocio; aquí se exige solo que exista alguno <= 20."""
     sobandero = sobandero_con_horario(sesion, 1)
@@ -483,24 +489,45 @@ def test_un_mismo_celular_no_puede_reservar_sin_limite(api: TestClient, sesion: 
     assert any(c in (409, 429) for c in codigos), f"las {len(codigos)} reservas se aceptaron"
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="H-08: «Encontrar mi cita» con solo el celular invalida el enlace vigente",
-)
-def test_un_tercero_no_puede_invalidar_el_enlace_de_un_cliente(
+def test_pedir_el_enlace_rota_el_anterior_pero_solo_unas_pocas_veces_por_hora(
     api: TestClient, sesion: Session
 ) -> None:
+    """H-08, riesgo reducido: rotar el enlace permite reenviarlo con solo el hash guardado.
+    Un tercero que conozca el celular puede invalidarlo, pero `enlace_max_hora` veces por hora."""
     sobandero = sobandero_con_horario(sesion, 1)
     token = reservar(api, sobandero.id, horas_del_dia(api, sobandero.id)[0]).json()["token"]
-    otra_persona = TestClient(app)  # solo conoce el celular
-    otra_persona.post("/publico/mi-cita/enlace", json={"celular": CELULAR}, headers=CSRF)
-    assert api.get(f"/mi-cita/{token}").status_code == 200
+    tercero = TestClient(app)
+    codigos = [
+        tercero.post("/publico/mi-cita/enlace", json={"celular": CELULAR}, headers=CSRF).status_code
+        for _ in range(ajustes.enlace_max_hora + 2)
+    ]
+    assert codigos == [202] * ajustes.enlace_max_hora + [429, 429]
+    assert api.get(f"/mi-cita/{token}").status_code == 410  # el enlace viejo ya no sirve
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="H-06: cambiar clave y correo no limitan los intentos de la «clave actual»",
-)
+def test_encontrar_mi_cita_tambien_tiene_tope_diario(api: TestClient, sesion: Session) -> None:
+    """Seis por día por celular, aunque estén repartidas en horas distintas."""
+    from datetime import timedelta
+
+    from app.modelos import IntentoIngreso
+    from app.seguridad.tokens import hash_token
+    from app.servicios.auth import ahora as ahora_real
+
+    huella = hash_token(CELULAR_E164)
+    for n in range(ajustes.enlace_max_dia):
+        sesion.add(
+            IntentoIngreso(
+                tipo="enlace",
+                correo=huella,
+                ip=f"198.51.100.{n}",
+                momento=ahora_real() - timedelta(hours=3 + n),  # fuera de la última hora
+            )
+        )
+    sesion.flush()
+    r = api.post("/publico/mi-cita/enlace", json={"celular": CELULAR}, headers=CSRF)
+    assert r.status_code == 429
+
+
 def test_cambiar_clave_limita_los_intentos_de_la_clave_actual(
     api: TestClient, sesion: Session
 ) -> None:
@@ -517,26 +544,37 @@ def test_cambiar_clave_limita_los_intentos_de_la_clave_actual(
     assert 429 in codigos, codigos
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="H-07: la IP del límite es request.client.host; detrás de un proxy es la del proxy",
-)
-def test_el_limite_por_ip_distingue_a_clientes_detras_de_un_proxy(
-    api: TestClient, sesion: Session
-) -> None:
-    """Con proxy, todos llegan desde la misma IP: veinte fallos de uno bloquean a todos."""
+def fallar_veinte_veces(api: TestClient, xff: str) -> None:
     for numero in range(ajustes.intentos_max_ip):
         api.post(
             "/auth/ingreso",
             json={"correo": f"x{numero}@sobanderia.test", "clave": "mala"},
-            headers={**CSRF, "X-Forwarded-For": "203.0.113.7"},
+            headers={**CSRF, "X-Forwarded-For": xff},
         )
-    otra_persona = api.post(
+
+
+def ingresar_mal(api: TestClient, xff: str) -> int:
+    return api.post(
         "/auth/ingreso",
         json={"correo": "otro@sobanderia.test", "clave": "mala"},
-        headers={**CSRF, "X-Forwarded-For": "198.51.100.9"},
-    )
-    assert otra_persona.status_code == 401, "quedó bloqueada por los fallos de otra persona"
+        headers={**CSRF, "X-Forwarded-For": xff},
+    ).status_code
+
+
+def test_detras_de_un_proxy_de_confianza_cada_cliente_tiene_su_ip(
+    api: TestClient, sesion: Session, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """H-07: con PROXY_CONFIABLE, los fallos de una persona no bloquean a las demás."""
+    monkeypatch.setattr(ajustes, "proxy_confiable", "testclient")  # el «proxy» de esta prueba
+    fallar_veinte_veces(api, "203.0.113.7")
+    assert ingresar_mal(api, "203.0.113.7") == 429  # la misma persona sí queda bloqueada
+    assert ingresar_mal(api, "198.51.100.9") == 401  # otra no
+
+
+def test_sin_proxy_de_confianza_el_encabezado_no_se_cree(api: TestClient, sesion: Session) -> None:
+    """Nadie puede cambiar de IP inventando X-Forwarded-For para esquivar el límite."""
+    fallar_veinte_veces(api, "203.0.113.7")
+    assert ingresar_mal(api, "198.51.100.9") == 429
 
 
 def test_hay_un_cita_y_cliente_para_las_pruebas_de_hallazgos(sesion: Session) -> None:

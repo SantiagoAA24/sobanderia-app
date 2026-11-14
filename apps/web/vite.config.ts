@@ -3,6 +3,7 @@ import { loadEnv } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
 
+import { CABECERAS_WEB } from "./cabeceras";
 import { manifiesto, workbox } from "./src/pwa.config";
 
 export default defineConfig(({ mode }) => {
@@ -13,6 +14,8 @@ export default defineConfig(({ mode }) => {
       // `/ui` (catálogo de componentes) solo se incluye fuera de producción, o con VITE_MOSTRAR_UI=1.
       __MOSTRAR_UI__: JSON.stringify(mode !== "production" || env.VITE_MOSTRAR_UI === "1"),
     },
+    // Con las cabeceras de seguridad reales: así los recorridos de Playwright corren bajo la CSP.
+    preview: { headers: CABECERAS_WEB },
     server: {
       proxy: {
         "/api": {

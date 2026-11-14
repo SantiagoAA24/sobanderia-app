@@ -1,11 +1,12 @@
 """«Encontrar mi cita»: el cliente pide su enlace por WhatsApp con solo su celular."""
 
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.config import ajustes
 from app.modelos import Cita, Cliente, EnlaceCita, Sobandero
 from app.seguridad.celular import enmascarar, normalizar_celular
 from app.seguridad.tokens import hash_token
@@ -25,7 +26,20 @@ def enviar_enlace(db: Session, celular: str, ip: str, ahora: datetime) -> None:
     """
     numero = normalizar_celular(celular)
     huella = hash_token(numero)
-    auth.verificar_no_bloqueado(db, ENLACE, huella, ip)
+    # Cada solicitud rota el enlace vigente: con solo el celular, un tercero podría invalidarlo y
+    # llenar de mensajes a esa persona. Por eso el tope por celular es bajo (H-08).
+    auth.verificar_no_bloqueado(
+        db, ENLACE, huella, ip, limite_correo=ajustes.enlace_max_hora, ventana=timedelta(hours=1)
+    )
+    auth.verificar_no_bloqueado(
+        db,
+        ENLACE,
+        huella,
+        ip,
+        limite_correo=ajustes.enlace_max_dia,
+        limite_ip=10**6,  # la IP ya se midió arriba; aquí solo cuenta el celular
+        ventana=timedelta(days=1),
+    )
     auth.registrar_intento(db, ENLACE, huella, ip)
 
     cliente = db.scalar(select(Cliente).where(Cliente.celular == numero))

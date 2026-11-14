@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { expect, request, type APIRequestContext, type Page } from "@playwright/test";
+import { test as base, expect, request, type APIRequestContext, type Page } from "@playwright/test";
 
 export const URL_API = "http://localhost:8101";
 export const CLAVE = process.env.E2E_CLAVE ?? "clave-e2e-1234";
@@ -140,3 +140,25 @@ export function elemento<T>(lista: readonly T[], i: number, que = "elemento"): T
   if (valor === undefined) throw new Error(`Falta el ${que} ${i} (la lista tiene ${lista.length})`);
   return valor;
 }
+
+/**
+ * `test` con una vigilancia automática: si el navegador bloquea algo por la política de seguridad de
+ * contenido (CSP) en cualquier página de la prueba, la prueba falla. `vigilar(pagina)` añade las
+ * páginas que se abren en otros contextos.
+ */
+export const test = base.extend<{ vigilar: (pagina: Page) => void }>({
+  vigilar: [
+    async ({ page }, usar) => {
+      const violaciones: string[] = [];
+      const vigilar = (pagina: Page) => {
+        pagina.on("console", (m) => {
+          if (/Content Security Policy|violates the following/i.test(m.text())) violaciones.push(m.text());
+        });
+      };
+      vigilar(page);
+      await usar(vigilar);
+      expect(violaciones, "El navegador bloqueó algo por la CSP").toEqual([]);
+    },
+    { auto: true },
+  ],
+});

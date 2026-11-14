@@ -9,7 +9,6 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from app import config
 from app.config import Ajustes
 
 RAIZ_API = Path(__file__).resolve().parent.parent
@@ -24,13 +23,9 @@ PRODUCCION: dict[str, Any] = {
     "whatsapp_app_secret": "secreto-real",
     "whatsapp_verify_token": "verificacion-real",
     "correo_proveedor": "smtp",
+    "correo_desde": "Sobandería <no-responder@agenda.ejemplo.co>",
+    "smtp_host": "smtp.ejemplo.co",
 }
-
-
-@pytest.fixture(autouse=True)
-def hay_un_proveedor_de_correo_real(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Hoy no existe ninguno (H-01): se simula uno para probar las demás reglas por separado."""
-    monkeypatch.setattr(config, "PROVEEDORES_CORREO_REALES", frozenset({"smtp"}))
 
 
 def cargar(**cambios: Any) -> Ajustes:
@@ -89,15 +84,13 @@ def test_cada_variable_de_whatsapp_es_obligatoria(variable: str) -> None:
 
 def test_el_correo_falso_no_arranca_en_produccion() -> None:
     mensaje = problemas_de(correo_proveedor="falso")
-    assert "CORREO_PROVEEDOR" in mensaje and "H-01" in mensaje
+    assert "CORREO_PROVEEDOR" in mensaje and "Use «smtp»" in mensaje
 
 
-def test_hoy_ninguna_configuracion_de_produccion_es_valida(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Sin proveedor de correo real implementado, producción no puede arrancar (H-01)."""
-    monkeypatch.setattr(config, "PROVEEDORES_CORREO_REALES", frozenset())
-    assert "CORREO_PROVEEDOR" in problemas_de()
+@pytest.mark.parametrize("faltante", ["smtp_host", "correo_desde"])
+def test_con_smtp_hace_falta_el_servidor_y_el_remitente(faltante: str) -> None:
+    mensaje = problemas_de(**{faltante: ""})
+    assert "SMTP_HOST y CORREO_DESDE" in mensaje
 
 
 def test_se_listan_todos_los_problemas_juntos() -> None:
@@ -178,6 +171,9 @@ VARIABLES_PRODUCCION = {
     "WHATSAPP_PHONE_NUMBER_ID": "1",
     "WHATSAPP_APP_SECRET": "s",
     "WHATSAPP_VERIFY_TOKEN": "v",
+    "CORREO_PROVEEDOR": "smtp",
+    "CORREO_DESDE": "Sobandería <no-responder@agenda.ejemplo.co>",
+    "SMTP_HOST": "smtp.ejemplo.co",
 }
 
 
@@ -196,9 +192,14 @@ def test_ningun_proceso_arranca_en_produccion_con_valores_de_desarrollo(
     assert "Traceback" not in r.stderr  # un mensaje claro, no un volcado de pydantic
 
 
-def test_con_todo_bien_menos_el_correo_solo_se_queja_del_correo() -> None:
-    """Las demás reglas se cumplen con valores reales; hoy solo falta un correo que envíe."""
+def test_una_configuracion_de_produccion_completa_si_arranca_de_verdad() -> None:
     r = arrancar(VARIABLES_PRODUCCION, "-c", "import app.main")
+    assert r.returncode == 0, r.stderr
+
+
+def test_con_todo_bien_menos_el_correo_solo_se_queja_del_correo() -> None:
+    """Las demás reglas se cumplen con valores reales; solo el correo falso lo impide."""
+    r = arrancar({**VARIABLES_PRODUCCION, "CORREO_PROVEEDOR": "falso"}, "-c", "import app.main")
     assert r.returncode != 0
     quejas = [linea for linea in r.stderr.splitlines() if linea.startswith("  - ")]
     assert len(quejas) == 1 and "CORREO_PROVEEDOR" in quejas[0]

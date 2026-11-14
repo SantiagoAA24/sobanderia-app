@@ -32,7 +32,7 @@ writeFileSync(
   }),
 );
 
-const entornoApi = `DATABASE_URL=${URL_BASE_E2E} ENTORNO=pruebas ORIGEN_WEB=http://localhost:${PUERTO_WEB} PROVEEDOR_WHATSAPP=falso`;
+const entornoApi = `DATABASE_URL=${URL_BASE_E2E} ENTORNO=pruebas ORIGEN_WEB=http://localhost:${PUERTO_WEB} PROVEEDOR_WHATSAPP=falso RESERVAS_MAX_IP=1000000`;
 
 export default defineConfig({
   testDir: "./e2e",

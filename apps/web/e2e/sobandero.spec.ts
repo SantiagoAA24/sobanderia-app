@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
 
 import {
   buscarCitaAgendada,
@@ -12,6 +12,7 @@ import {
   ingresarPorPantalla,
   nuevaApi,
   sobanderosPublicos,
+  test,
 } from "./ayudas";
 
 const CORREO = "sobandero1@sobanderia.test";

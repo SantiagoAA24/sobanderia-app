@@ -409,7 +409,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Crear Cita */
+        /**
+         * Crear Cita
+         * @description 409 `limite_citas` si ese celular ya tiene el máximo de citas agendadas por venir.
+         */
         post: operations["crear_cita_publico_citas_post"];
         delete?: never;
         options?: never;
@@ -2577,6 +2580,15 @@ export interface operations {
             };
             /** @description `validacion` */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description `demasiados_intentos` */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };

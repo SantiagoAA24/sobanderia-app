@@ -199,6 +199,20 @@ describe("Paso 4 · Sus datos", () => {
     });
   });
 
+  it.each([
+    [409, "limite_citas", "Ya tiene 2 citas agendadas. Cancele una o espere a que pase para agendar otra."],
+    [429, "demasiados_intentos", "Hubo muchos intentos. Espere unos minutos e intente de nuevo."],
+  ])("con un %s (%s) muestra el mensaje de la API y conserva los datos escritos", async (estado, codigo, mensaje) => {
+    servidor({ ...API_BASE, "POST /publico/citas": { estado, cuerpo: { codigo, mensaje } } });
+    pintar(DATOS);
+    await llenar();
+    await userEvent.click(screen.getByRole("button", { name: "Confirmar cita" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(mensaje);
+    expect(screen.getByRole("heading", { level: 1, name: "Sus datos" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Nombre completo")).toHaveValue("María Gómez");
+    expect(screen.getByLabelText("Número de celular")).toHaveValue("300 123 4567");
+  });
+
   it("recargar no pierde el nombre ni el celular", async () => {
     servidor(API_BASE);
     const primera = pintar(DATOS);

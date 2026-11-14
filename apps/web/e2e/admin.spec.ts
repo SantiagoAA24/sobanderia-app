@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
 
 import {
   CORREO_ADMIN,
@@ -9,10 +9,11 @@ import {
   ingresarPorApi,
   ingresarPorPantalla,
   nuevaApi,
+  test,
 } from "./ayudas";
 
 /** Recorrido 4: el administrador crea un sobandero, este entra por primera vez y luego lo da de baja. */
-test("el administrador crea un sobandero y lo da de baja", async ({ page, browser }) => {
+test("el administrador crea un sobandero y lo da de baja", async ({ page, browser, vigilar }) => {
   const sufijo = Date.now();
   const correo = `nuevo${sufijo}@sobanderia.test`;
   const temporal = `temporal-${sufijo}`;
@@ -33,6 +34,7 @@ test("el administrador crea un sobandero y lo da de baja", async ({ page, browse
   // Un sobandero nuevo entra por primera vez: debe cambiar la clave temporal
   const suContexto = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, baseURL: "http://localhost:4175" });
   const suPagina = await suContexto.newPage();
+  vigilar(suPagina);
   await ingresarPorPantalla(suPagina, correo, temporal);
   await expect(suPagina).toHaveURL(/\/primera-clave/);
   await expect(suPagina.getByRole("heading", { name: "Cree su clave nueva" })).toBeVisible();
