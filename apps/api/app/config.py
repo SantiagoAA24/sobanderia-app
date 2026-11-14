@@ -1,4 +1,21 @@
+from urllib.parse import urlsplit
+
+from pydantic import ValidationError, model_validator
 from pydantic_settings import BaseSettings
+
+ENTORNOS = ("desarrollo", "pruebas", "produccion")
+# Un servidor de pruebas previo al lanzamiento también es «produccion»: así nunca arranca con
+# la configuración de desarrollo.
+SOLO_DESARROLLO = ("desarrollo", "pruebas")
+HOSTS_LOCALES = {"localhost", "127.0.0.1", "::1"}
+CREDENCIALES_DE_EJEMPLO = "sobanderia:sobanderia@"
+# Proveedores de correo que de verdad envían. Hoy no hay ninguno: la recuperación de clave por
+# correo solo existe con `CorreoFalso` (hallazgo H-01 de docs/SEGURIDAD.md).
+PROVEEDORES_CORREO_REALES: frozenset[str] = frozenset()
+
+
+def _es_local(url: str) -> bool:
+    return (urlsplit(url).hostname or "") in HOSTS_LOCALES
 
 
 class Ajustes(BaseSettings):
@@ -39,9 +56,83 @@ class Ajustes(BaseSettings):
     recuperacion_horas: int = 2
     clave_minimo: int = 8
 
+    # Correo: "falso" escribe el mensaje en el registro (solo desarrollo y pruebas)
+    correo_proveedor: str = "falso"
+
+    def problemas(self) -> list[str]:
+        """Lo que impide arrancar con esta configuración. Vacío si todo está en orden."""
+        if self.entorno not in ENTORNOS:
+            return [f"ENTORNO debe ser uno de {', '.join(ENTORNOS)} (recibido: «{self.entorno}»)."]
+        origen_https = urlsplit(self.origen_web).scheme == "https"
+        if self.entorno in SOLO_DESARROLLO:
+            # Olvidar `ENTORNO=produccion` deja el valor por defecto («desarrollo») y apaga las
+            # guardas: si el resto de la configuración es claramente de producción, se avisa.
+            # (`cloudapi` en desarrollo es legítimo: se usa para probar con el número de Meta.)
+            if self.entorno == "desarrollo" and origen_https and not _es_local(self.origen_web):
+                return [
+                    "ENTORNO es «desarrollo» pero ORIGEN_WEB es una dirección pública con https, "
+                    "propia de producción. ¿Falta ENTORNO=produccion?"
+                ]
+            return []
+
+        problemas: list[str] = []
+        if CREDENCIALES_DE_EJEMPLO in self.database_url or _es_local(self.database_url):
+            problemas.append(
+                "DATABASE_URL es la de desarrollo (credenciales de ejemplo o servidor local)."
+            )
+        if not origen_https or _es_local(self.origen_web):
+            problemas.append("ORIGEN_WEB debe ser la dirección pública de la app con https.")
+        if self.proveedor_whatsapp != "cloudapi":
+            problemas.append(
+                "PROVEEDOR_WHATSAPP debe ser «cloudapi»: con «falso» ningún mensaje saldría."
+            )
+        else:
+            faltan = [
+                nombre
+                for nombre, valor in (
+                    ("WHATSAPP_TOKEN", self.whatsapp_token),
+                    ("WHATSAPP_PHONE_NUMBER_ID", self.whatsapp_phone_number_id),
+                    ("WHATSAPP_APP_SECRET", self.whatsapp_app_secret),
+                    ("WHATSAPP_VERIFY_TOKEN", self.whatsapp_verify_token),
+                )
+                if not valor
+            ]
+            if faltan:
+                problemas.append(f"Faltan variables de WhatsApp: {', '.join(faltan)}.")
+        if self.correo_proveedor not in PROVEEDORES_CORREO_REALES:
+            problemas.append(
+                f"CORREO_PROVEEDOR «{self.correo_proveedor}» no envía correo real: la recuperación "
+                "de clave no funcionaría y su enlace quedaría en el registro (H-01)."
+            )
+        return problemas
+
+    @model_validator(mode="after")
+    def _negarse_con_configuracion_peligrosa(self) -> "Ajustes":
+        problemas = self.problemas()
+        if problemas:
+            raise ValueError(
+                "La app no arranca con esta configuración:\n  - " + "\n  - ".join(problemas)
+            )
+        return self
+
     @property
     def cookie_segura(self) -> bool:
         return self.entorno != "desarrollo"
 
 
-ajustes = Ajustes()
+def _cargar() -> Ajustes:
+    """Carga la configuración; si es peligrosa, sale con un mensaje claro y no con un traceback."""
+    try:
+        return Ajustes()
+    except ValidationError as error:
+        propios = [
+            str(e["ctx"]["error"])
+            for e in error.errors()
+            if e["type"] == "value_error" and "La app no arranca" in str(e["ctx"]["error"])
+        ]
+        if not propios:
+            raise
+        raise SystemExit("\n".join(propios)) from None
+
+
+ajustes = _cargar()

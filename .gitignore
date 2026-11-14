@@ -13,3 +13,4 @@ apps/web/lighthouse-resultados.json
 apps/web/test-results/
 apps/web/playwright-report/
 apps/web/e2e/.registro/
+respaldos/

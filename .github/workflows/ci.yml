@@ -38,6 +38,7 @@ jobs:
           cache-dependency-path: apps/web/package-lock.json
       - run: make setup
       - run: make check
+      - run: make probar-respaldo
 
   e2e:
     # Recorridos de Playwright a 390x844. Pasan tres veces seguidas, cada una con la base reiniciada.

@@ -2,7 +2,7 @@
 
 Revisión del 14 de noviembre de 2026 sobre la rama de trabajo, endpoint por endpoint. Cada fila de la tabla se comprueba contra el código: `tests/test_seguridad_rutas.py` falla si falta un endpoint, si sobra uno o si la columna «Quién» no coincide con las dependencias reales de la ruta.
 
-Estado: **9 hallazgos abiertos** (2 altos, 3 medios, 4 bajos). Se reportan sin arreglar, a la espera de su decisión. Ocho tienen una prueba `xfail(strict=True)` que hoy falla y pasará sola cuando se corrija (al pasar, `strict` avisa y se quita la marca). H-09 no la tiene porque aún no existe la función de limpieza que probar.
+Estado: **9 hallazgos abiertos** (H-01 con una mitigación parcial desde 10.5) (2 altos, 3 medios, 4 bajos). Se reportan sin arreglar, a la espera de su decisión. Ocho tienen una prueba `xfail(strict=True)` que hoy falla y pasará sola cuando se corrija (al pasar, `strict` avisa y se quita la marca). H-09 no la tiene porque aún no existe la función de limpieza que probar.
 
 ## Cómo leer la tabla
 
@@ -95,6 +95,7 @@ Ordenados por gravedad. «Decisión» es lo que necesito de usted antes de arreg
 - **Efecto en producción**: la recuperación de clave no funciona (no llega ningún correo) y quien lea los registros puede tomar cualquier cuenta, incluida la del administrador: pide la recuperación de su correo, que es público, y copia el enlace del registro.
 - **Evidencia**: `test_el_registro_no_trae_el_enlace_de_recuperacion` (xfail). Con el registro capturado aparece `.../restablecer/kFU-...`.
 - **Propuesta**: (1) una implementación real de `EnviadorCorreo` (SMTP o el servicio del hosting), elegida por variable de entorno; (2) `CorreoFalso` solo escribe el cuerpo si `ENTORNO` es `desarrollo` o `pruebas`; (3) el paso 10.5 hace que la app no arranque en producción con el correo falso.
+- **Mitigación ya hecha (10.5)**: la app no arranca en producción con `CORREO_PROVEEDOR=falso`, así que el enlace nunca llega a un registro de producción. A cambio, **hoy ninguna configuración de producción es válida**: no puede desplegarse hasta que exista un proveedor real (`PROVEEDORES_CORREO_REALES` en `app/config.py`). La prueba `xfail` sigue abierta porque el comportamiento de `CorreoFalso` no cambió.
 - **Decisión**: ¿qué proveedor de correo? Sin él, en producción solo queda el enlace manual del administrador (`enlace-clave`), que tampoco se puede entregar. Hasta decidirlo propongo hacer solo (2) y (3).
 
 ### H-05 · Alto · Reservar no tiene límite ni prueba de que el celular es de quien reserva

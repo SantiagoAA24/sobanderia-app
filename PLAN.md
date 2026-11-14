@@ -93,8 +93,14 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] 10.3 Ruta `/politica` con aviso visible «Texto pendiente de revisión legal» (versión `borrador-1`) y comando `python -m app.cli_datos exportar|anonimizar` (`docs/DATOS_PERSONALES.md`)
   - Anonimizar conserva las citas (decisión acordada). Además del cliente limpia el nombre y el token de `notificaciones.variables`, revoca los enlaces y borra los intentos de «Encontrar mi cita». Con citas futuras se detiene salvo `--cancelar-citas-futuras`, que cancela sin avisar.
   - Pendiente de negocio: el texto legal definitivo.
-- [ ] 10.4 Respaldo y restauración probados en una base vacía
-- [ ] 10.5 La app se niega a arrancar en producción con configuración de desarrollo
+- [x] 10.4 Respaldo y restauración probados en una base vacía (`scripts/respaldo.sh`, `restaurar.sh`, `make probar-respaldo`, `docs/RESPALDO.md`)
+  - Probado: 14 tablas idénticas fila por fila tras restaurar en una base vacía, `citas_sin_cruce` sigue rechazando cruces, retención de 14 días, y se niega a restaurar encima de una base con datos.
+  - Pendiente (Fase 11): programar la rutina diaria, sacar las copias del servidor y probar una restauración con una copia real de producción.
+- [x] 10.5 La app se niega a arrancar en producción con configuración de desarrollo (`app/config.py`; API, worker, alembic y seed)
+  - Reglas en producción: base con credenciales de ejemplo o local, `ORIGEN_WEB` sin https o local, `PROVEEDOR_WHATSAPP=falso`, faltan las variables de WhatsApp, o correo que no es real. `ENTORNO` solo admite `desarrollo`, `pruebas` o `produccion`. Un servidor previo al lanzamiento también debe llamarse `produccion`.
+  - También rechaza `ENTORNO=desarrollo` si `ORIGEN_WEB` es una dirección pública con https (caso de olvidar la variable). `cloudapi` en desarrollo sí se permite, para probar con el número de prueba de Meta.
+  - **Consecuencia a tener presente:** mientras no exista un proveedor de correo real (H-01), ninguna configuración de producción arranca.
+  - `SECRETO_APP` se quitó de `.env.example` (nada la usaba).
 
 ## Fase 11 — Despliegue, piloto y lanzamiento
 - [ ] Infraestructura, despliegue automático, piloto y lanzamiento

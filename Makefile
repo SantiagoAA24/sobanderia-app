@@ -1,4 +1,4 @@
-.PHONY: help setup dev down test check seed migrate cliente cliente-al-dia e2e
+.PHONY: help setup dev down test check seed migrate cliente cliente-al-dia e2e probar-respaldo
 
 help:
 	@echo "make setup   - instala dependencias de api y web"
@@ -9,6 +9,7 @@ help:
 	@echo "make migrate - aplica las migraciones de la base"
 	@echo "make seed    - carga datos de ejemplo (solo desarrollo)"
 	@echo "make e2e     - recorridos de Playwright a 390x844 (base propia sobanderia_e2e; E2E_REPETIR=3 los repite)"
+	@echo "make probar-respaldo - respalda y restaura en una base vacía y compara (necesita DATABASE_URL)"
 	@echo "make cliente - regenera el cliente TypeScript desde el OpenAPI de la API"
 
 setup:
@@ -42,6 +43,9 @@ cliente-al-dia:
 
 e2e:
 	cd apps/web && npm run e2e
+
+probar-respaldo:
+	scripts/probar-restauracion.sh
 
 check:
 	cd apps/api && ruff check . && ruff format --check . && mypy app && pytest
