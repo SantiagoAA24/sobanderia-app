@@ -81,7 +81,7 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] 9.3 Sin conexión de extremo a extremo
 - [x] 9.4 Pantalla `/instalar` (iPhone y Android)
 - [x] 9.5 «Reducir movimiento» y `axe` en todas las rutas
-- [ ] 9.6 Lighthouse y `docs/RENDIMIENTO.md`
+- [x] 9.6 Lighthouse y `docs/RENDIMIENTO.md`
 
 ## Fase 10 — Seguridad, datos y extremo a extremo
 - [ ] Playwright, revisión de seguridad, política de datos y copias

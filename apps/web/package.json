@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build && node scripts/verificar-sw.mjs",
     "check": "tsc --noEmit && eslint .",
     "test": "vitest",
-    "a11y:navegador": "npm run build && vite-node scripts/a11y-navegador.ts"
+    "a11y:navegador": "npm run build && vite-node scripts/a11y-navegador.ts",
+    "lighthouse": "npm run build && vite-node scripts/lighthouse.ts"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.3.0",
@@ -29,9 +30,11 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
     "axe-core": "^4.14.0",
+    "chrome-launcher": "^1.2.3",
     "eslint": "^9.13.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "jsdom": "^25.0.1",
+    "lighthouse": "^13.6.0",
     "openapi-typescript": "^7.13.0",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.11.0",

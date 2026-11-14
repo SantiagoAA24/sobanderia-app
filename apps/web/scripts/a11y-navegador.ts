@@ -40,8 +40,16 @@ const MINIMO_TACTIL = 48;
 const solo = process.env.SOLO ?? "";
 const rutas = soloRutasDePantalla(aplanar(rutasApp.slice())).filter((r) => r.startsWith(solo));
 
-const preview = spawn("npx", ["vite", "preview", "--port", "4174", "--strictPort"], { cwd: resolve(__dirname, ".."), stdio: "ignore" });
-const cerrar = () => preview.kill();
+if (await fetch(URL_BASE).then(() => true, () => false)) throw new Error("El puerto 4174 ya está en uso: cierre el servidor anterior (pkill -f \"vite preview\").");
+// Vite se ejecuta directamente (no con npx) y en su propio grupo de procesos para poder terminarlo completo.
+const preview = spawn(process.execPath, [resolve(__dirname, "../node_modules/vite/bin/vite.js"), "preview", "--port", "4174", "--strictPort"], { cwd: resolve(__dirname, ".."), stdio: "ignore", detached: true });
+const cerrar = () => {
+  try {
+    process.kill(-preview.pid!);
+  } catch {
+    /* ya terminó */
+  }
+};
 process.on("exit", cerrar);
 for (let i = 0; ; i++) {
   if (await fetch(URL_BASE).then((r) => r.ok, () => false)) break;
