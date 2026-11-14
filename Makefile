@@ -1,4 +1,4 @@
-.PHONY: help setup dev down test check seed migrate cliente cliente-al-dia
+.PHONY: help setup dev down test check seed migrate cliente cliente-al-dia e2e
 
 help:
 	@echo "make setup   - instala dependencias de api y web"
@@ -8,6 +8,7 @@ help:
 	@echo "make check   - lint, tipos y pruebas (debe pasar antes de cada commit)"
 	@echo "make migrate - aplica las migraciones de la base"
 	@echo "make seed    - carga datos de ejemplo (solo desarrollo)"
+	@echo "make e2e     - recorridos de Playwright a 390x844 (base propia sobanderia_e2e; E2E_REPETIR=3 los repite)"
 	@echo "make cliente - regenera el cliente TypeScript desde el OpenAPI de la API"
 
 setup:
@@ -38,6 +39,9 @@ cliente-al-dia:
 	@cd apps/api && python -m app.openapi | diff -q - ../web/src/api/openapi.json >/dev/null || { echo "openapi.json desactualizado: ejecute make cliente"; exit 1; }
 	@cd apps/web && npx openapi-typescript src/api/openapi.json | diff -q - src/api/esquema.d.ts >/dev/null || { echo "esquema.d.ts desactualizado: ejecute make cliente"; exit 1; }
 	@echo "Cliente de la API al día"
+
+e2e:
+	cd apps/web && npm run e2e
 
 check:
 	cd apps/api && ruff check . && ruff format --check . && mypy app && pytest

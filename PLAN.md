@@ -84,7 +84,13 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] 9.6 Lighthouse y `docs/RENDIMIENTO.md`
 
 ## Fase 10 — Seguridad, datos y extremo a extremo
-- [ ] Playwright, revisión de seguridad, política de datos y copias
+- [x] 10.1 Recorridos con Playwright a 390×844 (`make e2e`, base propia `sobanderia_e2e`): cliente agenda, reagenda y cancela; dos clientes pelean la misma hora; sobandero opera su día; admin crea y da de baja; recuperación de clave
+  - Pasan 3 veces seguidas en local (cada una con la base reiniciada) y 15 de 15 con `E2E_REPETIR=3`. La CI tiene el trabajo `e2e` con tres corridas; su primera ejecución en GitHub está pendiente.
+  - Las herramientas `herramientas/e2e_*.py` se niegan a correr si la base no termina en `_e2e`.
+- [ ] 10.2 Revisión de seguridad ruta por ruta (`docs/SEGURIDAD.md`) y pruebas de acceso indebido; los hallazgos se reportan antes de arreglarlos
+- [ ] 10.3 Ruta `/politica` con marcador de revisión legal y comando para exportar o anonimizar los datos de un cliente
+- [ ] 10.4 Respaldo y restauración probados en una base vacía
+- [ ] 10.5 La app se niega a arrancar en producción con configuración de desarrollo
 
 ## Fase 11 — Despliegue, piloto y lanzamiento
 - [ ] Infraestructura, despliegue automático, piloto y lanzamiento

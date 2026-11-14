@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: "jsdom",
       setupFiles: ["./src/test-setup.ts"],
+      exclude: ["**/node_modules/**", "e2e/**"], // los recorridos de Playwright no son pruebas de Vitest
     },
   };
 });
