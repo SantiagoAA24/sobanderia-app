@@ -90,7 +90,9 @@ Seguimiento de `docs/ARQUITECTURA.md`. Se marca cada casilla al terminar el paso
 - [x] 10.2 Revisión de seguridad ruta por ruta: `docs/SEGURIDAD.md` (49 endpoints, comparada con el código por `test_seguridad_rutas.py`) y pruebas de acceso indebido (401, 403, 404, CSRF, enumeración, límites, CORS, cookies, webhook, registros)
   - Resultado: los controles de acceso funcionan; 9 hallazgos abiertos (H-01 a H-09), reportados sin arreglar. Ocho tienen prueba `xfail(strict=True)`.
 - [ ] 10.2b Arreglar los hallazgos H-01 a H-09 según lo que decida el responsable (ver `docs/SEGURIDAD.md`)
-- [ ] 10.3 Ruta `/politica` con marcador de revisión legal y comando para exportar o anonimizar los datos de un cliente
+- [x] 10.3 Ruta `/politica` con aviso visible «Texto pendiente de revisión legal» (versión `borrador-1`) y comando `python -m app.cli_datos exportar|anonimizar` (`docs/DATOS_PERSONALES.md`)
+  - Anonimizar conserva las citas (decisión acordada). Además del cliente limpia el nombre y el token de `notificaciones.variables`, revoca los enlaces y borra los intentos de «Encontrar mi cita». Con citas futuras se detiene salvo `--cancelar-citas-futuras`, que cancela sin avisar.
+  - Pendiente de negocio: el texto legal definitivo.
 - [ ] 10.4 Respaldo y restauración probados en una base vacía
 - [ ] 10.5 La app se niega a arrancar en producción con configuración de desarrollo
 

@@ -41,7 +41,8 @@ describe("Política de datos (provisional)", () => {
   it("se abre desde Paso 4 y avisa que es un borrador", async () => {
     pintar("/politica");
     expect(screen.getByRole("heading", { level: 1, name: "Política de datos" })).toBeInTheDocument();
-    expect(screen.getByText("Borrador pendiente de revisión legal.")).toBeInTheDocument();
+    expect(screen.getByText("Texto pendiente de revisión legal")).toBeInTheDocument();
+    expect(screen.getByText(/Versión borrador-1/)).toBeInTheDocument();
   });
 });
 
